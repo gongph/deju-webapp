@@ -28,6 +28,7 @@
 
   export default {
     name: 'Orders',
+    /* eslint-disable */
     components: {
       [Tabs.name]: Tabs,
       [ResultPage.name]: ResultPage,

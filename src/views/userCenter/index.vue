@@ -58,6 +58,7 @@
 
   export default {
     name: 'UserCenter',
+    /* eslint-disable */
     components: {
       [Icon.name]: Icon,
     },

@@ -21,6 +21,7 @@
 
   export default {
     name: 'ResetPwd',
+    /* eslint-disable */
     components: {
       [InputItem.name]: InputItem,
       [Field.name]: Field,

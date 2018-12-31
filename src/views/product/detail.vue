@@ -1,21 +1,31 @@
 <template>
-  <div class="product-detail__wrapper">
+  <div class="product-detail__wrapper" v-if="product">
     <div class="nav-header">
-      <div class="thumbnail">K</div>
-      <div class="title">快易贷 - 大众借款神器</div>
+      <div
+        class="thumbnail"
+        :style="'background-image: url(data:image/png;base64,' + product.icon + ')'"
+      >
+      </div>
+      <div class="title">{{ product.title }}</div>
     </div>
     <div class="main-content">
       <div class="detail-inner">
         <div class="desc-grid">
-          <div class="grid-item">申请人数: 123456人</div>
+          <div class="grid-item">申请人数: {{ product.numberOfApplicants }}人</div>
           <template v-if="computedEarn">
             <div class="grid-item">利息: {{ computedEarn }}元</div>
           </template>
           <template v-else>
-            <div class="grid-item">利率范围: 0.78%-1.58%</div>
+            <div class="grid-item">
+              利率范围: {{ product.interestRateRangeStart }}%-{{ product.interestRateRangeEnd }}%
+            </div>
           </template>
-          <div class="grid-item">贷款范围: 2000-20000元</div>
-          <div class="grid-item">期限范围: 3-24个月</div>
+          <div class="grid-item">
+            贷款范围: {{ formatMoney(product.loanRangeStart )}}-{{ formatMoney(product.loanRangeEnd )}}
+          </div>
+          <div class="grid-item">
+            期限范围: {{ product.termRangeStart }}-{{ product.termRangeEnd }}个月
+          </div>
           <div class="grid-item item">
             <div class="item-wrapper">
               <label for="amount">金额:</label>
@@ -64,24 +74,20 @@
       <!-- Apply limit -->
       <div class="apply-limit">
         <div class="header">申请限制</div>
-        <div class="content">
-          1. 中国（不含港澳台）公民，年龄18（不含）~60（含）周岁，有合法的中华人民共和国第二代居民身份证（不认可护照，户口本，零时身份证）。<br/>
-          2. 征信记录无当前逾期，可以为白户。
-        </div>
+        <div class="content" v-html="product.restrictionInformation"></div>
       </div>
       <!-- Apply data -->
       <div class="apply-data">
         <div class="header">申请材料</div>
         <div class="content">
-          个人身份证（必须持证满3 个月并在有效期内），实名手机号码，银行卡（中农工建邮政均可）
+          {{ product.materialsInformation}}
         </div>
       </div>
       <!-- Apply instructions -->
       <div class="apply-instructions">
         <div class="header">申请说明</div>
         <div class="content">
-          审核方式: 机审 + 人工<br/>
-          审核时间: 最快 30 分钟
+          {{ product.applicationInformation }}
         </div>
       </div>
     </div>
@@ -92,7 +98,9 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import { Steps, Icon, Button, Toast } from 'mand-mobile'
+  import { formatMoney } from '@/utils'
 
   export default {
     name: 'ProductDetail',
@@ -125,6 +133,9 @@
       }
     },
     computed: {
+      ...mapGetters([
+        'product'
+      ]),
       computedEarn() {
         if (!this.amount || !this.deadline) {
           return
@@ -155,6 +166,9 @@
         this.rate = item.rate
         this.deadlineStr = `${item.label}个月`
         this.isActive = false
+      },
+      formatMoney(money) {
+        return formatMoney(money)
       },
       /**
        * 计算利息
@@ -210,6 +224,9 @@
       line-height: 1.5;
       color: #2c3e50;
       text-align: center;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
     }
 
     .title {

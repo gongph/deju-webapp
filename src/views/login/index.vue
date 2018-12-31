@@ -23,7 +23,7 @@
               <svg-icon icon-class="password-02"/>
             </div>
             <div class="input-wrapper">
-              <input v-model="loginForm.password" class="input-form" type="password" name="password" placeholder="请输入您的密码(字母+数字组合)">
+              <input v-model="loginForm.password" class="input-form" type="password" name="password" placeholder="请输入您的密码">
             </div>
           </div>
 
@@ -66,8 +66,10 @@
         originHeight: 0,
         loginForm: {
           username: '',
-          password: ''
-        }
+          password: '',
+          rememberMe: true
+        },
+        redirect: ''
       }
     },
     watch: {
@@ -77,6 +79,12 @@
         } else {
           this.isHidden = true
         }
+      },
+      $route: {
+        handler: function(route) {
+          this.redirect = route.query && route.query.redirect
+        },
+        immediate: true
       }
     },
     mounted() {
@@ -93,18 +101,19 @@
     methods: {
       login() {
         if (!this.loginForm.username || !this.loginForm.password) {
-          Toast({
-            content: '账号或密码不能为空哦~',
-            position: 'bottom',
-            duration: '2000'
-          })
+          Toast.info('账号或密码不能为空哦~')
           return
         } else {
           Toast.loading('登录中')
-          setTimeout(() => {
+          this.$store.dispatch('Login', this.loginForm).then(response => {
             Toast.hide()
-            this.$router.push({ name: 'ProductList' })
-          }, 1000)
+            this.$router.push({ path: '/' })
+          }).catch(error => {
+            Toast.failed('账号或密码错误~')
+            setTimeout(() => {
+              Toast.hide()
+            }, 3000)
+          })
         }
       }
     }
@@ -134,7 +143,7 @@
       left: 0;
       bottom: 0;
       right: 0;
-      background: #1c4186;
+      background: #1c3368;
       opacity: .85;
     }
     .content {

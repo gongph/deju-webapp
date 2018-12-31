@@ -10,16 +10,12 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
-      redirect: '/login'
-    },
-    {
       path: '/login',
       name: 'Login',
       component: () => import('@/views/login/index.vue')
     },
     {
-      path: '/product',
+      path: '/',
       name: 'ProductList',
       component: () => import(/* webpackChunkName: "productList" */ '@/views/product/index.vue')
     },
