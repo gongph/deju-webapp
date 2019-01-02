@@ -1,6 +1,13 @@
 const product = {
   state: {
-    curProd: null
+    curProd: null,
+    // 申请信息
+    applyInfo: {
+      // 金额
+      account: 0,
+      // 期限
+      deadline: 0
+    }
   },
 
   mutations: {

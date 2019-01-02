@@ -3,24 +3,38 @@
     <template v-if="step === 1">
       <md-notice-bar :closable="false">为了确保您能通过初步审核，请填写真实信息哦~</md-notice-bar>
       <md-field>
-        <md-input-item
-          ref="username"
-          title="姓名"
+        <input-validate
+          title="真实姓名"
+          name="真实姓名"
           placeholder="请输入您的姓名"
           clearable
+          v-validate="'required'"
+          data-vv-value-path="innerValue"
+          data-vv-validate-on="blur"
+          :error="errors.first('真实姓名')"
         />
-        <md-input-item
+        <input-validate
           ref="phone"
           type="phone"
           title="实名手机号"
-          placeholder="请输入您有效的手机号码"
+          name="实名手机号"
+          placeholder="请输入您实名认证手机号"
           clearable
+          v-validate="'required|phone'"
+          data-vv-value-path="innerValue"
+          data-vv-validate-on="blur"
+          :error="errors.first('实名手机号')"
         />
-        <md-input-item
+        <input-validate
           ref="idCard"
           title="身份证号"
-          placeholder="请输入您有效的身份证号码"
+          name="身份证号"
+          placeholder="请输入您有效的身份证号"
           clearable
+          v-validate="'required|idcard'"
+          data-vv-value-path="innerValue"
+          data-vv-validate-on="blur"
+          :error="errors.first('身份证号')"
         />
         <div class="md-field-title">请上传身份证正/反面照片:</div>
         <div class="upload-preview__wrapper">
@@ -101,7 +115,7 @@
           <p>我方将对您的征信及大数据进行相关查询，支付查询费用50元，支付后进入初审环节。</p>
         </div>
       </div>
-      <md-field title="授权查询费用">
+      <md-field title="授权查询费用:" class="step-two__field">
         <md-input-item
           title="支付金额"
           align="right"
@@ -110,7 +124,7 @@
           disabled
         />
       </md-field>
-      <md-button @click="handleCashier">支付并进入初审环节</md-button>
+      <md-button @click="handleCashier">去支付</md-button>
       <md-cashier
         ref="cashier"
         v-model="isCashierhow"
@@ -121,6 +135,15 @@
         @pay="onCashierPay"
         @cancel="onCashierCancel"
       />
+
+      <md-dialog
+        title="提示"
+        :closable="false"
+        v-model="actDialog.open"
+        :btns="actDialog.btns"
+      >
+        支付成功后将进入初审环节，确定要提交吗？
+      </md-dialog>
     </template>
   </div>
 </template>
@@ -134,8 +157,24 @@
     ImageReader, 
     Icon, 
     Toast, 
-    Cashier } from 'mand-mobile'
+    Cashier,
+    Dialog
+  }
+  from 'mand-mobile'
   import imageProcessor from 'mand-mobile/components/image-reader/image-processor'
+  import InputValidate from "./components/input-validate"
+  import { Validator } from "vee-validate"
+
+  // 手机号验证器
+  Validator.extend("phone", {
+    getMessage: field => `请输入您有效的${field}`,
+    validate: value => /^1[34578][0-9]{9}$/.test(value)
+  })
+  // 身份证验证器
+  Validator.extend("idcard", {
+    getMessage: field => `请输入您有效的${field}`,
+    validate: value => /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(value)
+  })
 
   export default {
     name: 'BaseInfo',
@@ -148,11 +187,13 @@
       [ImageReader.name]: ImageReader,
       [Icon.name]: Icon,
       [Toast.name]: Toast,
-      [Cashier.name]: Cashier
+      [Cashier.name]: Cashier,
+      [Dialog.name]: Dialog,
+      InputValidate
     },
     data() {
       return {
-        step: 1,
+        step: 2,
         baseform: {},
         imageList: {
           readerFront: [],
@@ -173,7 +214,28 @@
             text: '微信支付',
             value: '003'
           }
-        ]
+        ],
+        actDialog: {
+          open: false,
+          btns: [
+            {
+              text: '取消',
+              handler: this.onActCancel,
+            },
+            {
+              text: '确定',
+              handler: this.onActConfirm,
+            },
+          ],
+        },
+        ruleForm: {
+          username: '',
+          mobile: '',
+          idcard: ''
+        },
+        rule: {
+          username: ''
+        }
       }
     },
     computed: {
@@ -190,7 +252,6 @@
       },
       onReaderComplete(name, {dataUrl}) {
         const imageList = []
-
         imageProcessor({
           dataUrl,
           width: 200,
@@ -212,10 +273,34 @@
         this.$set(this.imageList, name, imageList)
       },
       handleNext() {
-        this.step = 2
+        this.$validator.validateAll().then((valid) => {
+          if (valid) {
+            if (this.imageList.readerFront.length <=0 &&
+              this.imageList.readerBack.length <=0) {
+              Toast.info('请上传身份证正反面照片！')
+              return
+            }
+            this.step = 2
+          } else {
+            return false
+          }
+        })
       },
       handleCashier() {
-        this.isCashierhow = true
+        // this.isCashierhow = true
+        this.actDialog.open = true
+      },
+      onActCancel() {
+        Toast({
+          content: '你点击了取消',
+        })
+        this.actDialog.open = false
+      },
+      onActConfirm() {
+        Toast({
+          content: '你点击了确认',
+        })
+        this.actDialog.open = false
       },
       doPay() {
         if (this.isCashierCaptcha) {
@@ -283,14 +368,12 @@
     height: 100vh;
     background-color: #f5f5f5;
   }
-
   .upload-preview__wrapper {
     position: relative;
     // left: 30px;
     width: 100%;
     overflow: hidden;
   }
-
   .upload-preview__box {
     &::after {
       content: "";
@@ -298,13 +381,11 @@
       display: table;
     }
   }
-
   .image-reader-list {
     float: left;
     width: 100%;
     margin: 0;
   }
-
   .image-reader-item {
     float: left;
     width: 44%;
@@ -318,11 +399,9 @@
     border-radius: 4px;
     position: relative;
     background-size: cover;
-
     &:nth-of-type(4n) {
       margin-right: 0;
     }
-
     &.add {
       .md-icon {
         position: absolute;
@@ -330,13 +409,11 @@
         left: 50%;
         transform: translate(-50%,-50%);
         opacity: .5;
-
         &.md {
           width: 40px;
           height: 40px;
         }
       }
-
       p {
         position: absolute;
         top: 50%;
@@ -348,7 +425,6 @@
         text-align: center;
       }
     }
-
     .image-reader-item-del {
       position: absolute;
       top: 5px;
@@ -357,7 +433,6 @@
       background: #eee;
       border-radius: 50%;
     }
-
     &::after {
       content: "";
       position: absolute;
@@ -372,12 +447,10 @@
       z-index: 2;
     }
   }
-
   .md-button.primary.large {
     margin-top: 40px;
     border-radius: 0;
   }
-
   .notice-bar {
     width: 100%;
     min-height: 85px;
@@ -389,16 +462,13 @@
     background-color: #4a4c5b;
     color: #fff;
     align-items: center;
-
     .icon {
       width: 80px;
       align-self: stretch;
       text-align: center;
       padding-top: 20px;
       box-sizing: border-box;
-
     }
-
     .msg {
       flex: 1;
     }

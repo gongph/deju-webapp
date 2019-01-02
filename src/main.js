@@ -9,6 +9,12 @@ import './icons/index'
 
 import './permission'
 
+import zh_CN from 'vee-validate/dist/locale/zh_CN';
+import VeeValidate, { Validator } from 'vee-validate'
+
+Vue.use(VeeValidate)
+Validator.localize('zh_CN', zh_CN)
+
 Vue.config.productionTip = false
 
 new Vue({

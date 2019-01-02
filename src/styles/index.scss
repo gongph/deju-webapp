@@ -17,6 +17,24 @@ $color: #fc9153;
   }
 }
 
+/* Apply form required field */
+.base-form {
+  .md-input-item-title.fixed::before,
+  .md-field-title::before {
+    content: '*';
+    padding-top: 5px;
+    padding-right: 5px;
+    color: #ff525d;
+  }
+
+  .step-two__field {
+    .md-input-item-title.fixed::before,
+    .md-field-title::before {
+      content: '';
+    }
+  }
+}
+
 html, body, div, ul, li, h1, h2, h3, h4, h5, h6, p, dl, dt, dd, ol, form, input, textarea, th, td, select {
   margin: 0;
   padding: 0;

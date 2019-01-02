@@ -32,7 +32,13 @@
             </div>
             <div class="item-input__wrapper">
               <div class="item-input">
-                <input v-model="amount" type="number" class="form-input" placeholder="请输入金额" @blur="handleAmountBlur($event)">
+                <input
+                  v-model="amount"
+                  type="number"
+                  class="form-input"
+                  placeholder="请输入金额"
+                  @blur="handleAmountBlur($event)"
+                >
               </div>
               <div class="item-unit">元</div>
             </div>
@@ -44,10 +50,21 @@
             </div>
             <div class="item-input__wrapper">
               <div class="item-input">
-                <input v-model="deadlineStr" type="text" class="form-input" readonly="readonly" placeholder="请选择期限">
+                <input
+                  v-model="deadlineStr"
+                  type="text"
+                  class="form-input"
+                  readonly="readonly"
+                  placeholder="请选择期限"
+                >
               </div>
               <div class="item-unit item-unit__icon">
-                <md-icon name="arrow-up" :class="isActive ? 'is-active':''" size="lg" @click="handleIconClick"></md-icon>
+                <md-icon
+                  name="arrow-up"
+                  :class="isActive ? 'is-active':''"
+                  size="lg"
+                  @click="handleIconClick"
+                />
               </div>
               <div class="item-list__wrapper" v-if="isActive">
                 <template v-for="(item, $index) in rates">
@@ -149,6 +166,10 @@
     },
     methods: {
       handleApply() {
+        if (!this.amount && !this.deadlineStr) {
+          Toast.info('申请金额和期限不能为空！')
+          return
+        }
         this.$router.push({ path: '/apply/base' })
       },
       handleAmountBlur(evt) {
