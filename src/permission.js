@@ -1,5 +1,5 @@
 import router from './router'
-// import store from './store'
+import store from './store'
 import { getToken } from '@/utils/auth'
 
 // No redirect
@@ -10,7 +10,18 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/login') {
       next({ path: '/' })
     } else {
-      next()
+      if (store.getters.roles.length === 0) {
+        store.dispatch('GetUserInfo').then(() => {
+          next({ ...to, replace: true })
+        }).catch(err => {
+          store.dispatch('Logout').then(() => {
+            console.error(err || 'Verification failed, please login again')
+          })
+          next({ path: '/' })
+        })
+      } else {
+        next()
+      }
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {

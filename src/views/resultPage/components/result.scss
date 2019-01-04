@@ -1,0 +1,31 @@
+.notice-wrapper {
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .svg-icon {
+    color: #fc9153;
+    font-size: 200px;
+    padding: 25% 0 20px 0;
+  }
+
+  .content {
+    text-align: center;
+    font-size: 35px;
+    /*line-height: 1.5;*/
+    color: gray;
+
+    p {
+      margin: 0;
+      line-height: 1.5
+    }
+
+    a {
+      color: #fc9153;
+      /*text-decoration: none;*/
+    }
+  }
+}

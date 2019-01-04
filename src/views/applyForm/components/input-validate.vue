@@ -12,6 +12,7 @@
 <script>
 import { InputItem } from 'mand-mobile'
 export default {
+  /* eslint-disable */
   components: {
     [InputItem.name]: InputItem
   },

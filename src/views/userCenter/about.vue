@@ -2,7 +2,9 @@
   <div class="about-wrapper">
     <div class="header">
       <div class="logo-wrapper">
-        <div class="logo">LOGO</div>
+        <div class="logo">
+          <svg-icon icon-class="logo"/>
+        </div>
         <div class="intro">借钱就找德聚金融</div>
       </div>
     </div>
@@ -44,7 +46,7 @@
 
   .header {
     width: 100vw;
-    height: 250px;
+    height: 320px;
     font-size: 35px;
   }
 
@@ -58,11 +60,11 @@
 
   .logo {
     width: 250px;
-    height: 100px;
-    background: #ddd;
+    min-height: 100px;
+    // background: #ddd;
     text-align: center;
-    font-size: 80px;
-    line-height: 100px;
+    font-size: 120px;
+    line-height: 150px;
   }
 
   .intro {

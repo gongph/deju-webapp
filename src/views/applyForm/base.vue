@@ -4,37 +4,38 @@
       <md-notice-bar :closable="false">为了确保您能通过初步审核，请填写真实信息哦~</md-notice-bar>
       <md-field>
         <input-validate
+          v-model="ruleForm.realName"
           title="真实姓名"
           name="真实姓名"
           placeholder="请输入您的姓名"
-          clearable
           v-validate="'required'"
           data-vv-value-path="innerValue"
           data-vv-validate-on="blur"
           :error="errors.first('真实姓名')"
+          clearable
         />
         <input-validate
-          ref="phone"
+          v-model="ruleForm.mobile"
           type="phone"
           title="实名手机号"
           name="实名手机号"
           placeholder="请输入您实名认证手机号"
-          clearable
           v-validate="'required|phone'"
           data-vv-value-path="innerValue"
           data-vv-validate-on="blur"
           :error="errors.first('实名手机号')"
+          clearable
         />
         <input-validate
-          ref="idCard"
+          v-model="ruleForm.idcard"
           title="身份证号"
           name="身份证号"
           placeholder="请输入您有效的身份证号"
-          clearable
           v-validate="'required|idcard'"
           data-vv-value-path="innerValue"
           data-vv-validate-on="blur"
           :error="errors.first('身份证号')"
+          clearable
         />
         <div class="md-field-title">请上传身份证正/反面照片:</div>
         <div class="upload-preview__wrapper">
@@ -193,7 +194,7 @@
     },
     data() {
       return {
-        step: 2,
+        step: 1,
         baseform: {},
         imageList: {
           readerFront: [],
@@ -229,12 +230,9 @@
           ],
         },
         ruleForm: {
-          username: '',
+          realName: '',
           mobile: '',
           idcard: ''
-        },
-        rule: {
-          username: ''
         }
       }
     },
@@ -250,7 +248,8 @@
       onReaderSelect() {
         Toast.loading('图片读取中...')
       },
-      onReaderComplete(name, {dataUrl}) {
+      onReaderComplete(name, { dataUrl, blob, file }) {
+        console.log(111, file)
         const imageList = []
         imageProcessor({
           dataUrl,
@@ -258,10 +257,13 @@
           height: 200,
           quality: 0.8,
         }).then(({dataUrl}) => {
-          dataUrl && imageList.push(dataUrl)
+          if (dataUrl) {
+            imageList.push(dataUrl)
+            imageList.push(file.type)
+          }
         })
         this.$set(this.imageList, name, imageList)
-
+        console.log(this.imageList)
         Toast.hide()
       },
       onReaderError(name, {msg}) {
@@ -280,7 +282,23 @@
               Toast.info('请上传身份证正反面照片！')
               return
             }
-            this.step = 2
+
+            const pf = this.imageList.readerFront[0]
+            const pb = this.imageList.readerBack[0]
+            // Save
+            this.$store.dispatch('SaveApplyInfo', {
+              name: this.ruleForm.realName,
+              realNameMobilePhoneNumber: this.ruleForm.mobile,
+              identityNumber: this.ruleForm.idcard,
+              idCardFrontPhoto: pf.substring(pf.indexOf(',') + 1, pf.length),
+              idCardFrontPhotoContentType: this.imageList.readerFront[1],
+              idCardBackPhoto: pb.substring(pb.indexOf(',') + 1, pf.length),
+              idCardBackPhotoContentType: this.imageList.readerBack[1]
+            }).then(response => {
+              this.step = 2
+            }).catch(err => {
+              console.error(err)
+            })
           } else {
             return false
           }
@@ -297,10 +315,8 @@
         this.actDialog.open = false
       },
       onActConfirm() {
-        Toast({
-          content: '你点击了确认',
-        })
         this.actDialog.open = false
+        this.$router.push({ path: '/payrtn' })
       },
       doPay() {
         if (this.isCashierCaptcha) {
@@ -332,7 +348,7 @@
               buttonText: '我知道了',
               handler: () => {
                 // Toast.info(`${this.cashierResult}点击`)
-                this.$router.push({ path: '/notice' })
+                this.$router.push({ path: '/payrtn' })
               },
             })
           })

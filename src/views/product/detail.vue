@@ -51,7 +51,7 @@
             <div class="item-input__wrapper">
               <div class="item-input">
                 <input
-                  v-model="deadlineStr"
+                  v-model="deadlineLabel"
                   type="text"
                   class="form-input"
                   readonly="readonly"
@@ -144,8 +144,9 @@
         ],
         amount: '', // 金额
         rate: 0, // 利率
-        deadline: '', // 期限
-        deadlineStr: '', // 期限字符串
+        term: 0, // 期限
+        deadline: '', // 期限，例如 0.3
+        deadlineLabel: '', // 期限字符串，例如：'12个月'
         earn: 0, // 利息
       }
     },
@@ -166,11 +167,18 @@
     },
     methods: {
       handleApply() {
-        if (!this.amount && !this.deadlineStr) {
+        if (!this.amount && !this.deadlineLabel) {
           Toast.info('申请金额和期限不能为空！')
           return
         }
-        this.$router.push({ path: '/apply/base' })
+        this.$store.dispatch('SaveApplyInfo', {
+          amount: this.amount,
+          deadline: this.term
+        }).then(response => {
+          this.$router.push({ path: '/apply/base' })
+        }).catch(err => {
+          console.error(err)
+        })
       },
       handleAmountBlur(evt) {
         if (Number(this.amount) % 1000 !== 0) {
@@ -185,7 +193,8 @@
       handleRateClick(item) {
         this.deadline = item.value
         this.rate = item.rate
-        this.deadlineStr = `${item.label}个月`
+        this.term = item.label
+        this.deadlineLabel = `${item.label}个月`
         this.isActive = false
       },
       formatMoney(money) {

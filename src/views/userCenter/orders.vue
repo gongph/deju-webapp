@@ -1,11 +1,5 @@
 <template>
   <div class="orders-wrapper">
-    <!-- <div class="nav">
-      <div class="back">
-        <svg-icon icon-class="arrow-left"/>
-      </div>
-    </div>
-    <div class="jumbotron"></div> -->
     <template v-if="orders.length > 0">
       <md-tabs
         :titles="titles"
@@ -36,7 +30,7 @@
     },
     data() {
       return {
-        orders: [1],
+        orders: [],
         titles: ['全部', '待审核', '已审核'],
       }
     },

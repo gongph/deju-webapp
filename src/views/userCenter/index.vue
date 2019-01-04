@@ -5,67 +5,75 @@
         <div class="avator">
           <svg-icon icon-class="avator"/>
         </div>
-        <div class="nickname">不吃鱼的海王</div>
+        <div class="nickname">{{ name }}</div>
       </div>
     </div>
 
     <div class="list-wrapper">
-      <div class="list-item">
+      <div v-for="(item, $index) of navs" :key="$index" class="list-item">
         <div class="icon-wrapper">
-          <svg-icon icon-class="order"/>
+          <svg-icon :icon-class="item.icon"/>
         </div>
-        <div class="label-wrapper">我的工单</div>
-        <div class="arrow-right__wrapper" @click="handleRoute('/orders')">
-          <md-icon name="arrow-right" size="lg"></md-icon>
-        </div>
-      </div>
-
-      <div class="list-item">
-        <div class="icon-wrapper">
-          <svg-icon icon-class="user-data"/>
-        </div>
-        <div class="label-wrapper">修改资料</div>
-        <div class="arrow-right__wrapper" @click="handleRoute('/userdata')">
-          <md-icon name="arrow-right" size="lg"></md-icon>
-        </div>
-      </div>
-
-      <div class="list-item">
-        <div class="icon-wrapper">
-          <svg-icon icon-class="password"/>
-        </div>
-        <div class="label-wrapper">修改密码</div>
-        <div class="arrow-right__wrapper" @click="handleRoute('/resetpwd')">
-          <md-icon name="arrow-right" size="lg"></md-icon>
-        </div>
-      </div>
-
-      <div class="list-item">
-        <div class="icon-wrapper">
-          <svg-icon icon-class="about"/>
-        </div>
-        <div class="label-wrapper">关于</div>
-        <div class="arrow-right__wrapper" @click="handleRoute('/about')">
+        <div class="label-wrapper">{{ item.name }}</div>
+        <div class="arrow-right__wrapper" @click="handleRoute(item.route)">
           <md-icon name="arrow-right" size="lg"></md-icon>
         </div>
       </div>
     </div>
+
+    <!-- Logout -->
+    <div class="footer">
+      <md-button type="ghost-primary" @click="actDialog.open = true">退出</md-button>
+    </div>
+
+    <md-dialog
+      title="退出登录？"
+      :closable="false"
+      v-model="actDialog.open"
+      :btns="actDialog.btns"
+    />
   </div>
 </template>
 
 <script>
-  import {Icon} from 'mand-mobile'
+  import { mapGetters } from 'vuex'
+  import { Icon, Button, Dialog } from 'mand-mobile'
 
   export default {
     name: 'UserCenter',
     /* eslint-disable */
     components: {
       [Icon.name]: Icon,
+      [Button.name]: Button,
+      [Dialog.name]: Dialog
     },
     data() {
       return {
-        //
+        navs: [
+          { name: '我的订单', icon: 'order', route: '/orders' },
+          { name: '修改资料', icon: 'user-data', route: '/userdata' },
+          { name: '修改密码', icon: 'password', route: '/resetpwd' },
+          { name: '关于', icon: 'about', route: '/about' }
+        ],
+        actDialog: {
+          open: false,
+          btns: [
+            {
+              text: '手滑了',
+              handler: this.onActCancel,
+            },
+            {
+              text: '残忍离开',
+              handler: this.onActConfirm,
+            }
+          ]
+        }
       }
+    },
+    computed: {
+      ...mapGetters([
+        'name'
+      ])
     },
     mounted() {
       document.title = '个人中心'
@@ -73,6 +81,18 @@
     methods: {
       handleRoute(path) {
         this.$router.push({ path })
+      },
+      handleLogout() {
+        this.$store.dispatch('Logout').then(() => {
+          this.$router.push({ path: '/' })
+        })
+      },
+      onActCancel() {
+        this.actDialog.open = false
+      },
+      onActConfirm() {
+        this.actDialog.open = false
+        this.handleLogout()
       }
     }
   }
@@ -151,5 +171,12 @@
       width: 60px;
       color: gray;
     }
+  }
+
+  .footer {
+    position: absolute;
+    left: 50%;
+    bottom: 25px;
+    transform: translateX(-50%);
   }
 </style>

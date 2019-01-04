@@ -70,6 +70,11 @@ export default new Router({
       path: '/notice',
       name: 'Notice',
       component: () => import('@/views/resultPage/notice.vue')
+    },
+    {
+      path: '/payrtn',
+      name: 'PayReturn',
+      component: () => import('@/views/resultPage/payrtn.vue')
     }
   ]
 })
