@@ -163,7 +163,7 @@
   }
   from 'mand-mobile'
   import imageProcessor from 'mand-mobile/components/image-reader/image-processor'
-  import InputValidate from "./components/input-validate"
+  import InputValidate from "@/components/InputValidate/index.vue"
   import { Validator } from "vee-validate"
 
   // 手机号验证器
@@ -249,7 +249,6 @@
         Toast.loading('图片读取中...')
       },
       onReaderComplete(name, { dataUrl, blob, file }) {
-        console.log(111, file)
         const imageList = []
         imageProcessor({
           dataUrl,

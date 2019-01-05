@@ -52,6 +52,9 @@ export default {
       this.$emit("input", val);
     }
   },
+  created() {
+    this.value && (this.innerValue = this.value)
+  },
   methods: {
     onBlur() {
       this.$emit("blur");

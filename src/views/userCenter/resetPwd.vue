@@ -1,20 +1,47 @@
 <template>
   <div class="reset-pwd__wrapper">
     <md-field>
-      <md-input-item
+
+      <input-validate
+        v-model="ruleForm.oldPass"
+        type="password"
         title="旧密码:"
-        type="password"
+        name="旧密码"
         placeholder="请输入旧密码"
+        v-validate="'required|alpha_dash'"
+        data-vv-value-path="innerValue"
+        data-vv-validate-on="blur"
+        :error="errors.first('旧密码')"
+        clearable
       />
-      <md-input-item
+
+      <input-validate
+        v-model="ruleForm.newPass"
+        ref="newPass"
+        type="password"
         title="新密码:"
-        type="password"
+        name="newPass"
         placeholder="请输入新密码"
+        v-validate="'required|alpha_dash|min:5'"
+        data-vv-as="新密码"
+        data-vv-value-path="innerValue"
+        data-vv-validate-on="blur"
+        :error="errors.first('newPass')"
+        clearable
       />
-      <md-input-item
-        title="确认新密码:"
+
+      <input-validate
+        v-model="ruleForm.confirmPass"
         type="password"
+        title="确认新密码:"
+        name="confirmPass"
         placeholder="请确认新密码"
+        v-validate="'required|confirmed:newPass|alpha_dash|min:5'"
+        data-vv-as="确认新密码"
+        data-vv-value-path="innerValue"
+        data-vv-validate-on="blur"
+        :error="errors.first('confirmPass')"
+        clearable
       />
     </md-field>
 
@@ -26,6 +53,8 @@
 
 <script>
   import { InputItem, Field, Button, Toast } from 'mand-mobile'
+  import InputValidate from "@/components/InputValidate/index.vue"
+  import { resetPwd } from '@/api/user'
 
   export default {
     name: 'ResetPwd',
@@ -33,11 +62,17 @@
     components: {
       [InputItem.name]: InputItem,
       [Field.name]: Field,
-      [Button.name]: Button
+      [Button.name]: Button,
+      InputValidate
     },
     data() {
       return {
-        buttonText: '保 存'
+        buttonText: '保 存',
+        ruleForm: {
+          oldPass: '',
+          newPass: '',
+          confirmPass: ''
+        }
       }
     },
     mounted() {
@@ -45,11 +80,24 @@
     },
     methods: {
       handleSave() {
-        this.buttonText = '保存中...'
-        setTimeout(() => {
-          this.buttonText = '保存'
-          Toast.succeed('保存成功')
-        }, 1000)
+        this.$validator.validateAll().then((valid) => {
+          if (valid) {
+            Toast.loading('保存中...')
+            resetPwd({
+              currentPassword: this.ruleForm.oldPass,
+              newPassword: this.ruleForm.newPass
+            }).then(response => {
+              if (response.status === 200) {
+                Toast.succeed('保存成功')
+              }
+            }).catch(err => {
+              Toast.failed('保存失败')
+              console.error(err)
+            })
+          } else {
+            return false
+          }
+        })
       }
     }
   }
