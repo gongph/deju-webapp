@@ -229,6 +229,9 @@
     .footer-btn {
       width: 95%;
       margin: 30px auto;
+      .md-button.primary.large {
+        border-radius: 10px;
+      }
     }
   }
 </style>
