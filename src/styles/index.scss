@@ -18,9 +18,9 @@ $color: #fc9153;
 }
 
 /* Apply form required field */
-.base-form {
-  .md-input-item-title.fixed::before,
-  .md-field-title::before {
+.base-form,
+.more-apply__info {
+  .md-input-item-title.fixed::before {
     content: '*';
     padding-top: 5px;
     padding-right: 5px;
@@ -28,8 +28,7 @@ $color: #fc9153;
   }
 
   .step-two__field {
-    .md-input-item-title.fixed::before,
-    .md-field-title::before {
+    .md-input-item-title.fixed::before {
       content: '';
     }
   }

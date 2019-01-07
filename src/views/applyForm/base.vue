@@ -1,7 +1,7 @@
 <template>
   <div class="base-form">
     <template v-if="step === 1">
-      <md-notice-bar :closable="false">为了确保您能通过初步审核，请填写真实信息哦~</md-notice-bar>
+      <md-notice-bar>为了确保您能通过初步审核，请填写真实信息哦~</md-notice-bar>
       <md-field>
         <input-validate
           v-model="ruleForm.realName"
@@ -105,17 +105,20 @@
           </div>
         </div>
       </md-field>
-      <md-button @click="handleNext">下一步</md-button>
+      <div class="footer-btn">
+        <md-button @click="handleNext">下一步</md-button>
+      </div>
     </template>
     <template v-if="step === 2">
-      <div class="notice-bar">
+      <!-- <div class="notice-bar">
         <div class="icon">
           <md-icon name="circle-alert" size="lg"></md-icon>
         </div>
         <div class="msg">
           <p>我方将对您的征信及大数据进行相关查询，支付查询费用50元，支付后进入初审环节。</p>
         </div>
-      </div>
+      </div> -->
+      <md-notice-bar>我方将对您的征信进行相关查询，支付查询费用50元</md-notice-bar>
       <md-field title="授权查询费用:" class="step-two__field">
         <md-input-item
           title="支付金额"
@@ -125,7 +128,10 @@
           disabled
         />
       </md-field>
-      <md-button @click="handleCashier">去支付</md-button>
+      <div class="footer-btn">
+        <md-button @click="handleCashier">去支付</md-button>
+      </div>
+
       <md-cashier
         ref="cashier"
         v-model="isCashierhow"
@@ -138,13 +144,15 @@
       />
 
       <md-dialog
-        title="提示"
         :closable="false"
         v-model="actDialog.open"
         :btns="actDialog.btns"
       >
         支付成功后将进入初审环节，确定要提交吗？
       </md-dialog>
+
+      <!-- Pay form -->
+      <div class="pay-form" v-html="payForm"></div>
     </template>
   </div>
 </template>
@@ -165,6 +173,7 @@
   import imageProcessor from 'mand-mobile/components/image-reader/image-processor'
   import InputValidate from "@/components/InputValidate/index.vue"
   import { Validator } from "vee-validate"
+  import { pay } from '@/api/pay'
 
   // 手机号验证器
   Validator.extend("phone", {
@@ -233,7 +242,8 @@
           realName: '',
           mobile: '',
           idcard: ''
-        }
+        },
+        payForm: ''
       }
     },
     computed: {
@@ -274,48 +284,52 @@
         this.$set(this.imageList, name, imageList)
       },
       handleNext() {
-        this.$validator.validateAll().then((valid) => {
-          if (valid) {
-            if (this.imageList.readerFront.length <=0 &&
-              this.imageList.readerBack.length <=0) {
-              Toast.info('请上传身份证正反面照片！')
-              return
-            }
+        this.step = 2
+        // this.$validator.validateAll().then((valid) => {
+        //   if (valid) {
+        //     if (this.imageList.readerFront.length <=0 &&
+        //       this.imageList.readerBack.length <=0) {
+        //       Toast.info('请上传身份证正反面照片！')
+        //       return
+        //     }
 
-            const pf = this.imageList.readerFront[0]
-            const pb = this.imageList.readerBack[0]
-            // Save
-            this.$store.dispatch('SaveApplyInfo', {
-              name: this.ruleForm.realName,
-              realNameMobilePhoneNumber: this.ruleForm.mobile,
-              identityNumber: this.ruleForm.idcard,
-              idCardFrontPhoto: pf.substring(pf.indexOf(',') + 1, pf.length),
-              idCardFrontPhotoContentType: this.imageList.readerFront[1],
-              idCardBackPhoto: pb.substring(pb.indexOf(',') + 1, pf.length),
-              idCardBackPhotoContentType: this.imageList.readerBack[1]
-            }).then(response => {
-              this.step = 2
-            }).catch(err => {
-              console.error(err)
-            })
-          } else {
-            return false
-          }
-        })
+        //     const pf = this.imageList.readerFront[0]
+        //     const pb = this.imageList.readerBack[0]
+        //     // Save
+        //     this.$store.dispatch('SaveApplyInfo', {
+        //       name: this.ruleForm.realName,
+        //       realNameMobilePhoneNumber: this.ruleForm.mobile,
+        //       identityNumber: this.ruleForm.idcard,
+        //       idCardFrontPhoto: pf.substring(pf.indexOf(',') + 1, pf.length),
+        //       idCardFrontPhotoContentType: this.imageList.readerFront[1],
+        //       idCardBackPhoto: pb.substring(pb.indexOf(',') + 1, pf.length),
+        //       idCardBackPhotoContentType: this.imageList.readerBack[1]
+        //     }).then(response => {
+        //       this.step = 2
+        //     }).catch(err => {
+        //       console.error(err)
+        //     })
+        //   } else {
+        //     return false
+        //   }
+        // })
       },
       handleCashier() {
         // this.isCashierhow = true
         this.actDialog.open = true
       },
       onActCancel() {
-        Toast({
-          content: '你点击了取消',
-        })
         this.actDialog.open = false
       },
       onActConfirm() {
         this.actDialog.open = false
-        this.$router.push({ path: '/payrtn' })
+        pay().then(response => {
+          this.payForm = response.data
+          this.$nextTick(() => {
+            document.forms[0].submit()
+          })
+        })
+        //this.$router.push({ path: '/payrtn' })
       },
       doPay() {
         if (this.isCashierCaptcha) {
@@ -464,7 +478,7 @@
   }
   .md-button.primary.large {
     margin-top: 40px;
-    border-radius: 0;
+    border-radius: 10px;
   }
   .notice-bar {
     width: 100%;
@@ -487,5 +501,9 @@
     .msg {
       flex: 1;
     }
+  }
+  .footer-btn {
+    width: 95%;
+    margin: auto;
   }
 </style>

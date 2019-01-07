@@ -8,6 +8,53 @@ export const loanTypes = new Map([
 ])
 
 /**
+ * 教育程度
+ */
+
+export const educates = [[
+  {
+    value: '硕士/博士/研究生',
+    label: '硕士/博士/研究生',
+    children: []
+  },
+  {
+    value: '本科',
+    label: '本科',
+    children: []
+  },
+  {
+    value: '大专',
+    label: '大专',
+    children: []
+  },
+  {
+    value: '高职',
+    label: '高职',
+    children: []
+  },
+  {
+    value: '高中',
+    label: '高中',
+    children: []
+  },
+  {
+    value: '中专技校',
+    label: '中专技校',
+    children: []
+  },
+  {
+    value: '初中/小学',
+    label: '初中/小学',
+    children: []
+  },
+  {
+    value: '海外',
+    label: '海外',
+    children: []
+  }
+]]
+
+/**
  * 格式化上万的金额
  */
 

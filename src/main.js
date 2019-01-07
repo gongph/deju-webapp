@@ -4,6 +4,8 @@ import router from './router'
 import store from './store'
 import "normalize.css";
 
+import VConsole from 'vconsole'
+
 import './styles/index.scss'
 import './icons/index'
 
@@ -16,6 +18,10 @@ Vue.use(VeeValidate)
 Validator.localize('zh_CN', zh_CN)
 
 Vue.config.productionTip = false
+
+if (process.env.NODE_ENV === 'development') {
+  new VConsole()
+}
 
 new Vue({
   el: '#app',

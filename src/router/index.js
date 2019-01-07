@@ -17,12 +17,12 @@ export default new Router({
     {
       path: '/',
       name: 'ProductList',
-      component: () => import(/* webpackChunkName: "productList" */ '@/views/product/index.vue')
+      component: () => import('@/views/product/index.vue')
     },
     {
       path: '/product/detail',
       name: 'ProductDetail',
-      component: () => import(/* webpackChunkName: "productDetail" */ '@/views/product/detail.vue')
+      component: () => import('@/views/product/detail.vue')
     },
     {
       path: '/apply',
@@ -31,7 +31,12 @@ export default new Router({
         {
           path: 'base',
           name: 'BaseForm',
-          component: () => import(/* webpackChunkName: "BaseForm" */ '@/views/applyForm/base.vue')
+          component: () => import('@/views/applyForm/base.vue')
+        },
+        {
+          path: 'more',
+          name: 'MoreInfoForm',
+          component: () => import('@/views/applyForm/moreInfo.vue')
         }
       ]
     },
@@ -42,7 +47,7 @@ export default new Router({
         {
           path: '/',
           name: 'UserCenter',
-          component: () => import(/* webpackChunkName: "UserCenter" */ '@/views/userCenter/index.vue')
+          component: () => import('@/views/userCenter/index.vue')
         },
         {
           path: '/orders',
