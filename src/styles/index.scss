@@ -15,6 +15,10 @@ $color: #fc9153;
       background: $color;
     }
   }
+  .indicator-container {
+    justify-content: center;
+    margin: 30px 0;
+  }
 }
 
 /* Apply form required field */

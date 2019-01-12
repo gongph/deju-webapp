@@ -164,6 +164,7 @@
 
   .header {
     height: 30%;
+    min-height: 300px;
     position: relative;
 
     .logo {
@@ -214,6 +215,7 @@
           background: transparent;
           font-size: 30px;
           color: $textColor;
+          outline: none;
         }
       }
     }

@@ -1,6 +1,6 @@
 <template>
   <div class="more-apply__info">
-    <md-notice-bar>为了确保您能终审通过，请填写下列详细信息</md-notice-bar>
+    <md-notice-bar>为了确保您能终审通过，请填写下列详细信息{{$route.params.auth}}</md-notice-bar>
     <md-field title="个人信息" class="field-title">
       <md-field-item
         title="所在城市:"
@@ -192,7 +192,7 @@
       }
     },
     created() {
-      //
+      if (!this.$route.params.auth) this.$router.push({ path: '/center' })
     },
     methods: {
       onPickerConfirm(name) {

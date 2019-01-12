@@ -170,9 +170,11 @@
     Dialog
   }
   from 'mand-mobile'
+  import { mapGetters } from 'vuex'
   import imageProcessor from 'mand-mobile/components/image-reader/image-processor'
   import InputValidate from "@/components/InputValidate/index.vue"
   import { Validator } from "vee-validate"
+  import { saveApplyInfo } from '@/api/product'
   import { pay } from '@/api/pay'
 
   // 手机号验证器
@@ -247,6 +249,11 @@
       }
     },
     computed: {
+      ...mapGetters([
+        'applyInfo',
+        'product',
+        'user'
+      ]),
       cashier() {
         return this.$refs.cashier
       }
@@ -284,35 +291,34 @@
         this.$set(this.imageList, name, imageList)
       },
       handleNext() {
-        this.step = 2
-        // this.$validator.validateAll().then((valid) => {
-        //   if (valid) {
-        //     if (this.imageList.readerFront.length <=0 &&
-        //       this.imageList.readerBack.length <=0) {
-        //       Toast.info('请上传身份证正反面照片！')
-        //       return
-        //     }
+        this.$validator.validateAll().then((valid) => {
+          if (valid) {
+            if (this.imageList.readerFront.length <=0 &&
+              this.imageList.readerBack.length <=0) {
+              Toast.info('请上传身份证正反面照片！')
+              return
+            }
 
-        //     const pf = this.imageList.readerFront[0]
-        //     const pb = this.imageList.readerBack[0]
-        //     // Save
-        //     this.$store.dispatch('SaveApplyInfo', {
-        //       name: this.ruleForm.realName,
-        //       realNameMobilePhoneNumber: this.ruleForm.mobile,
-        //       identityNumber: this.ruleForm.idcard,
-        //       idCardFrontPhoto: pf.substring(pf.indexOf(',') + 1, pf.length),
-        //       idCardFrontPhotoContentType: this.imageList.readerFront[1],
-        //       idCardBackPhoto: pb.substring(pb.indexOf(',') + 1, pf.length),
-        //       idCardBackPhotoContentType: this.imageList.readerBack[1]
-        //     }).then(response => {
-        //       this.step = 2
-        //     }).catch(err => {
-        //       console.error(err)
-        //     })
-        //   } else {
-        //     return false
-        //   }
-        // })
+            const pf = this.imageList.readerFront[0]
+            const pb = this.imageList.readerBack[0]
+            // Save
+            this.$store.dispatch('SaveApplyInfo', {
+              name: this.ruleForm.realName,
+              realNameMobilePhoneNumber: this.ruleForm.mobile,
+              identityNumber: this.ruleForm.idcard,
+              idCardFrontPhoto: pf.substring(pf.indexOf(',') + 1, pf.length),
+              idCardFrontPhotoContentType: this.imageList.readerFront[1],
+              idCardBackPhoto: pb.substring(pb.indexOf(',') + 1, pf.length),
+              idCardBackPhotoContentType: this.imageList.readerBack[1]
+            }).then(response => {
+              this.step = 2
+            }).catch(err => {
+              console.error(err)
+            })
+          } else {
+            return false
+          }
+        })
       },
       handleCashier() {
         // this.isCashierhow = true
@@ -323,13 +329,31 @@
       },
       onActConfirm() {
         this.actDialog.open = false
-        pay().then(response => {
-          this.payForm = response.data
-          this.$nextTick(() => {
-            document.forms[0].submit()
+        // pay().then(response => {
+        //   this.payForm = response.data
+        //   this.$nextTick(() => {
+        //     document.forms[0].submit()
+        //   })
+        // })
+        // Save
+        this.$store.dispatch('SaveApplyInfo', {
+          paymentMethod: 'ALIPAY',
+          paymentStatus: 0,
+          orderStatus: '未审核',
+          authorizedInquiryFee: 50,
+          auditStatus: 0,
+          product: this.product,
+          user: this.user
+        }).then(res => {
+          // 保存成功提交到后台
+          saveApplyInfo(this.applyInfo).then(response => {
+            if (response.status === 201) {
+              this.$router.push({ path: '/payrtn' })
+            }
+          }).catch(err => {
+            console.error(err)
           })
         })
-        //this.$router.push({ path: '/payrtn' })
       },
       doPay() {
         if (this.isCashierCaptcha) {

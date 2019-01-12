@@ -7,7 +7,8 @@ const getters = {
   introduction: state => state.user.introduction,
   status: state => state.user.status,
   roles: state => state.user.roles,
-  user: state => state.user.user
+  user: state => state.user.user,
+  orders: state => state.order.list
 }
 
 export default getters

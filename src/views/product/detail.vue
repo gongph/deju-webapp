@@ -108,7 +108,7 @@
         </div>
       </div>
     </div>
-    <div class="footer">
+    <div class="footer-btn">
       <md-button class="apply-button" @click="handleApply">立即申请</md-button>
     </div>
   </div>
@@ -239,6 +239,7 @@
 
   .nav-header {
     height: 80px;
+    min-height: 80px;
     background: #2c3e50;
     color: #f5f5f5;
     display: flex;
@@ -265,7 +266,6 @@
   }
 
   .main-content {
-    flex: 1;
     overflow-y: auto;
   }
 
@@ -377,15 +377,16 @@
       color: gray;
       padding: 15px 20px;
       line-height: 1.5;
+      word-break: break-word;
     }
   }
 
-  .footer {
-    width: 100%;
-    background-color: #fff;
-
-    .md-button {
-      border-radius: 0;
+  .footer-btn {
+    width: 95%;
+    margin: auto;
+    background: #fff;
+    .md-button.primary.large {
+      border-radius: 10px;
     }
   }
 </style>

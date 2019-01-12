@@ -10,3 +10,15 @@ export function getList() {
     method: 'get'
   })
 }
+
+/**
+ * 提交基本审核资料
+ */
+
+export function saveApplyInfo(data) {
+  return request({
+    url: '/api/application-infos',
+    method: 'post',
+    data
+  })
+}
