@@ -1,162 +1,196 @@
 <template>
   <div class="more-apply__info">
-    <md-notice-bar>为了确保您能终审通过，请填写下列详细信息{{$route.params.auth}}</md-notice-bar>
+    <md-notice-bar>为了确保您能终审通过，请填写下列详细信息</md-notice-bar>
     <md-field title="个人信息" class="field-title">
-      <md-field-item
+      <select-item
         title="所在城市:"
-        arrow="arrow-right"
-        align="right"
-        :value="cityPickerValue"
-        @click.native="isPickerShow = true">
-      </md-field-item>
-
-      <md-input-item
-        title="住宅地址:"
-        placeholder="住宅地址"
+        name="所在城市"
+        :value.sync="userInfo.city"
+        :picker-data="pickerData"
+        picker-title="选择省市县"
+        v-validate="'required'"
       />
 
-      <md-input-item
+      <input-validate
+        v-model="userInfo.residentialAddress"
+        title="住宅地址:"
+        name="住宅地址"
+        placeholder="请输入您的住宅地址"
+        v-validate="'required'"
+        data-vv-value-path="innerValue"
+        data-vv-validate-on="blur"
+        :error="errors.first('住宅地址')"
+        clearable
+      />
+
+      <input-validate
+        v-model="userInfo.personalEmail"
         type="email"
         title="邮箱:"
-        placeholder="邮箱"
+        name="邮箱"
+        placeholder="请输入您的邮箱"
+        v-validate="'required|email'"
+        data-vv-value-path="innerValue"
+        data-vv-validate-on="blur"
+        :error="errors.first('邮箱')"
+        clearable
       />
 
-      <md-field-item
+      <select-item
         title="婚姻状况:"
-        arrow="arrow-right"
-        align="right"
-        :value="marrigePickerValue"
-        @click.native="isMarrigePickerShow = true">
-      </md-field-item>
+        name="婚姻状况"
+        :value.sync="userInfo.maritalStatus"
+        :picker-data="marrigePickerData"
+        :picker-cols="1"
+        picker-title="婚姻状况"
+        v-validate="'required'"
+      />
 
-      <md-field-item
+      <select-item
         title="教育程度:"
-        arrow="arrow-right"
-        align="right"
-        :value="educatePickerValue"
-        @click.native="isEducatePickerShow = true">
-      </md-field-item>
+        name="教育程度"
+        :value.sync="userInfo.educationLevel"
+        :picker-data="educatePickerData"
+        :picker-cols="1"
+        picker-title="教育程度"
+        v-validate="'required'"
+      />
 
     </md-field>
-
-    <!-- 所在城市picker -->
-    <md-picker
-      ref="cityPicker"
-      v-model="isPickerShow"
-      :data="pickerData"
-      :cols="3"
-      is-cascade
-      title="选择省市区"
-      @confirm="onPickerConfirm('cityPicker')"
-    />
-
-    <!-- 婚姻状态picker -->
-    <md-picker
-      ref="marrigePicker"
-      v-model="isMarrigePickerShow"
-      :data="marrigePickerData"
-      :cols="1"
-      :is-cascade="false"
-      title="婚姻状况"
-      @confirm="onPickerConfirm('marrigePicker')"
-    />
-
-    <!-- 教育程度picker -->
-    <md-picker
-      ref="educatePicker"
-      v-model="isEducatePickerShow"
-      :data="educatePickerData"
-      :cols="1"
-      :is-cascade="false"
-      title="教育程度"
-      @confirm="onPickerConfirm('educatePicker')"
-    />
 
     <!-- 2 -->
-
     <md-field title="工作信息" class="field-title">
-      <md-input-item
+      <input-validate
+        v-model="userInfo.companyName"
         title="单位名称:"
+        name="单位名称"
         placeholder="单位名称"
+        v-validate="'required'"
+        data-vv-value-path="innerValue"
+        data-vv-validate-on="blur"
+        :error="errors.first('单位名称')"
+        clearable
       />
 
-      <md-field-item
+      <select-item
         title="单位城市:"
-        arrow="arrow-right"
-        align="right"
-        :value="companyPickerValue"
-        @click.native="isPickerShow = true">
-      </md-field-item>
-
-      <md-input-item
-        title="单位地址:"
-        placeholder="单位地址"
+        name="单位城市"
+        :value.sync="userInfo.companyCity"
+        :picker-data="pickerData"
+        picker-title="单位所在城市"
+        v-validate="'required'"
       />
 
-      <md-input-item
-        type="phone"
+      <input-validate
+        v-model="userInfo.companyPhone"
         title="单位电话:"
+        name="单位电话"
         placeholder="单位电话"
+        v-validate="'required|numeric|min:7'"
+        data-vv-value-path="innerValue"
+        data-vv-validate-on="blur"
+        :error="errors.first('单位电话')"
+        clearable
       />
 
-      <md-input-item
-        type="money"
+      <input-validate
+        v-model="userInfo.annualIncome"
         title="年收入:"
-        placeholder="年收入(元)"
+        name="年收入"
+        placeholder="年收入"
+        v-validate="'required|decimal:2'"
+        data-vv-value-path="innerValue"
+        data-vv-validate-on="blur"
+        :error="errors.first('年收入')"
+        clearable
       />
 
     </md-field>
 
-    <!-- 所在城市picker -->
-    <md-picker
-      ref="companyPicker"
-      v-model="isPickerShow"
-      :data="pickerData"
-      :cols="3"
-      is-cascade
-      title="选择省市区"
-      @confirm="onPickerConfirm('companyPicker')"
-    />
-
     <!-- 3 -->
-
     <md-field title="联系人信息" class="field-title">
       <md-field title="联系人1:" class="field-contact__item">
-        <md-input-item
+        <input-validate
+          v-model="userInfo.contactName"
+          name="联系人姓名"
           placeholder="姓名"
+          v-validate="'required|phone'"
+          data-vv-value-path="innerValue"
+          data-vv-validate-on="blur"
+          :error="errors.first('联系人姓名')"
+          clearable
         />
 
-        <md-input-item
+        <input-validate
+          v-model="userInfo.companyPhone"
           type="phone"
-          placeholder="电话"
+          name="联系人手机号"
+          placeholder="手机号"
+          v-validate="'required|phone'"
+          data-vv-value-path="innerValue"
+          data-vv-validate-on="blur"
+          :error="errors.first('联系人手机号')"
+          clearable
         />
       </md-field>
 
       <md-field title="联系人2:" class="field-contact__item">
-        <md-input-item
+        <input-validate
+          v-model="userInfo.contactName2"
+          name="联系人姓名"
           placeholder="姓名"
+          v-validate="'required'"
+          data-vv-value-path="innerValue"
+          data-vv-validate-on="blur"
+          :error="errors.first('联系人姓名')"
+          clearable
         />
 
-        <md-input-item
+        <input-validate
+          v-model="userInfo.companyPhone2"
           type="phone"
-          placeholder="电话"
+          name="联系人手机号"
+          placeholder="手机号"
+          v-validate="'required|phone'"
+          data-vv-value-path="innerValue"
+          data-vv-validate-on="blur"
+          :error="errors.first('联系人手机号')"
+          clearable
         />
       </md-field>
-
     </md-field>
 
     <div class="footer-btn">
-      <md-button>提 交</md-button>
+      <md-button @click="actDialog.open = true">提 交</md-button>
     </div>
+
+     <md-dialog
+      :closable="false"
+      v-model="actDialog.open"
+      :btns="actDialog.btns"
+    >
+      提交信息审核通过后我们将第一时间和您联系，请保存电话畅通！
+    </md-dialog>
 
   </div>
 </template>
 
 <script>
-  import { Picker, Field, FieldItem, InputItem, Button, Toast, NoticeBar } from 'mand-mobile'
+  import { mapGetters } from 'vuex'
+  import { Picker, Field, FieldItem, InputItem, Button, Toast, NoticeBar, Dialog } from 'mand-mobile'
   import { district } from '@/utils/district'
-  import { educates } from '@/utils'
-  // import InputValidate from "@/components/InputValidate/index.vue"
+  import { educates, maritalStatus } from '@/utils'
+  import { Validator } from "vee-validate"
+  import { savePersonInfo } from '@/api/product'
+  import InputValidate from "@/components/InputValidate/index.vue"
+  import SelectItem from '@/components/SelectItem/index.vue'
+
+  // 手机号验证器
+  Validator.extend("phone", {
+    getMessage: field => `请输入您有效的${field}`,
+    validate: value => /^1[34578][0-9]{9}$/.test(value)
+  })
+
   export default {
     name: 'MoreApplyInfoForm',
     /* eslint-disable */
@@ -168,40 +202,77 @@
       [Button.name]: Button,
       [Toast.name]: Toast,
       [NoticeBar.name]: NoticeBar,
-      // InputValidate
+      [Dialog.name]: Dialog,
+      InputValidate,
+      SelectItem
     },
     data() {
       return {
-        // 所在城市
-        isPickerShow: false,
-        cityPickerValue: '',
-        pickerData: district,
-        // 婚姻
-        isMarrigePickerShow: false,
-        marrigePickerValue: '',
-        marrigePickerData: [[
-          { value: '已婚', label: '已婚', children: [] },
-          { value: '未婚', label: '未婚', children: [] }
-        ]],
-        // 教育程度
-        isEducatePickerShow: false,
-        educatePickerValue: '',
-        educatePickerData: educates,
-        // 单位城市
-        companyPickerValue: '',
+        pickerData: district, // 省市县
+        marrigePickerData: maritalStatus, // 婚姻状况
+        educatePickerData: educates, // 教育程度
+        userInfo: {
+          city: '',
+          residentialAddress: '',
+          personalEmail: '',
+          maritalStatus: '',
+          educationLevel: '',
+          companyName: '',
+          companyCity: '',
+          companyPhone: '',
+          annualIncome: '',
+          contactName: '',
+          contactPhone: '',
+          contactName2: '',
+          contactPhone2: ''
+        },
+        actDialog: {
+          open: false,
+          btns: [
+            {
+              text: '取消',
+              handler: this.onActCancel,
+            },
+            {
+              text: '确认提交',
+              handler: this.onActConfirm,
+            },
+          ],
+        }
       }
+    },
+    computed: {
+      ...mapGetters([
+        'user'
+      ])
     },
     created() {
       if (!this.$route.params.auth) this.$router.push({ path: '/center' })
     },
     methods: {
-      onPickerConfirm(name) {
-        const values = this.$refs[name].getColumnValues()
-        let res = ''
-        values.forEach(value => {
-          value && (res += `${value.text || value.label} `)
+      onActCancel() {
+        this.actDialog.open = false
+      },
+      onActConfirm() {
+        this.actDialog.open = false
+        // this.submitForm()
+        this.$router.push({ path: '/notice', params: { auth: true } })
+      },
+      submitForm() {
+        this.$validator.validateAll().then((valid) => {
+          if (valid) {
+            savePersonInfo(Object.assign({}, this.userInfo, this.user)).then(response => {
+              console.log(response)
+              if (response && response.status === 201) {
+                this.$router.push({ path: '/notice', params: { auth: true } })
+              }
+            }).catch(err => {
+              console.error(err)
+            })
+          } else {
+            return false
+          }
         })
-        this[`${name}Value`] = res
       }
     }
   }

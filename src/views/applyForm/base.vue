@@ -348,7 +348,7 @@
           // 保存成功提交到后台
           saveApplyInfo(this.applyInfo).then(response => {
             if (response.status === 201) {
-              this.$router.push({ path: '/payrtn' })
+              this.$router.push({ path: '/payrtn', params: { auth: true } })
             }
           }).catch(err => {
             console.error(err)

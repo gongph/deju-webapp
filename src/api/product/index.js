@@ -17,7 +17,19 @@ export function getList() {
 
 export function saveApplyInfo(data) {
   return request({
-    url: '/api/application-infos',
+    url: '/api/application-current-infos',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 提交详细资料
+ */
+
+export function savePersonInfo(data) {
+  return request({
+    url: '/api/personal-current-informations',
     method: 'post',
     data
   })

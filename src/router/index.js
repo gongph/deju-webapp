@@ -80,6 +80,16 @@ export default new Router({
       path: '/payrtn',
       name: 'PayReturn',
       component: () => import('@/views/resultPage/payrtn.vue')
+    },
+    {
+      path: '/neterror',
+      name: 'NetErrorPage',
+      component: () => import('@/views/resultPage/neterror.vue')
+    },
+    {
+      path: '/404',
+      name: '404Page',
+      component: () => import('@/views/resultPage/404.vue')
     }
   ]
 })

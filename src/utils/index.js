@@ -55,6 +55,15 @@ export const educates = [[
 ]]
 
 /**
+ * 婚姻状况
+ */
+
+export const maritalStatus = [[
+  { value: '已婚', label: '已婚', children: [] },
+  { value: '未婚', label: '未婚', children: [] }
+]]
+
+/**
  * 格式化上万的金额
  */
 
