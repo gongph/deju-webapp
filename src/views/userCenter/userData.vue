@@ -85,10 +85,9 @@
     background: #f5f5f5;
   }
   .footer {
-    margin-top: 30px;
-
-    .md-button {
-      border-radius: 0;
+    margin: 30px;
+    .md-button.primary {
+      border-radius: 10px;
     }
   }
 </style>

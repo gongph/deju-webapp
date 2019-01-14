@@ -23,9 +23,10 @@
       [Button.name]: Button
     },
     created() {
-      if (!this.$route.params.auth) {
-        this.$router.push({ path: '/center' })
-      }
+      console.log(this.$route)
+      // if (!this.$route.params.auth) {
+      //   this.$router.push({ path: '/center' })
+      // }
     },
     mounted() {
       document.title = ""

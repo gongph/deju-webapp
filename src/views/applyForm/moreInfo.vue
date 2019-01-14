@@ -256,7 +256,7 @@
       onActConfirm() {
         this.actDialog.open = false
         // this.submitForm()
-        this.$router.push({ path: '/notice', params: { auth: true } })
+        this.$router.push({ name: 'NoticePage', params: { auth: true } })
       },
       submitForm() {
         this.$validator.validateAll().then((valid) => {
@@ -264,7 +264,7 @@
             savePersonInfo(Object.assign({}, this.userInfo, this.user)).then(response => {
               console.log(response)
               if (response && response.status === 201) {
-                this.$router.push({ path: '/notice', params: { auth: true } })
+                this.$router.push({ name: 'NoticePage', params: { auth: true } })
               }
             }).catch(err => {
               console.error(err)
