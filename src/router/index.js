@@ -30,8 +30,8 @@ export default new Router({
       children: [
         {
           path: 'base',
-          name: 'BaseForm',
-          component: () => import('@/views/applyForm/base.vue')
+          name: 'BaseInfoForm',
+          component: () => import('@/views/applyForm/baseInfo.vue')
         },
         {
           path: 'more',

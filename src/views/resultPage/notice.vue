@@ -19,14 +19,14 @@
 
   export default {
     name: 'NoticePage',
+    /* eslint-disable */
     components: {
       [Button.name]: Button
     },
     created() {
-      console.log(this.$route)
-      // if (!this.$route.params.auth) {
-      //   this.$router.push({ path: '/center' })
-      // }
+      if (!this.$route.params.auth) {
+        this.$router.push({ path: '/center' })
+      }
     },
     mounted() {
       document.title = ""

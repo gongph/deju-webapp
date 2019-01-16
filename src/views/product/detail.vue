@@ -44,7 +44,6 @@
             </div>
           </div>
           <div class="grid-item item">
-            <!-- 期限: 12个月 -->
             <div class="item-wrapper">
               <label for="rate">期限:</label>
             </div>
@@ -148,11 +147,12 @@
         deadline: '', // 期限，例如 0.3
         deadlineLabel: '', // 期限字符串，例如：'12个月'
         earn: 0, // 利息
+        product: null
       }
     },
     computed: {
       ...mapGetters([
-        'product'
+        'curProd'
       ]),
       computedEarn() {
         if (!this.amount || !this.deadline) {
@@ -160,12 +160,22 @@
         }
         const rate = this.rate || 0
         return Number(this.amount) * rate *  this.deadline
-      }
+      },
+    },
+    created() {
+      this.initCurrentProd()
     },
     mounted() {
       document.title = '产品详情'
     },
     methods: {
+      initCurrentProd() {
+        if (this.curProd) {
+          this.curProd.then(value => {
+            this.product = value
+          })
+        }
+      },
       handleApply() {
         if (!this.amount && !this.deadlineLabel) {
           Toast.info('申请金额和期限不能为空！')

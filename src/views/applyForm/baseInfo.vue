@@ -175,7 +175,7 @@
   import InputValidate from "@/components/InputValidate/index.vue"
   import { Validator } from "vee-validate"
   import { saveApplyInfo } from '@/api/product'
-  import { pay } from '@/api/pay'
+  // import { pay } from '@/api/pay'
 
   // 手机号验证器
   Validator.extend("phone", {
@@ -302,14 +302,15 @@
             const pf = this.imageList.readerFront[0]
             const pb = this.imageList.readerBack[0]
             // Save
-            this.$store.dispatch('SaveApplyInfo', {
+            this.$store.dispatch('SavePersonalInfo', {
               name: this.ruleForm.realName,
               realNameMobilePhoneNumber: this.ruleForm.mobile,
               identityNumber: this.ruleForm.idcard,
               idCardFrontPhoto: pf.substring(pf.indexOf(',') + 1, pf.length),
               idCardFrontPhotoContentType: this.imageList.readerFront[1],
               idCardBackPhoto: pb.substring(pb.indexOf(',') + 1, pf.length),
-              idCardBackPhotoContentType: this.imageList.readerBack[1]
+              idCardBackPhotoContentType: this.imageList.readerBack[1],
+              user: this.user
             }).then(response => {
               this.step = 2
             }).catch(err => {

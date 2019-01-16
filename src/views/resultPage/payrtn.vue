@@ -9,29 +9,16 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
-
   export default {
     name: 'NoticePage',
     mounted() {
       document.title = ""
-    },
-    computed: {
-      ...mapGetters([
-        'applyInfo',
-        'product',
-        'user'
-      ])
     },
     created() {
       if (!this.$route.params.auth) {
         this.$router.push({ path: '/center' })
         return
       }
-      const obj = Object.assign({}, this.applyInfo, {
-        product: this.product,
-        user: this.user
-      })
     }
   }
 </script>

@@ -3,7 +3,7 @@ A project build with vue.js
 ### Usage
 
 ```bash
-# clone
+# Clone
 git clone https://github.com/gongph/deju-webapp.git
 
 # Install

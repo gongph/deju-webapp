@@ -35,6 +35,14 @@
             no-data-text="暂无未通过数据"
           />
         </div>
+        <!-- 已完成 -->
+        <div class="nopass">
+          <order-item
+            :data="finished"
+            status-text="已完成"
+            no-data-text="暂无已完成数据"
+          />
+        </div>
       </md-tabs>
     </template>
   </div>
@@ -57,7 +65,7 @@
     data() {
       return {
         orders: [],
-        titles: ['待审核', '已通过', '未通过'],
+        titles: ['待审核', '已通过', '未通过', '已完成'],
         loading: true
       }
     },
@@ -76,13 +84,17 @@
         return this.orders.filter(item => {
           return item.product && item.orderStatus === '未通过'
         })
+      },
+      finished() {
+        return this.orders.filter(item => {
+          return item.product && item.orderStatus === '已完成'
+        })
       }
     },
     created() {
       this.getList()
     },
     mounted() {
-      console.log(this.orders)
       document.title = '我的工单'
     },
     methods: {
