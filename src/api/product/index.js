@@ -17,7 +17,7 @@ export function getList() {
 
 export function saveApplyInfo(data) {
   return request({
-    url: '/api/application-current-infos',
+    url: '/api/application-infos',
     method: 'post',
     data
   })
@@ -29,7 +29,7 @@ export function saveApplyInfo(data) {
 
 export function savePersonInfo(data) {
   return request({
-    url: '/api/personal-current-informations',
+    url: '/api/personal-informations',
     method: 'post',
     data
   })
