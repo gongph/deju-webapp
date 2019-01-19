@@ -106,7 +106,18 @@
         </div>
       </md-field>
       <div class="footer-btn">
-        <md-button @click="handleNext">下一步</md-button>
+        <md-button @click="handleNext">
+          <template v-if="nextLoading">
+            <md-activity-indicator
+              class="md-activity-indicator-css"
+              type="carousel"
+              :size="15"
+              color="#fff"
+              text-color="#fff"
+            >跳转中</md-activity-indicator>
+          </template>
+          <template v-else>下一步</template>
+        </md-button>
       </div>
     </template>
     <template v-if="step === 2">
@@ -129,7 +140,18 @@
         />
       </md-field>
       <div class="footer-btn">
-        <md-button @click="handleCashier">去支付</md-button>
+        <md-button @click="handleCashier">
+          <template v-if="payLoading">
+            <md-activity-indicator
+              class="md-activity-indicator-css"
+              type="carousel"
+              :size="15"
+              color="#fff"
+              text-color="#fff"
+            >正在支付</md-activity-indicator>
+          </template>
+          <template v-else>去支付</template>
+        </md-button>
       </div>
 
       <md-cashier
@@ -167,7 +189,8 @@
     Icon,
     Toast,
     Cashier,
-    Dialog
+    Dialog,
+    ActivityIndicator
   }
   from 'mand-mobile'
   import { mapGetters } from 'vuex'
@@ -202,11 +225,14 @@
       [Toast.name]: Toast,
       [Cashier.name]: Cashier,
       [Dialog.name]: Dialog,
+      [ActivityIndicator.name]: ActivityIndicator,
       InputValidate
     },
     data() {
       return {
         step: 1,
+        nextLoading: false,
+        payLoading: false,
         baseform: {},
         imageList: {
           readerFront: [],
@@ -271,8 +297,6 @@
         const imageList = []
         imageProcessor({
           dataUrl,
-          width: 200,
-          height: 200,
           quality: 0.8,
         }).then(({dataUrl}) => {
           if (dataUrl) {
@@ -281,7 +305,6 @@
           }
         })
         this.$set(this.imageList, name, imageList)
-        console.log(this.imageList)
         Toast.hide()
       },
       onReaderError(name, {msg}) {
@@ -301,6 +324,8 @@
               return
             }
 
+            this.nextLoading = true
+
             const pf = this.imageList.readerFront[0]
             const pb = this.imageList.readerBack[0]
             // Save
@@ -312,16 +337,23 @@
               idCardFrontPhotoContentType: this.imageList.readerFront[1],
               idCardBackPhoto: pb.substring(pb.indexOf(',') + 1, pf.length),
               idCardBackPhotoContentType: this.imageList.readerBack[1],
-              user: this
+              user: this.user
             }).then(response => {
-              this.step = 2
               savePersonInfo(this.personalInfo).then(response => {
                 // 保存当前申请人信息
                 if (response.status === 201) {
-                  this.$store.dispatch('SavePersonalInfo', response.data)
+                  this.$store.dispatch('SavePersonalInfo', response.data).then(response => {
+                    this.step = 2
+                  })
+                } else {
+                  this.nextLoading = false
                 }
+              }).catch(err => {
+                this.nextLoading = false
+                console.error(err)
               })
             }).catch(err => {
+              this.nextLoading = false
               console.error(err)
             })
           } else {
@@ -338,6 +370,7 @@
       },
       onActConfirm() {
         this.actDialog.open = false
+        this.payLoading = true
         // pay().then(response => {
         //   this.payForm = response.data
         //   this.$nextTick(() => {
@@ -359,8 +392,11 @@
           saveApplyInfo(this.applyInfo).then(response => {
             if (response.status === 201) {
               this.$router.push({ name: 'PayReturnPage', params: { auth: true } })
+            } else {
+              this.payLoading = false
             }
           }).catch(err => {
+            this.payLoading = false
             console.error(err)
           })
         })
@@ -539,5 +575,11 @@
   .footer-btn {
     width: 95%;
     margin: auto;
+    .md-activity-indicator-css {
+      margin-bottom: 0;
+      .md-activity-indicator-svg {
+        height: 15px !important;
+      }
+    }
   }
 </style>
