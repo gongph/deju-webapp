@@ -14,7 +14,8 @@ const getters = {
   status: state => state.user.status,
   roles: state => state.user.roles,
   user: state => state.user.user,
-  orders: state => state.order.list
+  orders: state => state.order.list,
+  abouts: state => state.about.list
 }
 
 export default getters

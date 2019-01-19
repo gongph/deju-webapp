@@ -1,5 +1,5 @@
 <template>
-  <div class="about-wrapper">
+  <div class="about-wrapper" >
     <div class="header">
       <div class="logo-wrapper">
         <div class="logo">
@@ -9,7 +9,17 @@
       </div>
     </div>
 
-    <div class="list-wrapper">
+    <div class="list-wrapper" v-if="abouts.length > 0">
+      <div  v-for="(item, $index) of abouts" :key="$index"  class="list-item">
+        <div class="label">{{item.info}}</div>
+
+        <div class="text" v-if="item.info == '客服电话'">
+          <a :href="'tel:' + item.content" class="telphone">{{item.content}}</a>
+        </div>
+        <div class="text"  v-else>{{item.content}}</div>
+      </div>
+    </div>
+    <div class="empty-data__wrapper" v-else>
       <div class="list-item">
         <div class="label">微信公众号</div>
         <div class="text">dejujinrong</div>
@@ -22,6 +32,7 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -29,10 +40,29 @@
     data() {
       return {
         //
+        abouts: [],
+        loadiing:false
       }
     },
     mounted() {
       document.title = "关于"
+    },
+    created(){
+      this.getList()
+    },
+    methods:{
+      getList(){
+        this.$store.dispatch("GetAbouts").then(response=>{
+          if(response&&response.status==200){
+            this.abouts = response.data;
+          }
+          setTimeout(()=>{
+            this.loading = false;
+          },500)
+        }).catch(err=>{
+          console.error(err);
+        })
+      }
     }
   }
 </script>
