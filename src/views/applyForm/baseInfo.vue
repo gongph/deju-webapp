@@ -311,7 +311,7 @@
               idCardFrontPhoto: pf.substring(pf.indexOf(',') + 1, pf.length),
               idCardFrontPhotoContentType: this.imageList.readerFront[1],
               idCardBackPhoto: pb.substring(pb.indexOf(',') + 1, pf.length),
-              idCardFrontPhotoContentType: this.imageList.readerBack[1],
+              idCardBackPhotoContentType: this.imageList.readerBack[1],
               user: this
             }).then(response => {
               this.step = 2
