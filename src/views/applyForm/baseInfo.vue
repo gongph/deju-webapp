@@ -158,14 +158,14 @@
 </template>
 
 <script>
-  import { 
+  import {
     InputItem,
     Button,
-    Field, 
-    NoticeBar, 
-    ImageReader, 
-    Icon, 
-    Toast, 
+    Field,
+    NoticeBar,
+    ImageReader,
+    Icon,
+    Toast,
     Cashier,
     Dialog
   }
@@ -176,6 +176,7 @@
   import { Validator } from "vee-validate"
   import { saveApplyInfo } from '@/api/product'
   // import { pay } from '@/api/pay'
+  import {savePersonInfo} from "@/api/product";
 
   // 手机号验证器
   Validator.extend("phone", {
@@ -251,6 +252,7 @@
     computed: {
       ...mapGetters([
         'applyInfo',
+        'personalInfo',
         'product',
         'user'
       ]),
@@ -313,6 +315,12 @@
               user: this.user
             }).then(response => {
               this.step = 2
+              savePersonInfo(this.personalInfo).then(response=>{
+                //保存个人信息成功后，把包含id的个人信息保存下来，等待最后提交申请信息时候用
+                if (response.status === 201) {
+                  this.$store.dispatch('SavePersonalInfo',response.data)
+                }
+              })
             }).catch(err => {
               console.error(err)
             })
@@ -343,6 +351,7 @@
           orderStatus: '未审核',
           authorizedInquiryFee: 50,
           auditStatus: 0,
+          personalInfo:this.personalInfo,
           product: this.product,
           user: this.user
         }).then(res => {
