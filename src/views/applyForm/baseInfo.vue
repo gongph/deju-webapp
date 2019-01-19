@@ -295,8 +295,8 @@
       handleNext() {
         this.$validator.validateAll().then((valid) => {
           if (valid) {
-            if (this.imageList.readerFront.length <=0 &&
-              this.imageList.readerBack.length <=0) {
+            if (this.imageList.readerFront.length <= 0 &&
+              this.imageList.readerBack.length <= 0) {
               Toast.info('请上传身份证正反面照片！')
               return
             }
@@ -311,14 +311,14 @@
               idCardFrontPhoto: pf.substring(pf.indexOf(',') + 1, pf.length),
               idCardFrontPhotoContentType: this.imageList.readerFront[1],
               idCardBackPhoto: pb.substring(pb.indexOf(',') + 1, pf.length),
-              idCardBackPhotoContentType: this.imageList.readerBack[1],
-              user: this.user
+              idCardFrontPhotoContentType: this.imageList.readerBack[1],
+              user: this
             }).then(response => {
               this.step = 2
-              savePersonInfo(this.personalInfo).then(response=>{
-                //保存个人信息成功后，把包含id的个人信息保存下来，等待最后提交申请信息时候用
+              savePersonInfo(this.personalInfo).then(response => {
+                // 保存当前申请人信息
                 if (response.status === 201) {
-                  this.$store.dispatch('SavePersonalInfo',response.data)
+                  this.$store.dispatch('SavePersonalInfo', response.data)
                 }
               })
             }).catch(err => {
@@ -351,7 +351,7 @@
           orderStatus: '未审核',
           authorizedInquiryFee: 50,
           auditStatus: 0,
-          personalInfo:this.personalInfo,
+          personalInfo: this.personalInfo,
           product: this.product,
           user: this.user
         }).then(res => {
