@@ -106,7 +106,7 @@
         </div>
       </md-field>
       <div class="footer-btn">
-        <md-button @click="handleNext">
+        <md-button @click="handleNext" :disabled="nextLoading ? true: false">
           <template v-if="nextLoading">
             <md-activity-indicator
               class="md-activity-indicator-css"
@@ -140,7 +140,7 @@
         />
       </md-field>
       <div class="footer-btn">
-        <md-button @click="handleCashier">
+        <md-button @click="handleCashier" :disabled="nextLoading ? true: false">
           <template v-if="payLoading">
             <md-activity-indicator
               class="md-activity-indicator-css"
@@ -338,11 +338,11 @@
               idCardBackPhoto: pb.substring(pb.indexOf(',') + 1, pf.length),
               idCardBackPhotoContentType: this.imageList.readerBack[1],
               user: this.user
-            }).then(response => {
+            }).then(() => {
               savePersonInfo(this.personalInfo).then(response => {
                 // 保存当前申请人信息
                 if (response.status === 201) {
-                  this.$store.dispatch('SavePersonalInfo', response.data).then(response => {
+                  this.$store.dispatch('SavePersonalInfo', response.data).then(() => {
                     this.step = 2
                   })
                 } else {
@@ -381,9 +381,10 @@
         this.$store.dispatch('SaveApplyInfo', {
           paymentMethod: 'ALIPAY',
           paymentStatus: 0,
-          orderStatus: '未审核',
+          auditStatus: -1,
           authorizedInquiryFee: 50,
           auditStatus: 0,
+          orderStatus: '',
           personalInfo: this.personalInfo,
           product: this.product,
           user: this.user

@@ -36,11 +36,19 @@
           />
         </div>
         <!-- 已完成 -->
-        <div class="nopass">
+        <div class="finished">
           <order-item
             :data="finished"
             status-text="已完成"
             no-data-text="暂无已完成数据"
+          />
+        </div>
+        <!-- 已完成 -->
+        <div class="nofinish">
+          <order-item
+            :data="nofinish"
+            status-text="未完成"
+            no-data-text="暂无未完成数据"
           />
         </div>
       </md-tabs>
@@ -65,29 +73,34 @@
     data() {
       return {
         orders: [],
-        titles: ['待审核', '已通过', '未通过', '已完成'],
+        titles: ['待审核', '已通过', '未通过', '已完成', '未完成'],
         loading: true
       }
     },
     computed: {
       unAudits() {
         return this.orders.filter(item => {
-          return item.product && item.orderStatus === '未审核'
-        })
-      },
-      auditeds() {
-        return this.orders.filter(item => {
-          return item.product && item.orderStatus === '已通过'
+          return item.product && item.auditStatus === -1 // '待审核'
         })
       },
       nopasses() {
         return this.orders.filter(item => {
-          return item.product && item.orderStatus === '未通过'
+          return item.product && item.auditStatus === 1 // '初审失败'
+        })
+      },
+      auditeds() {
+        return this.orders.filter(item => {
+          return item.product && item.auditStatus === 2 // '初审通过'
         })
       },
       finished() {
         return this.orders.filter(item => {
-          return item.product && item.orderStatus === '已完成'
+          return item.product && item.auditStatus === 3 // '终审通过'
+        })
+      },
+      nofinish() {
+        return this.orders.filter(item => {
+          return item.product && item.auditStatus === 4 // '终审失败'
         })
       }
     },

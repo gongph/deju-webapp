@@ -6,7 +6,7 @@ import request from '@/utils/request'
 
 export function getOrders() {
   return request({
-    url: '/api/application-infos',
+    url: '/api/application-current-infos',
     method: 'get'
   })
 }

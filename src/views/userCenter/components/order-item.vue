@@ -32,7 +32,7 @@
         <div class="item">
           <div class="apply-btn__wrapper">
             <template v-if="route">
-              <md-button type="ghost-primary" @click="handleClick">完善资料</md-button>
+              <md-button type="ghost-primary" @click="handleClick(item)">完善资料</md-button>
             </template>
             <template v-else>{{statusText}}</template>
           </div>
@@ -80,8 +80,9 @@
       }
     },
     methods: {
-      handleClick() {
-        this.$router.push({ name: 'MoreInfoForm', params: { auth: true }})
+      handleClick(item) {
+        console.log(123, item)
+        //this.$router.push({ name: 'MoreInfoForm', params: { auth: true }})
       },
       formatMoney(money) {
         return formatMoney(money)
