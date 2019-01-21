@@ -4,7 +4,7 @@
     <md-swiper ref="swiper" :has-dots="false">
       <md-swiper-item :key="$index" v-for="(item, $index) in banners">
         <a href="javascript:void(0)" class="banner-item">
-          <img :src="item.url" style="width: 95%">
+          <img :src="'data:' + item.urlContentType + ';base64,' + item.url" style="width: 95%">
         </a>
       </md-swiper-item>
     </md-swiper>
@@ -23,11 +23,20 @@
     },
     data() {
       return {
-        banners: [
-          { id: 1, url: '/img/b1.jpg' },
-          { id: 2, url: '/img/b2.jpg' },
-          { id: 3, url: '/img/b3.png' }
-        ]
+        banners: []
+      }
+    },
+    created(){
+      this.getList()
+    },methods:{
+      getList(){
+        this.$store.dispatch("GetBanners").then(response=>{
+          if(response&&response.status==200){
+            this.banners = response.data;
+          }
+        }).catch(err=>{
+          console.error(err);
+        })
       }
     }
   }
