@@ -140,7 +140,7 @@
         />
       </md-field>
       <div class="footer-btn">
-        <md-button @click="handleCashier" :disabled="nextLoading ? true: false">
+        <md-button @click="handleCashier" :disabled="payLoading ? true: false">
           <template v-if="payLoading">
             <md-activity-indicator
               class="md-activity-indicator-css"
@@ -339,23 +339,25 @@
               idCardBackPhotoContentType: this.imageList.readerBack[1],
               user: this.user
             }).then(() => {
-              savePersonInfo(this.personalInfo).then(response => {
-                // 保存当前申请人信息
-                if (response.status === 201) {
-                  this.$store.dispatch('SavePersonalInfo', response.data).then(() => {
-                    this.step = 2
-                  })
-                } else {
-                  this.nextLoading = false
-                }
-              }).catch(err => {
-                this.nextLoading = false
-                console.error(err)
-              })
-            }).catch(err => {
-              this.nextLoading = false
-              console.error(err)
+              this.step = 2
+              // savePersonInfo(this.personalInfo).then(response => {
+              //   // 保存当前申请人信息
+              //   if (response.status === 201) {
+              //     this.$store.dispatch('SavePersonalInfo', response.data).then(() => {
+              //       this.step = 2
+              //     })
+              //   } else {
+              //     this.nextLoading = false
+              //   }
+              // }).catch(err => {
+              //   this.nextLoading = false
+              //   console.error(err)
+              // })
             })
+            // .catch(err => {
+            //   this.nextLoading = false
+            //   console.error(err)
+            // })
           } else {
             return false
           }
