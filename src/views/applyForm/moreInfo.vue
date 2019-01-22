@@ -161,7 +161,18 @@
     </md-field>
 
     <div class="footer-btn">
-      <md-button @click="actDialog.open = true">提 交</md-button>
+      <md-button @click="actDialog.open = true" :disabled="buttonLoading ? true: false">
+        <template v-if="buttonLoading">
+          <md-activity-indicator
+            class="md-activity-indicator-css"
+            type="carousel"
+            :size="15"
+            color="#fff"
+            text-color="#fff"
+          >提交中</md-activity-indicator>
+        </template>
+        <template v-else>提 交</template>
+      </md-button>
     </div>
 
      <md-dialog
@@ -177,7 +188,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { Picker, Field, FieldItem, InputItem, Button, Toast, NoticeBar, Dialog } from 'mand-mobile'
+  import { Picker, Field, FieldItem, InputItem, Button, Toast, NoticeBar, Dialog, ActivityIndicator } from 'mand-mobile'
   import { district } from '@/utils/district'
   import { educates, maritalStatus } from '@/utils'
   import { Validator } from "vee-validate"
@@ -203,11 +214,13 @@
       [Toast.name]: Toast,
       [NoticeBar.name]: NoticeBar,
       [Dialog.name]: Dialog,
+      [ActivityIndicator.name]: ActivityIndicator,
       InputValidate,
       SelectItem
     },
     data() {
       return {
+        buttonLoading: false,
         pickerData: district, // 省市县
         marrigePickerData: maritalStatus, // 婚姻状况
         educatePickerData: educates, // 教育程度
@@ -243,6 +256,7 @@
     },
     computed: {
       ...mapGetters([
+        'applyInfo',
         'user'
       ])
     },
@@ -255,20 +269,27 @@
       },
       onActConfirm() {
         this.actDialog.open = false
-        // this.submitForm()
-        this.$router.push({ name: 'NoticePage', params: { auth: true } })
+        this.buttonLoading = true
+        this.submitForm()
       },
       submitForm() {
         this.$validator.validateAll().then((valid) => {
           if (valid) {
-            savePersonInfo(Object.assign({}, this.userInfo, this.user)).then(response => {
-              console.log(response)
-              if (response && response.status === 201) {
-                this.$router.push({ name: 'NoticePage', params: { auth: true } })
-              }
-            }).catch(err => {
-              console.error(err)
-            })
+            if (this.applyInfo && this.applyInfo.personalInfos) {
+              const applyInfo = Object.assign({}, this.userInfo, this.applyInfo.personalInfos)
+              saveApplyInfo(applyInfo).then(response => {
+                if (response.status === 201) {
+                  this.$router.push({ name: 'NoticePage', params: { auth: true } })
+                } else {
+                  this.buttonLoading = false
+                }
+              }).catch(err => {
+                this.buttonLoading = false
+                console.error(err)
+              })
+            } else {
+              console.error("'this.applyInfo' or 'this.applyInfo.personalInfos' object is null")
+            }
           } else {
             return false
           }
@@ -302,6 +323,12 @@
       margin: 30px auto;
       .md-button.primary.large {
         border-radius: 10px;
+      }
+      .md-activity-indicator-css {
+        margin-bottom: 0;
+        .md-activity-indicator-svg {
+          height: 15px !important;
+        }
       }
     }
   }

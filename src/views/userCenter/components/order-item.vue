@@ -81,8 +81,9 @@
     },
     methods: {
       handleClick(item) {
-        console.log(123, item)
-        //this.$router.push({ name: 'MoreInfoForm', params: { auth: true }})
+        this.$store.dispatch('SaveApplyInfo', item).then(() => {
+          this.$router.push({ name: 'MoreInfoForm', params: { auth: true }})
+        })
       },
       formatMoney(money) {
         return formatMoney(money)
