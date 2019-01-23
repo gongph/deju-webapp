@@ -4,9 +4,10 @@ import request from '@/utils/request'
  * Zhifubao pay
  */
 
-export function pay() {
+export function pay(data) {
   return request({
-    url: '/api/test',
-    method: 'post'
+    url: '/api/alipay',
+    method: 'post',
+    data
   })
 }

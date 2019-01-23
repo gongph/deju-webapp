@@ -198,7 +198,7 @@
   import InputValidate from "@/components/InputValidate/index.vue"
   import { Validator } from "vee-validate"
   import { saveApplyInfo } from '@/api/product'
-  // import { pay } from '@/api/pay'
+  import { pay } from '@/api/pay'
   import {savePersonInfo} from "@/api/product";
 
   // 手机号验证器
@@ -373,28 +373,40 @@
       onActConfirm() {
         this.actDialog.open = false
         this.payLoading = true
-        // pay().then(response => {
-        //   this.payForm = response.data
-        //   this.$nextTick(() => {
-        //     document.forms[0].submit()
-        //   })
-        // })
+
         // Save
         this.$store.dispatch('SaveApplyInfo', {
           paymentMethod: 'ALIPAY',
           paymentStatus: 0,
-          auditStatus: -1,
+          auditStatus: 'PENDINGREVIEW',
           authorizedInquiryFee: 50,
-          auditStatus: 0,
           orderStatus: '',
-          personalInfo: this.personalInfo,
           product: this.product,
           user: this.user
         }).then(res => {
           // 保存成功提交到后台
           saveApplyInfo(this.applyInfo).then(response => {
             if (response.status === 201) {
-              this.$router.push({ name: 'PayReturnPage', params: { auth: true } })
+              this.$store.dispatch('SaveApplyInfo',response.data)
+              pay(this.applyInfo).then(response => {
+                this.payForm = response.data
+                this.$nextTick(() => {
+                  document.forms[0].submit()
+                })
+              })
+
+              this.$store.dispatch('SavePersonalInfo',{
+                applicationInfos:[response.data]
+              }).then(res=>{
+                savePersonInfo(this.personalInfo).then(response=>{
+                  if(response.status===201){
+                    console.log("success")
+                  }
+                })
+              })
+
+
+              //this.$router.push({ name: 'PayReturnPage', params: { auth: true } })
             } else {
               this.payLoading = false
             }
