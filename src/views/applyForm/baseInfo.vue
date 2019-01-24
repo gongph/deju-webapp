@@ -340,19 +340,19 @@
               user: this.user
             }).then(() => {
               this.step = 2
-              // savePersonInfo(this.personalInfo).then(response => {
-              //   // 保存当前申请人信息
-              //   if (response.status === 201) {
-              //     this.$store.dispatch('SavePersonalInfo', response.data).then(() => {
-              //       this.step = 2
-              //     })
-              //   } else {
-              //     this.nextLoading = false
-              //   }
-              // }).catch(err => {
-              //   this.nextLoading = false
-              //   console.error(err)
-              // })
+              savePersonInfo(this.personalInfo).then(response => {
+                // 保存当前申请人信息
+                if (response.status === 201) {
+                  this.$store.dispatch('SavePersonalInfo', response.data).then(() => {
+                   // this.step = 2
+                  })
+                } else {
+                  //this.nextLoading = false
+                }
+              }).catch(err => {
+                this.nextLoading = false
+                console.error(err)
+              })
             })
             // .catch(err => {
             //   this.nextLoading = false
@@ -382,6 +382,7 @@
           authorizedInquiryFee: 50,
           orderStatus: '',
           product: this.product,
+          personalInformation: this.personalInfo,
           user: this.user
         }).then(res => {
           // 保存成功提交到后台
@@ -394,19 +395,6 @@
                   document.forms[0].submit()
                 })
               })
-
-              this.$store.dispatch('SavePersonalInfo',{
-                applicationInfos:[response.data]
-              }).then(res=>{
-                savePersonInfo(this.personalInfo).then(response=>{
-                  if(response.status===201){
-                    console.log("success")
-                  }
-                })
-              })
-
-
-              //this.$router.push({ name: 'PayReturnPage', params: { auth: true } })
             } else {
               this.payLoading = false
             }
