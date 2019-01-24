@@ -80,27 +80,27 @@
     computed: {
       unAudits() {
         return this.orders.filter(item => {
-          return item.product && item.auditStatus === -1 // '待审核'
+          return item.product && item.auditStatus === 'PENDINGREVIEW' // '待审核'
         })
       },
       nopasses() {
         return this.orders.filter(item => {
-          return item.product && item.auditStatus === 1 // '初审失败'
+          return item.product && item.auditStatus === 'FIRSTTRIALFAILED' // '初审失败'
         })
       },
       auditeds() {
         return this.orders.filter(item => {
-          return item.product && item.auditStatus === 2 // '初审通过'
+          return item.product && item.auditStatus === 'FIRSTTRIALPASSED' // '初审通过'
         })
       },
       finished() {
         return this.orders.filter(item => {
-          return item.product && item.auditStatus === 3 // '终审通过'
+          return item.product && item.auditStatus === 'FINALTRIALPASSED' // '终审通过'
         })
       },
       nofinish() {
         return this.orders.filter(item => {
-          return item.product && item.auditStatus === 4 // '终审失败'
+          return item.product && item.auditStatus === 'FINALTRIALFAILURE' // '终审失败'
         })
       }
     },

@@ -277,7 +277,7 @@
           if (valid) {
             if (this.applyInfo && this.applyInfo.personalInfos) {
               const applyInfo = Object.assign({}, this.userInfo, this.applyInfo.personalInfos)
-              saveApplyInfo(applyInfo).then(response => {
+              savePersonInfo(applyInfo).then(response => {
                 if (response.status === 201) {
                   this.$router.push({ name: 'NoticePage', params: { auth: true } })
                 } else {
