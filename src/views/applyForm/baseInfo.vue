@@ -246,12 +246,12 @@
           {
             icon: 'cashier-icon-2',
             text: '支付宝支付',
-            value: '002'
+            value: 'ALIPAY'
           },
           {
             icon: 'cashier-icon-3',
             text: '微信支付',
-            value: '003'
+            value: 'WXPAY'
           }
         ],
         actDialog: {
@@ -339,25 +339,24 @@
               idCardBackPhotoContentType: this.imageList.readerBack[1],
               user: this.user
             }).then(() => {
-              this.step = 2
               savePersonInfo(this.personalInfo).then(response => {
                 // 保存当前申请人信息
                 if (response.status === 201) {
                   this.$store.dispatch('SavePersonalInfo', response.data).then(() => {
-                   // this.step = 2
+                    this.step = 2
                   })
                 } else {
-                  //this.nextLoading = false
+                  this.nextLoading = false
                 }
               }).catch(err => {
                 this.nextLoading = false
                 console.error(err)
               })
             })
-            // .catch(err => {
-            //   this.nextLoading = false
-            //   console.error(err)
-            // })
+            .catch(err => {
+              this.nextLoading = false
+              console.error(err)
+            })
           } else {
             return false
           }
@@ -372,8 +371,10 @@
       },
       onActConfirm() {
         this.actDialog.open = false
-        this.payLoading = true
-
+        this.isCashierhow = true
+        // this.payLoading = true
+      },
+      doPay() {
         // Save
         this.$store.dispatch('SaveApplyInfo', {
           paymentMethod: 'ALIPAY',
@@ -389,64 +390,19 @@
           saveApplyInfo(this.applyInfo).then(response => {
             if (response.status === 201) {
               this.$store.dispatch('SaveApplyInfo',response.data)
-              pay(this.applyInfo).then(response => {
-                this.payForm = response.data
+              pay(this.applyInfo).then(resp => {
+                this.payForm = resp.data
                 this.$nextTick(() => {
                   document.forms[0].submit()
                 })
               })
             } else {
-              this.payLoading = false
+              //this.payLoading = false
             }
           }).catch(err => {
-            this.payLoading = false
+            //this.payLoading = false
             console.error(err)
           })
-        })
-      },
-      doPay() {
-        if (this.isCashierCaptcha) {
-          this.cashier.next('captcha', {
-            text: 'Verification code sent to 156 **** 8965',
-            autoCountdown: false,
-            countNormalText: 'Send Verification code',
-            countActiveText: 'Retransmission after {$1}s',
-            onSend: countdown => {
-              console.log('[Mand Mobile] Send Captcha')
-              this.sendCaptcha().then(() => {
-                countdown()
-              })
-            },
-            onSubmit: code => {
-              console.log(`[Mand Mobile] Send Submit ${code}`)
-              this.checkCaptcha(code).then(res => {
-                if (res) {
-                  this.createPay().then(() => {
-                    this.cashier.next(this.cashierResult)
-                  })
-                }
-              })
-            },
-          })
-        } else {
-          this.createPay().then(() => {
-            this.cashier.next(this.cashierResult, {
-              buttonText: '我知道了',
-              handler: () => {
-                // Toast.info(`${this.cashierResult}点击`)
-                this.$router.push({ path: '/payrtn' })
-              },
-            })
-          })
-        }
-      },
-      // Create a pay request & check pay result
-      createPay() {
-        this.cashier.next('loading')
-        return new Promise(resolve => {
-          this.timer = setTimeout(() => {
-            resolve()
-          }, 3000)
         })
       },
       onCashierSelect(item) {
@@ -457,7 +413,6 @@
         this.doPay()
       },
       onCashierCancel() {
-        // Abort pay request or checking request
         this.timer && clearTimeout(this.timer)
       }
     }

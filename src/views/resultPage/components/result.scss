@@ -17,6 +17,12 @@
       margin-bottom: 10px;
       font-weight: 400;
       font-size: 40px;
+      .md-activity-indicator-css {
+        margin-bottom: 0;
+        .md-activity-indicator-svg {
+          height: 15px !important;
+        }
+      }
     }
     .msg-desc {
       font-size: 30px;

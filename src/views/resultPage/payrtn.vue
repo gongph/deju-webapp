@@ -1,23 +1,53 @@
 <template>
   <div class="notice-wrapper">
-    <svg-icon icon-class="success"></svg-icon>
+    <svg-icon icon-class="clock" v-if="payStatus === 'waiting'"></svg-icon>
+    <svg-icon icon-class="success" v-if="payStatus === 'successed'"></svg-icon>
+    <svg-icon icon-class="unhappy" v-if="payStatus === 'failed'"></svg-icon>
     <div class="content">
-      <h2 class="msg-title">支付成功</h2>
-      <p class="msg-desc">您可以进入<router-link to="/center">我的工单</router-link>查看审核结果</p>
+      <template v-if="payStatus === 'waiting'">
+        <h2 class="msg-title">
+          <md-activity-indicator
+            type="spinner"
+            :size="90"
+          >{{ payTipText }}</md-activity-indicator>
+        </h2>
+      </template>
+      <template v-else-if="payStatus === 'successed'">
+        <h2 class="msg-title">{{ payTipText }}</h2>
+        <p class="msg-desc">您可以进入<router-link to="/center">我的工单</router-link>查看审核结果</p>
+      </template>
+      <template v-else>
+        <h2 class="msg-title">{{ payTipText }}</h2>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
+  import { ActivityIndicator } from 'mand-mobile'
+
   export default {
-    name: 'NoticePage',
-    mounted() {
-      document.title = ""
+    name: 'PayNoticePage',
+    components: {
+      [ActivityIndicator.name]: ActivityIndicator
     },
-    created() {
-      if (!this.$route.params.auth) {
-        this.$router.push({ path: '/center' })
-        return
+    data() {
+      return {
+        payStatus: 'waiting', // 'waiting', 'successed', 'failed'
+        payTipText: '等待支付返回结果...'
+      }
+    },
+    mounted() {
+      document.title = "等待支付结果页面"
+      this.handlePayResult()
+    },
+    methods: {
+      handlePayResult() {
+        // Do something
+        setTimeout(() => {
+          this.payStatus = 'successed'
+          this.payTipText = '支付成功'
+        }, 3000)
       }
     }
   }
