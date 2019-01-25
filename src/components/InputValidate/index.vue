@@ -3,6 +3,7 @@
     :type="type"
     :title="title"
     :name="name"
+    :align="align"
     :placeholder="placeholder"
     v-model="innerValue"
     :error="error"
@@ -18,7 +19,7 @@ export default {
   },
   props: {
     value: {
-      type: String,
+      type: [String, Number],
       default: ""
     },
     type: {
@@ -32,6 +33,10 @@ export default {
     name: {
       type: String,
       default: ""
+    },
+    align: {
+      type: String,
+      default: 'left'
     },
     placeholder: {
       type: String,

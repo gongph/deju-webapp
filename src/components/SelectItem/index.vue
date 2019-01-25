@@ -55,7 +55,7 @@
       },
       align: {
         type: String,
-        default: 'right'
+        default: 'center'
       },
       pickerData: {
         type: Array,
