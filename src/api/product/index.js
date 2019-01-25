@@ -27,10 +27,10 @@ export function saveApplyInfo(data) {
  * 提交详细资料
  */
 
-export function savePersonInfo(data) {
+export function savePersonInfo(data, method = 'POST') {
   return request({
     url: '/api/personal-informations',
-    method: 'post',
+    method,
     data
   })
 }
