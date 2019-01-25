@@ -5,6 +5,7 @@
       <select-item
         title="所在城市:"
         name="所在城市"
+        align="center"
         :value.sync="userInfo.city"
         :picker-data="pickerData"
         picker-title="选择省市县"
@@ -15,6 +16,7 @@
         v-model="userInfo.residentialAddress"
         title="住宅地址:"
         name="住宅地址"
+        align="center"
         placeholder="请输入您的住宅地址"
         v-validate="'required'"
         data-vv-value-path="innerValue"
@@ -39,6 +41,7 @@
       <select-item
         title="婚姻状况:"
         name="婚姻状况"
+        align="center"
         :value.sync="userInfo.maritalStatus"
         :picker-data="marrigePickerData"
         :picker-cols="1"
@@ -49,6 +52,7 @@
       <select-item
         title="教育程度:"
         name="教育程度"
+        align="center"
         :value.sync="userInfo.educationLevel"
         :picker-data="educatePickerData"
         :picker-cols="1"
@@ -75,10 +79,23 @@
       <select-item
         title="单位城市:"
         name="单位城市"
+        align="center"
         :value.sync="userInfo.companyCity"
         :picker-data="pickerData"
         picker-title="单位所在城市"
         v-validate="'required'"
+      />
+
+      <input-validate
+        v-model="userInfo.companyAdress"
+        title="单位地址:"
+        name="单位地址"
+        placeholder="单位地址"
+        v-validate="'required'"
+        data-vv-value-path="innerValue"
+        data-vv-validate-on="blur"
+        :error="errors.first('单位地址')"
+        clearable
       />
 
       <input-validate
@@ -95,7 +112,7 @@
 
       <input-validate
         v-model="userInfo.annualIncome"
-        title="年收入:"
+        title="年收入(元):"
         name="年收入"
         placeholder="年收入"
         v-validate="'required|decimal:2'"
@@ -114,7 +131,7 @@
           v-model="userInfo.contactName"
           name="联系人姓名"
           placeholder="姓名"
-          v-validate="'required|phone'"
+          v-validate="'required'"
           data-vv-value-path="innerValue"
           data-vv-validate-on="blur"
           :error="errors.first('联系人姓名')"
@@ -122,7 +139,7 @@
         />
 
         <input-validate
-          v-model="userInfo.companyPhone"
+          v-model="userInfo.contactPhone"
           type="phone"
           name="联系人手机号"
           placeholder="手机号"
@@ -147,7 +164,7 @@
         />
 
         <input-validate
-          v-model="userInfo.companyPhone2"
+          v-model="userInfo.contactPhone2"
           type="phone"
           name="联系人手机号"
           placeholder="手机号"
@@ -161,7 +178,7 @@
     </md-field>
 
     <div class="footer-btn">
-      <md-button @click="actDialog.open = true" :disabled="buttonLoading ? true: false">
+      <md-button @click="handleSubmit" :disabled="buttonLoading ? true: false">
         <template v-if="buttonLoading">
           <md-activity-indicator
             class="md-activity-indicator-css"
@@ -190,7 +207,7 @@
   import { mapGetters } from 'vuex'
   import { Picker, Field, FieldItem, InputItem, Button, Toast, NoticeBar, Dialog, ActivityIndicator } from 'mand-mobile'
   import { district } from '@/utils/district'
-  import { educates, maritalStatus } from '@/utils'
+  import { educates, maritalStatus, deepClone } from '@/utils'
   import { Validator } from "vee-validate"
   import { savePersonInfo } from '@/api/product'
   import InputValidate from "@/components/InputValidate/index.vue"
@@ -224,21 +241,6 @@
         pickerData: district, // 省市县
         marrigePickerData: maritalStatus, // 婚姻状况
         educatePickerData: educates, // 教育程度
-        userInfo: {
-          city: '',
-          residentialAddress: '',
-          personalEmail: '',
-          maritalStatus: '',
-          educationLevel: '',
-          companyName: '',
-          companyCity: '',
-          companyPhone: '',
-          annualIncome: '',
-          contactName: '',
-          contactPhone: '',
-          contactName2: '',
-          contactPhone2: ''
-        },
         actDialog: {
           open: false,
           btns: [
@@ -256,12 +258,17 @@
     },
     computed: {
       ...mapGetters([
-        'applyInfo',
+        'personalInfo',
         'user'
-      ])
+      ]),
+      userInfo() {
+        return deepClone(this.personalInfo)
+      }
     },
     created() {
-      if (!this.$route.params.auth) this.$router.push({ path: '/center' })
+      if (!this.$route.params.auth) {
+        this.$router.push({ path: '/center' })
+      }
     },
     methods: {
       onActCancel() {
@@ -272,27 +279,25 @@
         this.buttonLoading = true
         this.submitForm()
       },
-      submitForm() {
+      handleSubmit() {
         this.$validator.validateAll().then((valid) => {
           if (valid) {
-            if (this.applyInfo && this.applyInfo.personalInfos) {
-              const applyInfo = Object.assign({}, this.userInfo, this.applyInfo.personalInfos)
-              savePersonInfo(applyInfo).then(response => {
-                if (response.status === 201) {
-                  this.$router.push({ name: 'NoticePage', params: { auth: true } })
-                } else {
-                  this.buttonLoading = false
-                }
-              }).catch(err => {
-                this.buttonLoading = false
-                console.error(err)
-              })
-            } else {
-              console.error("'this.applyInfo' or 'this.applyInfo.personalInfos' object is null")
-            }
+            this.actDialog.open = true
           } else {
             return false
           }
+        })
+      },
+      submitForm() {
+        savePersonInfo(this.userInfo, 'PUT').then(response => {
+          if (response.status === 200) {
+            this.$router.push({ name: 'NoticePage', params: { auth: true } })
+          } else {
+            this.buttonLoading = false
+          }
+        }).catch(err => {
+          this.buttonLoading = false
+          console.error(err)
         })
       }
     }

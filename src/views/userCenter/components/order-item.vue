@@ -81,7 +81,7 @@
     },
     methods: {
       handleClick(item) {
-        this.$store.dispatch('SaveApplyInfo', item).then(() => {
+        this.$store.dispatch('SavePersonalInfo', item.personalInformation || {}).then(() => {
           this.$router.push({ name: 'MoreInfoForm', params: { auth: true }})
         })
       },
