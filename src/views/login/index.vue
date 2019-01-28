@@ -107,7 +107,7 @@
           Toast.loading('登录中')
           this.$store.dispatch('Login', this.loginForm).then(response => {
             Toast.hide()
-            this.$router.push({ path: '/' })
+            this.$router.push({ path: this.redirect || '/' })
           }).catch(error => {
             Toast.failed('账号或密码错误~')
             setTimeout(() => {
