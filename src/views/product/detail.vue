@@ -152,7 +152,8 @@
     },
     computed: {
       ...mapGetters([
-        'curProd'
+        'curProd',
+        'applyInfo',
       ]),
       computedEarn() {
         if (!this.amount || !this.deadline) {
@@ -163,16 +164,23 @@
       },
     },
     created() {
-      this.initCurrentProd()
+      this.initPageData()
     },
     mounted() {
       document.title = '产品详情'
     },
     methods: {
-      initCurrentProd() {
+      initPageData() {
         if (this.curProd) {
           this.curProd.then(value => {
             this.product = value
+          })
+        }
+        if (this.applyInfo) {
+          this.applyInfo.then(data => {
+            this.amount = String(data.amount)
+            this.deadline = String(data.deadline)
+            this.deadlineLabel = this.deadline + '个月'
           })
         }
       },

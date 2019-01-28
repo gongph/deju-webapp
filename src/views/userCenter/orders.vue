@@ -21,25 +21,26 @@
         <!-- 已通过 -->
         <div class="auditeds">
           <order-item
-            :data="unAudits"
-            status-text="已通过"
+            :data="auditeds"
+            status-text="初审通过"
             no-data-text="暂无已通过数据"
-            route
+            route="more"
           />
         </div>
         <!-- 未通过 -->
         <div class="nopass">
           <order-item
             :data="nopasses"
-            status-text="未通过"
+            status-text="初审失败"
             no-data-text="暂无未通过数据"
+            route="base"
           />
         </div>
         <!-- 已完成 -->
         <div class="finished">
           <order-item
             :data="finished"
-            status-text="已完成"
+            status-text="终审通过"
             no-data-text="暂无已完成数据"
           />
         </div>
@@ -47,8 +48,9 @@
         <div class="nofinish">
           <order-item
             :data="nofinish"
-            status-text="未完成"
+            status-text="终审失败"
             no-data-text="暂无未完成数据"
+            route="more"
           />
         </div>
       </md-tabs>
@@ -73,34 +75,34 @@
     data() {
       return {
         orders: [],
-        titles: ['待审核', '已通过', '未通过', '已完成', '未完成'],
+        titles: ['待审核', '初审通过', '初审失败', '终审通过', '终审失败'],
         loading: true
       }
     },
     computed: {
       unAudits() {
         return this.orders.filter(item => {
-          return item.product && item.auditStatus === 'PENDINGREVIEW' // '待审核'
+          return item.auditStatus === 'PENDINGREVIEW' // '待审核'
         })
       },
       nopasses() {
         return this.orders.filter(item => {
-          return item.product && item.auditStatus === 'FIRSTTRIALFAILED' // '初审失败'
+          return item.auditStatus === 'FIRSTTRIALFAILED' // '初审失败'
         })
       },
       auditeds() {
         return this.orders.filter(item => {
-          return item.product && item.auditStatus === 'FIRSTTRIALPASSED' // '初审通过'
+          return item.auditStatus === 'FIRSTTRIALPASSED' // '初审通过'
         })
       },
       finished() {
         return this.orders.filter(item => {
-          return item.product && item.auditStatus === 'FINALTRIALPASSED' // '终审通过'
+          return item.auditStatus === 'FINALTRIALPASSED' // '终审通过'
         })
       },
       nofinish() {
         return this.orders.filter(item => {
-          return item.product && item.auditStatus === 'FINALTRIALFAILURE' // '终审失败'
+          return item.auditStatus === 'FINALTRIALFAILURE' // '终审失败'
         })
       }
     },

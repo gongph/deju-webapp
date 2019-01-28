@@ -199,7 +199,8 @@
   import { Validator } from "vee-validate"
   import { saveApplyInfo } from '@/api/product'
   import { pay } from '@/api/pay'
-  import {savePersonInfo} from "@/api/product";
+  import { savePersonInfo } from "@/api/product"
+   import { deepClone } from "@/utils";
 
   // 手机号验证器
   Validator.extend("phone", {
@@ -268,37 +269,62 @@
           ],
         },
         ruleForm: {
+          id: 0,
           realName: '',
           mobile: '',
           idcard: ''
         },
-        payForm: ''
+        payForm: '',
+        product: null,
+        personalData: null,
+        applyData: null
       }
     },
     computed: {
       ...mapGetters([
         'applyInfo',
         'personalInfo',
-        'product',
+        'curProd',
         'user'
       ]),
       cashier() {
         return this.$refs.cashier
       }
     },
+    created() {
+      this.initPageData()
+    },
     mounted() {
       document.title = '基本信息录入'
     },
     methods: {
+      initPageData() {
+        if (this.applyInfo) {
+          this.applyInfo.then(data => {
+            this.applyData = deepClone(data)
+          })
+        }
+        if (this.personalInfo) {
+          this.personalInfo.then(data => {
+            this.ruleForm.id       = data.id
+            this.ruleForm.realName = data.name
+            this.ruleForm.mobile   = data.realNameMobilePhoneNumber
+            this.ruleForm.idcard   = data.identityNumber
+
+            this.imageList.readerFront.push(`data:${data.idCardFrontPhotoContentType};base64,${data.idCardFrontPhoto}`)
+            this.imageList.readerFront.push(data.idCardFrontPhotoContentType)
+
+            this.imageList.readerBack.push(`data:${data.idCardBackPhotoContentType};base64,${data.idCardBackPhoto}`)
+            this.imageList.readerBack.push(data.idCardBackPhotoContentType)
+          })
+        }
+      },
       onReaderSelect() {
         Toast.loading('图片读取中...')
       },
       onReaderComplete(name, { dataUrl, blob, file }) {
         const imageList = []
-        imageProcessor({
-          dataUrl,
-          quality: 0.8,
-        }).then(({dataUrl}) => {
+        imageProcessor().then(({dataUrl}) => {
           if (dataUrl) {
             imageList.push(dataUrl)
             imageList.push(file.type)
@@ -328,8 +354,9 @@
 
             const pf = this.imageList.readerFront[0]
             const pb = this.imageList.readerBack[0]
+
             // Save
-            this.$store.dispatch('SavePersonalInfo', {
+            const personalInfo = {
               name: this.ruleForm.realName,
               realNameMobilePhoneNumber: this.ruleForm.mobile,
               identityNumber: this.ruleForm.idcard,
@@ -338,10 +365,17 @@
               idCardBackPhoto: pb.substring(pb.indexOf(',') + 1, pf.length),
               idCardBackPhotoContentType: this.imageList.readerBack[1],
               user: this.user
-            }).then(() => {
-              savePersonInfo(this.personalInfo).then(response => {
+            }
+
+            if (this.ruleForm.id) {
+              personalInfo.id = this.ruleForm.id
+            }
+
+            this.$store.dispatch('SavePersonalInfo', personalInfo).then(() => {
+              const method = this.ruleForm.id ? 'PUT' : 'POST'
+              savePersonInfo(personalInfo, method).then(response => {
                 // 保存当前申请人信息
-                if (response.status === 201) {
+                if (response.status === 200 || response.status === 201) {
                   this.$store.dispatch('SavePersonalInfo', response.data).then(() => {
                     this.step = 2
                   })
