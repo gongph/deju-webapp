@@ -301,21 +301,25 @@
       initPageData() {
         if (this.applyInfo) {
           this.applyInfo.then(data => {
-            this.applyData = deepClone(data)
+            if (data) {
+              this.applyData = deepClone(data)
+            }
           })
         }
         if (this.personalInfo) {
           this.personalInfo.then(data => {
-            this.ruleForm.id       = data.id
-            this.ruleForm.realName = data.name
-            this.ruleForm.mobile   = data.realNameMobilePhoneNumber
-            this.ruleForm.idcard   = data.identityNumber
+            if (data) {
+              this.ruleForm.id       = data.id
+              this.ruleForm.realName = data.name
+              this.ruleForm.mobile   = data.realNameMobilePhoneNumber
+              this.ruleForm.idcard   = data.identityNumber
 
-            this.imageList.readerFront.push(`data:${data.idCardFrontPhotoContentType};base64,${data.idCardFrontPhoto}`)
-            this.imageList.readerFront.push(data.idCardFrontPhotoContentType)
+              this.imageList.readerFront.push(`data:${data.idCardFrontPhotoContentType};base64,${data.idCardFrontPhoto}`)
+              this.imageList.readerFront.push(data.idCardFrontPhotoContentType)
 
-            this.imageList.readerBack.push(`data:${data.idCardBackPhotoContentType};base64,${data.idCardBackPhoto}`)
-            this.imageList.readerBack.push(data.idCardBackPhotoContentType)
+              this.imageList.readerBack.push(`data:${data.idCardBackPhotoContentType};base64,${data.idCardBackPhoto}`)
+              this.imageList.readerBack.push(data.idCardBackPhotoContentType)
+            }
           })
         }
       },

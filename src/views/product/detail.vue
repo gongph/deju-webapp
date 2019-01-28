@@ -136,10 +136,10 @@
           { name: '4.线下放款' }
         ],
         rates: [
-          { label: 3, value: 0.3, rate: 1.58 },
-          { label: 6, value: 0.5, rate: 1.28 },
-          { label: 12, value: 1, rate: 0.98 },
-          { label: 24, value: 2, rate: 0.78 }
+          { label: 3, value: 3, rate: 0.0158 },
+          { label: 6, value: 6, rate: 0.0128 },
+          { label: 12, value: 12, rate: 0.0098 },
+          { label: 24, value: 24, rate: 0.0078 }
         ],
         amount: '', // 金额
         rate: 0, // 利率
@@ -160,7 +160,7 @@
           return
         }
         const rate = this.rate || 0
-        return Number(this.amount) * rate *  this.deadline
+        return (Number(this.amount) * rate * this.deadline).toFixed(2)
       },
     },
     created() {
@@ -178,14 +178,18 @@
         }
         if (this.applyInfo) {
           this.applyInfo.then(data => {
-            this.amount = String(data.amount)
-            this.deadline = String(data.deadline)
-            this.deadlineLabel = this.deadline + '个月'
+            console.log(data, 111)
+            if (data) {
+              this.amount = data.amount
+              this.deadline = data.deadline
+              this.deadlineLabel = this.deadline ? this.deadline + '个月' : ''
+            }
           })
         }
       },
       handleApply() {
-        if (!this.amount && !this.deadlineLabel) {
+
+        if (!Number(this.amount) && !Number(this.deadlineLabel)) {
           Toast.info('申请金额和期限不能为空！')
           return
         }
@@ -193,6 +197,7 @@
           amount: this.amount,
           deadline: this.term
         }).then(response => {
+          localforage.removeItem('apply_info')
           this.$router.push({ path: '/apply/base' })
         }).catch(err => {
           console.error(err)
@@ -217,21 +222,6 @@
       },
       formatMoney(money) {
         return formatMoney(money)
-      },
-      /**
-       * 计算利息
-       */
-      cumptedEarn1() {
-        if (!this.amount) {
-          Toast.info('请输入金额')
-          return
-        }
-        if (!this.deadline) {
-          Toast.info('请选择期限')
-          return
-        }
-        const rate = this.rate || 0
-        const earn = Number(this.amount) * rate *  this.deadline
       }
     }
   }
