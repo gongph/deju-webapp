@@ -5,9 +5,9 @@ const product = {
     // 当前申请的产品
     curProd: null,
     // 申请信息
-    applyInfo: {},
+    applyInfo: null,
     // 个人信息
-    personalInfo: {}
+    personalInfo: null
   },
 
   mutations: {
@@ -15,10 +15,12 @@ const product = {
       state.curProd = product
     },
     SAVE_APPLY_INFO: (state, data) => {
-      state.applyInfo = Object.assign(state.applyInfo, data)
+      state.applyInfo = Object.assign(state.applyInfo || {}, data)
+      localforage.setItem('apply_info', state.applyInfo)
     },
     SAVE_PERSONAL_INFO: (state, data) => {
-      state.personalInfo = Object.assign(state.personalInfo, data)
+      state.personalInfo = Object.assign(state.personalInfo || {}, data)
+      localforage.setItem('personal_info', state.personalInfo)
     }
   },
 
@@ -42,6 +44,17 @@ const product = {
     SavePersonalInfo: ({ commit }, data) => {
       return new Promise((response) => {
         commit('SAVE_PERSONAL_INFO', data)
+        response()
+      })
+    },
+    InitApplyData: ({ commit }, data) => {
+      return new Promise((response) => {
+        commit('SAVE_APPLY_INFO', {
+          amount: data.amount,
+          deadline: data.deadline
+        })
+        commit('SAVE_PERSONAL_INFO', data.personalInformation)
+        commit('SAVE_CUR_PRODUCT', data.product)
         response()
       })
     }
