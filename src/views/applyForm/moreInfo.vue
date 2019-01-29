@@ -263,15 +263,7 @@
         'user'
       ]),
       userInfo() {
-        if (this.personalInfo) {
-          this.personalInfo.then(data => {
-            if (data) {
-              return deepClone(data)
-            } else {
-              return null
-            }
-          })
-        }
+        return deepClone(this.personalInfo || {})
       }
     },
     created() {

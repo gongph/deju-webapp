@@ -51,9 +51,12 @@ const product = {
         })
       })
     },
+    
     /**
      * 保存用户在产品详情页填写的信息
      */
+    
+    /* eslint-disable */
     SaveApplyInfo: ({ commit }, data) => {
       return new Promise((response) => {
         localforage.setItem('cur_apply_info', data).then(value => {

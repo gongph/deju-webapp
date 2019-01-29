@@ -31,11 +31,8 @@
         </div>
         <div class="item">
           <div class="apply-btn__wrapper">
-            <template v-if="route === 'more'">
-              <md-button type="ghost-primary" @click="handleClick(item)">去完善资料</md-button>
-            </template>
-            <template v-else-if="route === 'base'">
-              <md-button type="ghost-primary" @click="handleClick(item)">重填资料</md-button>
+            <template v-if="route">
+              <md-button type="ghost-primary" @click="handleClick(item)">{{ buttonText }}</md-button>
             </template>
             <template v-else>{{statusText}}</template>
           </div>
@@ -49,6 +46,7 @@
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
   import { ResultPage, Button } from 'mand-mobile'
   import { loanTypes, formatMoney } from '@/utils'
 
@@ -80,19 +78,31 @@
       route: {
         type: String,
         default: ''
+      },
+      buttonText: {
+        type: String,
+        default: ''
       }
     },
     methods: {
+      ...mapActions([
+        'SavePersonalInfo'
+      ]),
       handleClick(item) {
         if (this.route === 'base') {
           // 跳转到产品详情重新填写
-          this.$store.dispatch('InitApplyData', item).then(() => {
-            this.$router.push({ name: 'ProductDetail' })
-          })
+          // this.$store.dispatch('InitApplyData', item).then(() => {
+          //   this.$router.push({ name: 'ProductDetail' })
+          // })
         } else {
           // 详情
-          this.$store.dispatch('SavePersonalInfo', item.personalInformation || {}).then(() => {
-            this.$router.push({ name: 'MoreInfoForm', params: { auth: true }})
+          this.SavePersonalInfo(item.personalInformation).then(() => {
+            this.$router.push({
+              name: 'MoreInfoForm',
+              params: {
+                auth: true
+              }
+            })
           })
         }
       },

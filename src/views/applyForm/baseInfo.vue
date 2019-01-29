@@ -362,8 +362,9 @@
         this.$validator.validateAll().then((valid) => {
           if (valid) {
             // 照片验证
-            if (this.imageList.readerFront.length <= 0 &&
-              this.imageList.readerBack.length <= 0) {
+            console.log(this.imageList)
+            if (this.imageList.readerFront.length < 2 &&
+              this.imageList.readerBack.length < 2) {
               Toast.info('请上传身份证正反面照片！')
               return
             }
@@ -393,13 +394,16 @@
                     idcard: applyBaseInfo.identityNumber,
                     name: applyBaseInfo.name
                   }).then(resp => {
-                    this.nextLoading = false
                     // 没有支付过，跳到第二步去
-                    if (resp.status === 200 && !resp.data) {
-                      this.step = 2
+                    if (resp.status === 200) {
+                      if (!resp.data) {
+                        this.step = 2
+                      } else {
+                        // 直接保存
+                        this.saveApplyInfo(true)
+                      }
                     } else {
-                      // 直接保存
-                      this.saveApplyInfoForm()
+                      console.error(`Check pay occur error. the status code: ${resp.status}`)
                     }
                   })
                 })
@@ -426,10 +430,14 @@
       checkPay(data) {
         return checkPay(data)
       },
-      saveApplyInfo() {
+      /**
+       * 保存基本信息
+       * @param  {Boolean} payed 是否7天内支付过了
+       */
+      saveApplyInfo(payed) {
         const applyInfoForm = Object.assign({}, this.curApplyInfo, {
           paymentMethod: 'ALIPAY',
-          paymentStatus: 0,
+          paymentStatus: payed ? 2 : 0,
           auditStatus: 'PENDINGREVIEW',
           authorizedInquiryFee: 50,
           orderStatus: '',
@@ -439,14 +447,25 @@
         })
         saveApplyInfo(applyInfoForm).then(response => {
           if (response.status === 201) {
-            this.$store.dispatch('saveApplyInfoForm',response.data)
-            // 支付请求
-            pay(response.data).then(resp => {
-              this.payForm = resp.data
-              this.$nextTick(() => {
-                document.forms[0].submit()
+            this.nextLoading = false
+            if (payed) {
+              // 支付过了就直接跳转到通知页面
+              this.$router.push({
+                name: 'NoticePage',
+                params: {
+                  auth: true
+                }
               })
-            })
+            } else {
+              // 发起支付请求
+              pay(response.data).then(resp => {
+                this.payForm = resp.data
+                this.$nextTick(() => {
+                  // 唤起支付页面
+                  document.forms[0].submit()
+                })
+              })
+            }
           } else {
           }
         }).catch(err => {
@@ -457,7 +476,7 @@
        * 支付操作
        */
       doPay() {
-        this.saveApplyInfo()
+        this.saveApplyInfo(false)
       },
       /**
        * 选择支付方式触发
