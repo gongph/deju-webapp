@@ -86,14 +86,22 @@
     },
     methods: {
       ...mapActions([
-        'SavePersonalInfo'
+        'SavePersonalInfo',
+        'saveApplyInfoForm',
+        'SaveApplyInfo'
       ]),
       handleClick(item) {
         if (this.route === 'base') {
-          // 跳转到产品详情重新填写
-          // this.$store.dispatch('InitApplyData', item).then(() => {
-          //   this.$router.push({ name: 'ProductDetail' })
-          // })
+          // 保存用户之前在产品详情页填写的信息
+          this.SaveApplyInfo({
+            amount: item.amount,
+            deadline: item.deadline
+          })
+          // 先把个人申请信息保存下来
+          this.SavePersonalInfo(item.personalInformation).then(() => {
+            // 跳转到产品详情重新填写
+            this.$router.push({ path: `/product/detail/${item.product.id}` })
+          })
         } else {
           // 详情
           this.SavePersonalInfo(item.personalInformation).then(() => {

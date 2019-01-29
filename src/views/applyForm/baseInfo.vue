@@ -121,14 +121,6 @@
       </div>
     </template>
     <template v-if="step === 2">
-      <!-- <div class="notice-bar">
-        <div class="icon">
-          <md-icon name="circle-alert" size="lg"></md-icon>
-        </div>
-        <div class="msg">
-          <p>我方将对您的征信及大数据进行相关查询，支付查询费用50元，支付后进入初审环节。</p>
-        </div>
-      </div> -->
       <md-notice-bar>我方将对您的征信进行相关查询，支付查询费用50元</md-notice-bar>
       <md-field title="授权查询费用:" class="step-two__field">
         <md-input-item
@@ -192,8 +184,7 @@
     Cashier,
     Dialog,
     ActivityIndicator
-  }
-  from 'mand-mobile'
+  } from 'mand-mobile'
   import { mapGetters, mapActions } from 'vuex'
   import imageProcessor from 'mand-mobile/components/image-reader/image-processor'
   import InputValidate from "@/components/InputValidate/index.vue"
@@ -294,7 +285,20 @@
     },
     created() {
       if (this.personalInfo) {
-        this.ruleForm = deepClone(this.personalInfo)
+        const personalInfo = this.personalInfo
+        const front = personalInfo.idCardFrontPhoto
+        const frontType = personalInfo.idCardFrontPhotoContentType
+
+        const back = personalInfo.idCardBackPhoto
+        const backType = personalInfo.idCardBackPhotoContentType
+
+        this.ruleForm = deepClone(personalInfo)
+        // 身份证正面照
+        this.imageList.readerFront.push(`data:${frontType};base64,${front}`)
+        this.imageList.readerFront.push(frontType)
+        // 身份证反面照
+        this.imageList.readerBack.push(`data:${backType};base64,${back}`)
+        this.imageList.readerBack.push(backType)
       }
       if (this.applyInfo) {
         this.applyInfo.then(data => {
@@ -311,31 +315,6 @@
       ...mapActions([
         'saveApplyInfoForm'
       ]),
-      // initPageData() {
-      //   if (this.applyInfo) {
-      //     this.applyInfo.then(data => {
-      //       if (data) {
-      //         this.applyData = deepClone(data)
-      //       }
-      //     })
-      //   }
-      //   if (this.personalInfo) {
-      //     this.personalInfo.then(data => {
-      //       if (data) {
-      //         this.ruleForm.id       = data.id
-      //         this.ruleForm.realName = data.name
-      //         this.ruleForm.mobile   = data.realNameMobilePhoneNumber
-      //         this.ruleForm.idcard   = data.identityNumber
-
-      //         this.imageList.readerFront.push(`data:${data.idCardFrontPhotoContentType};base64,${data.idCardFrontPhoto}`)
-      //         this.imageList.readerFront.push(data.idCardFrontPhotoContentType)
-
-      //         this.imageList.readerBack.push(`data:${data.idCardBackPhotoContentType};base64,${data.idCardBackPhoto}`)
-      //         this.imageList.readerBack.push(data.idCardBackPhotoContentType)
-      //       }
-      //     })
-      //   }
-      // },
       onReaderSelect() {
         Toast.loading('图片读取中...')
       },
@@ -362,7 +341,6 @@
         this.$validator.validateAll().then((valid) => {
           if (valid) {
             // 照片验证
-            console.log(this.imageList)
             if (this.imageList.readerFront.length < 2 &&
               this.imageList.readerBack.length < 2) {
               Toast.info('请上传身份证正反面照片！')

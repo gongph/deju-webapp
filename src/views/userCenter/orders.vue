@@ -18,7 +18,7 @@
             </md-activity-indicator>
           </template>
         </div>
-        <!-- 已通过 -->
+        <!-- 初审通过 -->
         <div class="auditeds">
           <order-item
             :data="auditeds"
@@ -27,7 +27,7 @@
             route="more"
           />
         </div>
-        <!-- 未通过 -->
+        <!-- 初审失败 -->
         <div class="nopass">
           <order-item
             :data="nopasses"
@@ -36,7 +36,7 @@
             route="base"
           />
         </div>
-        <!-- 已完成 -->
+        <!-- 终审通过 -->
         <div class="finished">
           <order-item
             :data="finished"
@@ -44,7 +44,7 @@
             no-data-text="暂无已完成数据"
           />
         </div>
-        <!-- 未完成 -->
+        <!-- 终审失败 -->
         <div class="nofinish">
           <order-item
             :data="nofinish"
