@@ -437,7 +437,7 @@
       saveApplyInfo(payed) {
         const applyInfoForm = Object.assign({}, this.curApplyInfo, {
           paymentMethod: 'ALIPAY',
-          paymentStatus: payed ? 2 : 0,
+          paymentStatus: 0,
           auditStatus: 'PENDINGREVIEW',
           authorizedInquiryFee: 50,
           orderStatus: '',
