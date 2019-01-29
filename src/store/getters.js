@@ -2,15 +2,11 @@ import localforage from 'localforage'
 
 const getters = {
   token: state => state.user.token,
-  curProd: () => {
-    return localforage.getItem('curProd')
+  product: state => state.product.product,
+  applyInfo: () => {
+    return localforage.getItem('cur_apply_info')
   },
-  applyInfo: state => {
-    return localforage.getItem('apply_info')
-  },
-  personalInfo: state => {
-    return localforage.getItem('personal_info')
-  },
+  personalInfo: state => state.product.personalInfo,
   avatar: state => state.user.avatar,
   name: state => state.user.name,
   introduction: state => state.user.introduction,

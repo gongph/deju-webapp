@@ -4,7 +4,7 @@
       <md-notice-bar>为了确保您能通过初步审核，请填写真实信息哦~</md-notice-bar>
       <md-field>
         <input-validate
-          v-model="ruleForm.realName"
+          v-model="ruleForm.name"
           title="真实姓名"
           name="真实姓名"
           placeholder="请输入您的姓名"
@@ -15,7 +15,7 @@
           clearable
         />
         <input-validate
-          v-model="ruleForm.mobile"
+          v-model="ruleForm.realNameMobilePhoneNumber"
           type="phone"
           title="实名手机号"
           name="实名手机号"
@@ -27,7 +27,7 @@
           clearable
         />
         <input-validate
-          v-model="ruleForm.idcard"
+          v-model="ruleForm.identityNumber"
           title="身份证号"
           name="身份证号"
           placeholder="请输入您有效的身份证号"
@@ -160,6 +160,7 @@
         :channels="cashierChannels"
         :payment-amount="cashierAmount"
         payment-describe="征信查询费用"
+        :pay-button-text="payButtonText"
         @select="onCashierSelect"
         @pay="onCashierPay"
         @cancel="onCashierCancel"
@@ -193,12 +194,12 @@
     ActivityIndicator
   }
   from 'mand-mobile'
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
   import imageProcessor from 'mand-mobile/components/image-reader/image-processor'
   import InputValidate from "@/components/InputValidate/index.vue"
   import { Validator } from "vee-validate"
   import { saveApplyInfo } from '@/api/product'
-  import { pay } from '@/api/pay'
+  import { pay, checkPay } from '@/api/pay'
   import { savePersonInfo } from "@/api/product"
    import { deepClone } from "@/utils";
 
@@ -243,6 +244,7 @@
         isCashierCaptcha: false,
         cashierAmount: '50.00',
         cashierResult: 'success',
+        payButtonText: '确定支付',
         cashierChannels: [
           {
             icon: 'cashier-icon-2',
@@ -269,66 +271,77 @@
           ],
         },
         ruleForm: {
-          id: 0,
-          realName: '',
-          mobile: '',
-          idcard: ''
+          name: '',
+          realNameMobilePhoneNumber: '',
+          identityNumber: ''
         },
         payForm: '',
-        product: null,
-        personalData: null,
-        applyData: null
+        // 用户在产品详情页填写的申请信息
+        curApplyInfo: null,
+        applyBaseInfo: null
       }
     },
     computed: {
       ...mapGetters([
         'applyInfo',
         'personalInfo',
-        'curProd',
+        'product',
         'user'
       ]),
       cashier() {
         return this.$refs.cashier
-      }
+      },
     },
     created() {
-      this.initPageData()
+      if (this.personalInfo) {
+        this.ruleForm = deepClone(this.personalInfo)
+      }
+      if (this.applyInfo) {
+        this.applyInfo.then(data => {
+          if (data) {
+            this.curApplyInfo = deepClone(data)
+          }
+        })
+      }
     },
     mounted() {
       document.title = '基本信息录入'
     },
     methods: {
-      initPageData() {
-        if (this.applyInfo) {
-          this.applyInfo.then(data => {
-            if (data) {
-              this.applyData = deepClone(data)
-            }
-          })
-        }
-        if (this.personalInfo) {
-          this.personalInfo.then(data => {
-            if (data) {
-              this.ruleForm.id       = data.id
-              this.ruleForm.realName = data.name
-              this.ruleForm.mobile   = data.realNameMobilePhoneNumber
-              this.ruleForm.idcard   = data.identityNumber
+      ...mapActions([
+        'saveApplyInfoForm'
+      ]),
+      // initPageData() {
+      //   if (this.applyInfo) {
+      //     this.applyInfo.then(data => {
+      //       if (data) {
+      //         this.applyData = deepClone(data)
+      //       }
+      //     })
+      //   }
+      //   if (this.personalInfo) {
+      //     this.personalInfo.then(data => {
+      //       if (data) {
+      //         this.ruleForm.id       = data.id
+      //         this.ruleForm.realName = data.name
+      //         this.ruleForm.mobile   = data.realNameMobilePhoneNumber
+      //         this.ruleForm.idcard   = data.identityNumber
 
-              this.imageList.readerFront.push(`data:${data.idCardFrontPhotoContentType};base64,${data.idCardFrontPhoto}`)
-              this.imageList.readerFront.push(data.idCardFrontPhotoContentType)
+      //         this.imageList.readerFront.push(`data:${data.idCardFrontPhotoContentType};base64,${data.idCardFrontPhoto}`)
+      //         this.imageList.readerFront.push(data.idCardFrontPhotoContentType)
 
-              this.imageList.readerBack.push(`data:${data.idCardBackPhotoContentType};base64,${data.idCardBackPhoto}`)
-              this.imageList.readerBack.push(data.idCardBackPhotoContentType)
-            }
-          })
-        }
-      },
+      //         this.imageList.readerBack.push(`data:${data.idCardBackPhotoContentType};base64,${data.idCardBackPhoto}`)
+      //         this.imageList.readerBack.push(data.idCardBackPhotoContentType)
+      //       }
+      //     })
+      //   }
+      // },
       onReaderSelect() {
         Toast.loading('图片读取中...')
       },
       onReaderComplete(name, { dataUrl, blob, file }) {
         const imageList = []
-        imageProcessor().then(({dataUrl}) => {
+        imageProcessor({ dataUrl }).then(({dataUrl}) => {
           if (dataUrl) {
             imageList.push(dataUrl)
             imageList.push(file.type)
@@ -348,6 +361,7 @@
       handleNext() {
         this.$validator.validateAll().then((valid) => {
           if (valid) {
+            // 照片验证
             if (this.imageList.readerFront.length <= 0 &&
               this.imageList.readerBack.length <= 0) {
               Toast.info('请上传身份证正反面照片！')
@@ -359,39 +373,38 @@
             const pf = this.imageList.readerFront[0]
             const pb = this.imageList.readerBack[0]
 
-            // Save
-            const personalInfo = {
-              name: this.ruleForm.realName,
-              realNameMobilePhoneNumber: this.ruleForm.mobile,
-              identityNumber: this.ruleForm.idcard,
+            // 用户基本信息
+            const applyBaseInfo = this.applyBaseInfo = Object.assign({}, this.ruleForm, {
               idCardFrontPhoto: pf.substring(pf.indexOf(',') + 1, pf.length),
               idCardFrontPhotoContentType: this.imageList.readerFront[1],
               idCardBackPhoto: pb.substring(pb.indexOf(',') + 1, pf.length),
               idCardBackPhotoContentType: this.imageList.readerBack[1],
               user: this.user
-            }
-
-            if (this.ruleForm.id) {
-              personalInfo.id = this.ruleForm.id
-            }
-
-            this.$store.dispatch('SavePersonalInfo', personalInfo).then(() => {
-              const method = this.ruleForm.id ? 'PUT' : 'POST'
-              savePersonInfo(personalInfo, method).then(response => {
-                // 保存当前申请人信息
-                if (response.status === 200 || response.status === 201) {
-                  this.$store.dispatch('SavePersonalInfo', response.data).then(() => {
-                    this.step = 2
-                  })
-                } else {
-                  this.nextLoading = false
-                }
-              }).catch(err => {
-                this.nextLoading = false
-                console.error(err)
-              })
             })
-            .catch(err => {
+
+            // 修改或保存客户基本资料信息
+            const method = applyBaseInfo.id ? 'PUT' : 'POST'
+            savePersonInfo(applyBaseInfo, method).then(response => {
+              if (response.status === 200 || response.status === 201) {
+                // 保存返回的申请人基本信息
+                this.$store.dispatch('SavePersonalInfo', response.data).then(() => {
+                  // 检查当前客户信息是否支付过
+                  this.checkPay({
+                    idcard: applyBaseInfo.identityNumber,
+                    name: applyBaseInfo.name
+                  }).then(resp => {
+                    this.nextLoading = false
+                    // 没有支付过，跳到第二步去
+                    if (resp.status === 200 && !resp.data) {
+                      this.step = 2
+                    } else {
+                      // 直接保存
+                      this.saveApplyInfoForm()
+                    }
+                  })
+                })
+              }
+            }).catch(err => {
               this.nextLoading = false
               console.error(err)
             })
@@ -401,7 +414,6 @@
         })
       },
       handleCashier() {
-        // this.isCashierhow = true
         this.actDialog.open = true
       },
       onActCancel() {
@@ -410,11 +422,12 @@
       onActConfirm() {
         this.actDialog.open = false
         this.isCashierhow = true
-        // this.payLoading = true
       },
-      doPay() {
-        // Save
-        this.$store.dispatch('SaveApplyInfo', {
+      checkPay(data) {
+        return checkPay(data)
+      },
+      saveApplyInfo() {
+        const applyInfoForm = Object.assign({}, this.curApplyInfo, {
           paymentMethod: 'ALIPAY',
           paymentStatus: 0,
           auditStatus: 'PENDINGREVIEW',
@@ -423,33 +436,45 @@
           product: this.product,
           personalInformation: this.personalInfo,
           user: this.user
-        }).then(res => {
-          // 保存成功提交到后台
-          saveApplyInfo(this.applyInfo).then(response => {
-            if (response.status === 201) {
-              this.$store.dispatch('SaveApplyInfo',response.data)
-              pay(this.applyInfo).then(resp => {
-                this.payForm = resp.data
-                this.$nextTick(() => {
-                  document.forms[0].submit()
-                })
+        })
+        saveApplyInfo(applyInfoForm).then(response => {
+          if (response.status === 201) {
+            this.$store.dispatch('saveApplyInfoForm',response.data)
+            // 支付请求
+            pay(response.data).then(resp => {
+              this.payForm = resp.data
+              this.$nextTick(() => {
+                document.forms[0].submit()
               })
-            } else {
-              //this.payLoading = false
-            }
-          }).catch(err => {
-            //this.payLoading = false
-            console.error(err)
-          })
+            })
+          } else {
+          }
+        }).catch(err => {
+          console.error(err)
         })
       },
-      onCashierSelect(item) {
-        console.log(`[Mand Mobile] Select ${JSON.stringify(item)}`)
+      /**
+       * 支付操作
+       */
+      doPay() {
+        this.saveApplyInfo()
       },
+      /**
+       * 选择支付方式触发
+       */
+      onCashierSelect(item) {
+        // console.log(`[Mand Mobile] Select ${JSON.stringify(item)}`)
+      },
+      /**
+       * 点击支付按钮触发
+       */
       onCashierPay(item) {
-        console.log(`[Mand Mobile] Pay ${JSON.stringify(item)}`)
+        this.payButtonText = '支付中...'
         this.doPay()
       },
+      /**
+       * 取消支付触发
+       */
       onCashierCancel() {
         this.timer && clearTimeout(this.timer)
       }

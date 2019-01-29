@@ -92,11 +92,7 @@
       },
       onActConfirm() {
         this.actDialog.open = false
-        localforage.clear().then(() => {
-          this.handleLogout()
-        }).catch(err => {
-          console.error(err)
-        })
+        this.handleLogout()
       }
     }
   }

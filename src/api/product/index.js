@@ -12,6 +12,16 @@ export function getList() {
 }
 
 /**
+ * 根据 id 获取当前产品
+ */
+export function getProductById(id) {
+  return request({
+    url: `/api/products/${id}`,
+    method: 'get'
+  })
+}
+
+/**
  * 提交基本审核资料
  */
 
@@ -20,6 +30,16 @@ export function saveApplyInfo(data) {
     url: '/api/application-infos',
     method: 'post',
     data
+  })
+}
+
+/**
+ * 根据 id 获取申请信息
+ */
+export function getApplyInfoById(id) {
+  return request({
+    url: `/api/application-infos/${id}`,
+    method: 'get'
   })
 }
 
@@ -33,4 +53,15 @@ export function savePersonInfo(data, method = 'POST') {
     method,
     data
   })
+}
+
+/**
+ * 根据 id 获取客户信息
+ */
+
+export function getPersonalInfoById(id) {
+  return request({
+    url: `/api/personal-informations/${id}`,
+    method: 'get'
+  }) 
 }

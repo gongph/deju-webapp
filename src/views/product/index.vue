@@ -122,9 +122,7 @@
         return loanTypes.get(type)
       },
       lookDetail(row) {
-        this.$store.dispatch('SaveCurProduct', row).then(() => {
-          this.$router.push({ name: 'ProductDetail' })
-        })
+        this.$router.push({ path: `/product/detail/${row.id}` })
       },
       handleAlert() {
         alert('系统升级中...')

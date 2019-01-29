@@ -114,7 +114,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
   import { Steps, Icon, Button, Toast } from 'mand-mobile'
   import { formatMoney } from '@/utils'
 
@@ -147,12 +147,11 @@
         deadline: '', // 期限，例如 0.3
         deadlineLabel: '', // 期限字符串，例如：'12个月'
         earn: 0, // 利息
-        product: null
       }
     },
     computed: {
       ...mapGetters([
-        'curProd',
+        'product',
         'applyInfo',
       ]),
       computedEarn() {
@@ -164,31 +163,21 @@
       },
     },
     created() {
-      this.initPageData()
+      const pid = this.$route.params.id
+      if (!pid) {
+        this.$router.push({ path: '/'})
+      } else {
+        this.getProductById(pid)
+      }
     },
     mounted() {
       document.title = '产品详情'
     },
     methods: {
-      initPageData() {
-        if (this.curProd) {
-          this.curProd.then(value => {
-            this.product = value
-          })
-        }
-        if (this.applyInfo) {
-          this.applyInfo.then(data => {
-            console.log(data, 111)
-            if (data) {
-              this.amount = data.amount
-              this.deadline = data.deadline
-              this.deadlineLabel = this.deadline ? this.deadline + '个月' : ''
-            }
-          })
-        }
-      },
+      ...mapActions([
+        'getProductById'
+      ]),
       handleApply() {
-
         if (!Number(this.amount) && !Number(this.deadlineLabel)) {
           Toast.info('申请金额和期限不能为空！')
           return
@@ -197,7 +186,6 @@
           amount: this.amount,
           deadline: this.term
         }).then(response => {
-          localforage.removeItem('apply_info')
           this.$router.push({ path: '/apply/base' })
         }).catch(err => {
           console.error(err)
