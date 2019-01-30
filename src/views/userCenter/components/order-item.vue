@@ -9,6 +9,11 @@
           </div>
         </div>
         <div class="title">{{item.product.title}}</div>
+        <template v-if="item.auditReason">
+          <div class="title-right">
+            <a class="audit-reason" href="javascript:;" @click="showReason(item.auditReason)">查看原因</a>
+          </div>
+        </template>
       </div>
       <!-- content -->
       <div class="item-content__wrapper">
@@ -39,6 +44,15 @@
         </div>
       </div>
     </div>
+
+    <!-- 查看原因弹框 -->
+    <md-dialog
+      :closable="true"
+      v-model="reasonDialog.open"
+      :btns="reasonDialog.btns"
+    >
+      {{ auditReason }}
+    </md-dialog>
   </div>
   <div class="empty-data__wrapper" v-else>
     <md-result-page :text="noDataText"/>
@@ -47,7 +61,7 @@
 
 <script>
   import { mapActions } from 'vuex'
-  import { ResultPage, Button } from 'mand-mobile'
+  import { ResultPage, Button, Dialog } from 'mand-mobile'
   import { loanTypes, formatMoney } from '@/utils'
 
   export default {
@@ -55,11 +69,21 @@
     /* eslint-disable */
     components: {
       [ResultPage.name]: ResultPage,
-      [Button.name]: Button
+      [Button.name]: Button,
+      [Dialog.name]: Dialog
     },
     data() {
       return {
-        //
+        auditReason: '',
+        reasonDialog: {
+          open: false,
+          btns: [
+            {
+              text: '知道了',
+              handler: this.onBasicConfirm,
+            }
+          ]
+        }
       }
     },
     props: {
@@ -114,6 +138,13 @@
           })
         }
       },
+      onReasonConfirm() {
+        this.reasonDialog.open = false
+      },
+      showReason(reason) {
+        this.auditReason = reason
+        this.reasonDialog.open = true
+      },
       formatMoney(money) {
         return formatMoney(money)
       },
@@ -149,6 +180,9 @@
       color: gray;
       .red {
         color: #FF6666;
+      }
+      .audit-reason {
+        color: #fc9153;
       }
     }
 
