@@ -3,7 +3,8 @@
     <div class="header">
       <div class="logo-wrapper">
         <div class="logo">
-          <svg-icon icon-class="logo"/>
+          <!-- <svg-icon icon-class="logo"/> -->
+          <img src="../../assets/img/logo.png" class="img-logo">
         </div>
         <div class="intro">借钱就找德聚金融</div>
       </div>
@@ -95,6 +96,10 @@
     text-align: center;
     font-size: 120px;
     line-height: 150px;
+    .img-logo {
+      max-width: 200px;
+      border-radius: 50%;
+    }
   }
 
   .intro {
