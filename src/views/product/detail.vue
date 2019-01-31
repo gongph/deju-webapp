@@ -116,7 +116,7 @@
 <script>
   import { mapGetters, mapActions } from 'vuex'
   import { Steps, Icon, Button, Toast } from 'mand-mobile'
-  import { formatMoney } from '@/utils'
+  import { formatMoney, productRates } from '@/utils'
 
   export default {
     name: 'ProductDetail',
@@ -135,12 +135,6 @@
           { name: '3.代理商审核' },
           { name: '4.线下放款' }
         ],
-        rates: [
-          { label: 3, value: 3, rate: 0.0158 },
-          { label: 6, value: 6, rate: 0.0128 },
-          { label: 12, value: 12, rate: 0.0098 },
-          { label: 24, value: 24, rate: 0.0078 }
-        ],
         amount: '', // 金额
         rate: 0, // 利率
         term: 0, // 期限
@@ -153,7 +147,12 @@
       ...mapGetters([
         'product',
         'applyInfo',
-      ])
+      ]),
+      rates() {
+        if (!this.product) return []
+        const title = this.product.title
+        return productRates[title]
+      }
     },
     created() {
       const pid = this.$route.params.id
