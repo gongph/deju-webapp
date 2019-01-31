@@ -12,35 +12,38 @@
       </div>
       <div class="product-list__inner">
         <div class="product-list">
-          <!-- 1 -->
-          <div v-for="(item, $index) of list" :key="$index" class="list-item">
-            <!-- title -->
-            <div class="item-title__wrapper">
-              <div class="image">
-                <img :src="'data:image/png;base64,' + item.icon" class="img" style="width: 80%;">
+          <template v-if="list.length > 0">
+            <div v-for="(item, $index) of list" :key="$index" class="list-item">
+              <!-- title -->
+              <div class="item-title__wrapper">
+                <div class="image">
+                  <img :src="'data:image/png;base64,' + item.icon" class="img" style="width: 80%;">
+                </div>
+                <div class="title">{{ item.title }}</div>
+                <div class="title-right">已申请人数 <span class="red">{{ item.numberOfApplicants }}</span> 人</div>
               </div>
-              <div class="title">{{ item.title }}</div>
-              <div class="title-right">已申请人数 <span class="red">{{ item.numberOfApplicants }}</span> 人</div>
-            </div>
-            <!-- content -->
-            <div class="item-content__wrapper">
-              <div class="item">
-                <div class="limit">{{ formatMoney(item.loanRangeStart) }}-{{ formatMoney(item.loanRangeEnd) }}</div>
-                <div class="limit-desc">贷款额度(元)</div>
-              </div>
-              <div class="item item-center">
-                <div class="rate">参考月息: {{ item.referenceMonthInterest }}%</div>
-                <div class="loan-type">{{ formatType(item.loanType) }}</div>
-                <div class="loan-time">借款期限: {{ item.termRangeStart }}月-{{ item.termRangeEnd }}月</div>
-              </div>
-              <div class="item">
-                <div class="apply-btn__wrapper">
-                  <md-button type="ghost-primary" @click="lookDetail(item)">查看详情</md-button>
+              <!-- content -->
+              <div class="item-content__wrapper">
+                <div class="item">
+                  <div class="limit">{{ formatMoney(item.loanRangeStart) }}-{{ formatMoney(item.loanRangeEnd) }}</div>
+                  <div class="limit-desc">贷款额度(元)</div>
+                </div>
+                <div class="item item-center">
+                  <div class="rate">参考月息: {{ item.referenceMonthInterest }}%</div>
+                  <div class="loan-type">{{ formatType(item.loanType) }}</div>
+                  <div class="loan-time">借款期限: {{ item.termRangeStart }}月-{{ item.termRangeEnd }}月</div>
+                </div>
+                <div class="item">
+                  <div class="apply-btn__wrapper">
+                    <md-button type="ghost-primary" @click="lookDetail(item)">查看详情</md-button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
+          </template>
+          <template v-else>
+            <skeleton/>
+          </template>
         </div>
       </div>
     </div>
@@ -72,17 +75,19 @@
 
     <!-- Footer -->
     <div class="footer-wrapper">
-      <p>全国统一客服热线: 0755-1234 1818 商务合作: bd@deju.cn</p>
-      <p>Copyright @ 2017-2018 Deju.All Rights Reserved</p>
-      <img src="/img/qrcode.png">
-      <p>长按识别二维码关注微信公众号: 德聚金融</p>
+      <p>商务合作: boyuanziben@163.com</p>
+      <p>Copyright @ 2018-{{new Date().getFullYear()}} All Rights Reserved</p>
+      <div class="qrcode">
+        <img src="/img/qrcode.jpg">
+      </div>
+      <p>长按识别二维码关注微信公众号: 渤源资本</p>
     </div>
   </div>
 </template>
 
 <script>
   import { Button } from 'mand-mobile'
-  import { Banner, Navbar } from './components'
+  import { Banner, Navbar, Skeleton } from './components'
   import { getList } from '@/api/product'
   import { loanTypes, formatMoney } from '@/utils'
 
@@ -92,7 +97,8 @@
     components: {
       [Button.name]: Button,
       Banner,
-      Navbar
+      Navbar,
+      Skeleton
     },
     data() {
       return {
@@ -275,6 +281,7 @@
     }
     & img {
       margin: 20px 0 5px 0;
+      max-width: 100%;
     }
   }
 </style>
