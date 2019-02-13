@@ -45,9 +45,6 @@
         loadiing:false
       }
     },
-    mounted() {
-      document.title = "关于"
-    },
     created(){
       this.getList()
     },

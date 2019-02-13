@@ -173,9 +173,6 @@
         })
       }
     },
-    mounted() {
-      document.title = '产品详情'
-    },
     watch: {
       amount: 'computedEarn',
       deadline: 'computedEarn'

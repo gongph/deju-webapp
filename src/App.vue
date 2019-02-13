@@ -6,7 +6,10 @@
 
 <script>
   export default {
-    name: 'App'
+    name: 'App',
+    mounted() {
+      document.title = "渤源资本咨询服务"
+    }
   }
 </script>
 

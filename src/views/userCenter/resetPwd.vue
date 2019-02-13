@@ -75,9 +75,6 @@
         }
       }
     },
-    mounted() {
-      document.title = '修改密码'
-    },
     methods: {
       handleSave() {
         this.$validator.validateAll().then((valid) => {

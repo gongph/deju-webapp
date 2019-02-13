@@ -90,7 +90,6 @@
     },
     mounted() {
       const self = this
-      document.title = '登录'
       this.screenHeight = this.originHeight = document.body.clientHeight
       window.onresize = () => {
         return (() => {

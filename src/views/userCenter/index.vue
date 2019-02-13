@@ -75,9 +75,6 @@
         'name'
       ])
     },
-    mounted() {
-      document.title = '个人中心'
-    },
     methods: {
       handleRoute(path) {
         this.$router.push({ path })

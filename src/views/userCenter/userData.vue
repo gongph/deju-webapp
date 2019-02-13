@@ -55,9 +55,6 @@
         'user'
       ])
     },
-    mounted() {
-      document.title = '修改资料'
-    },
     methods: {
       handleSave() {
         this.$validator.validateAll().then((valid) => {

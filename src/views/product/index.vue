@@ -108,9 +108,6 @@
     created() {
       this.getList()
     },
-    mounted() {
-      document.title = "贷款"
-    },
     methods: {
       getList() {
         getList().then(response => {

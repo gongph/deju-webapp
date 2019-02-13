@@ -109,9 +109,6 @@
     created() {
       this.getList()
     },
-    mounted() {
-      document.title = '我的工单'
-    },
     methods: {
       getList() {
         this.$store.dispatch('GetOrders').then(response => {

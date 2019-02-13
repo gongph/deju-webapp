@@ -308,9 +308,6 @@
         })
       }
     },
-    mounted() {
-      document.title = '基本信息录入'
-    },
     methods: {
       ...mapActions([
         'saveApplyInfoForm'
