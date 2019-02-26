@@ -253,7 +253,8 @@
               handler: this.onActConfirm,
             },
           ],
-        }
+        },
+        personalData: null
       }
     },
     computed: {
@@ -262,7 +263,7 @@
         'user'
       ]),
       userInfo() {
-        return deepClone(this.personalInfo)
+        return deepClone(this.personalInfo || {})
       }
     },
     created() {

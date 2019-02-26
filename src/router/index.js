@@ -20,7 +20,7 @@ export default new Router({
       component: () => import('@/views/product/index.vue')
     },
     {
-      path: '/product/detail',
+      path: '/product/detail/:id',
       name: 'ProductDetail',
       component: () => import('@/views/product/detail.vue')
     },

@@ -75,9 +75,6 @@
         'name'
       ])
     },
-    mounted() {
-      document.title = '个人中心'
-    },
     methods: {
       handleRoute(path) {
         this.$router.push({ path })
@@ -92,11 +89,7 @@
       },
       onActConfirm() {
         this.actDialog.open = false
-        localforage.clear().then(() => {
-          this.handleLogout()
-        }).catch(err => {
-          console.error(err)
-        })
+        this.handleLogout()
       }
     }
   }

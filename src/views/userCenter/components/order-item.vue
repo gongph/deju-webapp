@@ -9,6 +9,11 @@
           </div>
         </div>
         <div class="title">{{item.product.title}}</div>
+        <template v-if="item.auditReason">
+          <div class="title-right">
+            <a class="audit-reason" href="javascript:;" @click="showReason(item.auditReason)">查看原因</a>
+          </div>
+        </template>
       </div>
       <!-- content -->
       <div class="item-content__wrapper">
@@ -31,17 +36,23 @@
         </div>
         <div class="item">
           <div class="apply-btn__wrapper">
-            <template v-if="route === 'more'">
-              <md-button type="ghost-primary" @click="handleClick(item)">去完善资料</md-button>
-            </template>
-            <template v-else-if="route === 'base'">
-              <md-button type="ghost-primary" @click="handleClick(item)">重填资料</md-button>
+            <template v-if="route">
+              <md-button type="ghost-primary" @click="handleClick(item)">{{ buttonText }}</md-button>
             </template>
             <template v-else>{{statusText}}</template>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- 查看原因弹框 -->
+    <md-dialog
+      :closable="true"
+      v-model="reasonDialog.open"
+      :btns="reasonDialog.btns"
+    >
+      {{ auditReason }}
+    </md-dialog>
   </div>
   <div class="empty-data__wrapper" v-else>
     <md-result-page :text="noDataText"/>
@@ -49,7 +60,8 @@
 </template>
 
 <script>
-  import { ResultPage, Button } from 'mand-mobile'
+  import { mapActions } from 'vuex'
+  import { ResultPage, Button, Dialog } from 'mand-mobile'
   import { loanTypes, formatMoney } from '@/utils'
 
   export default {
@@ -57,11 +69,21 @@
     /* eslint-disable */
     components: {
       [ResultPage.name]: ResultPage,
-      [Button.name]: Button
+      [Button.name]: Button,
+      [Dialog.name]: Dialog
     },
     data() {
       return {
-        //
+        auditReason: '',
+        reasonDialog: {
+          open: false,
+          btns: [
+            {
+              text: '知道了',
+              handler: this.onBasicConfirm,
+            }
+          ]
+        }
       }
     },
     props: {
@@ -80,21 +102,48 @@
       route: {
         type: String,
         default: ''
+      },
+      buttonText: {
+        type: String,
+        default: ''
       }
     },
     methods: {
+      ...mapActions([
+        'SavePersonalInfo',
+        'saveApplyInfoForm',
+        'SaveApplyInfo'
+      ]),
       handleClick(item) {
         if (this.route === 'base') {
-          // 跳转到产品详情重新填写
-          this.$store.dispatch('InitApplyData', item).then(() => {
-            this.$router.push({ name: 'ProductDetail' })
+          // 保存用户之前在产品详情页填写的信息
+          this.SaveApplyInfo({
+            amount: item.amount,
+            deadline: item.deadline
+          })
+          // 先把个人申请信息保存下来
+          this.SavePersonalInfo(item.personalInformation).then(() => {
+            // 跳转到产品详情重新填写
+            this.$router.push({ path: `/product/detail/${item.product.id}` })
           })
         } else {
           // 详情
-          this.$store.dispatch('SavePersonalInfo', item.personalInformation || {}).then(() => {
-            this.$router.push({ name: 'MoreInfoForm', params: { auth: true }})
+          this.SavePersonalInfo(item.personalInformation).then(() => {
+            this.$router.push({
+              name: 'MoreInfoForm',
+              params: {
+                auth: true
+              }
+            })
           })
         }
+      },
+      onReasonConfirm() {
+        this.reasonDialog.open = false
+      },
+      showReason(reason) {
+        this.auditReason = reason
+        this.reasonDialog.open = true
       },
       formatMoney(money) {
         return formatMoney(money)
@@ -131,6 +180,9 @@
       color: gray;
       .red {
         color: #FF6666;
+      }
+      .audit-reason {
+        color: #fc9153;
       }
     }
 

@@ -18,25 +18,25 @@
             </md-activity-indicator>
           </template>
         </div>
-        <!-- 已通过 -->
+        <!-- 初审通过 -->
         <div class="auditeds">
           <order-item
             :data="auditeds"
-            status-text="初审通过"
+            button-text="完善资料"
             no-data-text="暂无已通过数据"
             route="more"
           />
         </div>
-        <!-- 未通过 -->
+        <!-- 初审失败 -->
         <div class="nopass">
           <order-item
             :data="nopasses"
-            status-text="初审失败"
+            button-text="重填资料"
             no-data-text="暂无未通过数据"
             route="base"
           />
         </div>
-        <!-- 已完成 -->
+        <!-- 终审通过 -->
         <div class="finished">
           <order-item
             :data="finished"
@@ -44,11 +44,11 @@
             no-data-text="暂无已完成数据"
           />
         </div>
-        <!-- 已完成 -->
+        <!-- 终审失败 -->
         <div class="nofinish">
           <order-item
             :data="nofinish"
-            status-text="终审失败"
+            button-text="重填资料"
             no-data-text="暂无未完成数据"
             route="more"
           />
@@ -108,9 +108,6 @@
     },
     created() {
       this.getList()
-    },
-    mounted() {
-      document.title = '我的工单'
     },
     methods: {
       getList() {

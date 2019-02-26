@@ -38,7 +38,6 @@
       }
     },
     mounted() {
-      document.title = "等待支付结果页面"
       this.handlePayResult()
     },
     methods: {

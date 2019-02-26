@@ -1,5 +1,6 @@
 import { loginByUserName, getUserInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import localforage from 'localforage'
 
 const user = {
   state: {
@@ -53,6 +54,7 @@ const user = {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         removeToken()
+        localforage.clear()
         resolve()
       })
     },

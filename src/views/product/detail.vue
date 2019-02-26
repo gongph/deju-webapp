@@ -12,8 +12,8 @@
       <div class="detail-inner">
         <div class="desc-grid">
           <div class="grid-item">申请人数: {{ product.numberOfApplicants }}人</div>
-          <template v-if="computedEarn">
-            <div class="grid-item">利息: {{ computedEarn }}元</div>
+          <template v-if="earn">
+            <div class="grid-item">利息: {{ earn }}元</div>
           </template>
           <template v-else>
             <div class="grid-item">
@@ -114,9 +114,9 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
   import { Steps, Icon, Button, Toast } from 'mand-mobile'
-  import { formatMoney } from '@/utils'
+  import { formatMoney, productRates } from '@/utils'
 
   export default {
     name: 'ProductDetail',
@@ -135,60 +135,61 @@
           { name: '3.代理商审核' },
           { name: '4.线下放款' }
         ],
-        rates: [
-          { label: 3, value: 3, rate: 0.0158 },
-          { label: 6, value: 6, rate: 0.0128 },
-          { label: 12, value: 12, rate: 0.0098 },
-          { label: 24, value: 24, rate: 0.0078 }
-        ],
         amount: '', // 金额
         rate: 0, // 利率
         term: 0, // 期限
         deadline: '', // 期限，例如 0.3
         deadlineLabel: '', // 期限字符串，例如：'12个月'
         earn: 0, // 利息
-        product: null
       }
     },
     computed: {
       ...mapGetters([
-        'curProd',
+        'product',
         'applyInfo',
       ]),
-      computedEarn() {
-        if (!this.amount || !this.deadline) {
-          return
-        }
-        const rate = this.rate || 0
-        return (Number(this.amount) * rate * this.deadline).toFixed(2)
-      },
+      rates() {
+        if (!this.product) return []
+        const title = this.product.title
+        return productRates[title]
+      }
     },
     created() {
-      this.initPageData()
+      const pid = this.$route.params.id
+      if (!pid) {
+        this.$router.push({ path: '/'})
+      } else {
+        this.getProductById(pid)
+      }
+      if (this.applyInfo) {
+        this.applyInfo.then(data => {
+          if (data) {
+            this.amount = data.amount
+            this.deadline = data.deadline
+            this.rate = this.findRateByLabel(data.deadline)
+            this.term = data.deadline
+            this.deadlineLabel = `${data.deadline}个月`
+          }
+        })
+      }
     },
-    mounted() {
-      document.title = '产品详情'
+    watch: {
+      amount: 'computedEarn',
+      deadline: 'computedEarn'
     },
     methods: {
-      initPageData() {
-        if (this.curProd) {
-          this.curProd.then(value => {
-            this.product = value
-          })
-        }
-        if (this.applyInfo) {
-          this.applyInfo.then(data => {
-            console.log(data, 111)
-            if (data) {
-              this.amount = data.amount
-              this.deadline = data.deadline
-              this.deadlineLabel = this.deadline ? this.deadline + '个月' : ''
-            }
-          })
-        }
+      ...mapActions([
+        'getProductById'
+      ]),
+      /**
+       * 计算利息
+       */
+      computedEarn() {
+        if (!this.amount || !this.deadline) return
+        const rate = this.rate || 0
+        this.earn = (Number(this.amount) * rate * this.deadline).toFixed(2)
       },
       handleApply() {
-
         if (!Number(this.amount) && !Number(this.deadlineLabel)) {
           Toast.info('申请金额和期限不能为空！')
           return
@@ -197,7 +198,6 @@
           amount: this.amount,
           deadline: this.term
         }).then(response => {
-          localforage.removeItem('apply_info')
           this.$router.push({ path: '/apply/base' })
         }).catch(err => {
           console.error(err)
@@ -222,6 +222,16 @@
       },
       formatMoney(money) {
         return formatMoney(money)
+      },
+      findRateByLabel(label) {
+        const rates = this.rates
+        const len = rates.length
+        for (let i = 0; i < len; i++) {
+          const obj = rates[i]
+          if (obj.label === label) {
+            return obj.rate
+          }
+        }
       }
     }
   }

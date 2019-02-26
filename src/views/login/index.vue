@@ -32,7 +32,8 @@
           </div>
 
           <div class="forget-pwd__wrapper">
-            <router-link to="/resetpwd">忘记密码?</router-link>
+            <!-- <router-link to="/resetpwd">忘记密码?</router-link> -->
+            <a href="javascript:;" @click="forgetPwd">忘记密码?</a>
           </div>
 
         </div>
@@ -89,7 +90,6 @@
     },
     mounted() {
       const self = this
-      document.title = '登录'
       this.screenHeight = this.originHeight = document.body.clientHeight
       window.onresize = () => {
         return (() => {
@@ -115,6 +115,9 @@
             }, 3000)
           })
         }
+      },
+      forgetPwd() {
+        Toast.info('请联系管理员重置密码~')
       }
     }
   }
