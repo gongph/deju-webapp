@@ -6,7 +6,7 @@
           <!-- <svg-icon icon-class="logo"/> -->
           <img src="../../assets/img/logo.png" class="img-logo">
         </div>
-        <div class="intro">借钱就找德聚金融</div>
+        <div class="intro">最专业的咨询平台</div>
       </div>
     </div>
 

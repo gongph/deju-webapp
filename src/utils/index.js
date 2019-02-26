@@ -4,7 +4,7 @@
  */
 
 export const loanTypes = new Map([
-  ['SMALLMICROLOAN', '小微贷款']
+  ['SMALLMICROLOAN', '信息服务']
 ])
 
 /**

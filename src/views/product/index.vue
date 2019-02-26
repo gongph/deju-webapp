@@ -1,13 +1,13 @@
 <template>
   <div class="product-Index__wrapper">
     <!-- Banner -->
-    <banner/>
+    <!-- <banner/> -->
     <!-- Navbar -->
     <navbar/>
     <!-- product list -->
     <div class="product-list__wrapper">
       <div class="header-wrapper">
-        <div class="title">产品列表</div>
+        <div class="title">咨询列表</div>
         <div class="roll-wrapper"></div>
       </div>
       <div class="product-list__inner">
@@ -26,12 +26,12 @@
               <div class="item-content__wrapper">
                 <div class="item">
                   <div class="limit">{{ formatMoney(item.loanRangeStart) }}-{{ formatMoney(item.loanRangeEnd) }}</div>
-                  <div class="limit-desc">贷款额度(元)</div>
+                  <div class="limit-desc">服务费(元)</div>
                 </div>
                 <div class="item item-center">
-                  <div class="rate">参考月息: {{ item.referenceMonthInterest }}%</div>
+                  <div class="rate">参考费用: {{ item.referenceMonthInterest }}%</div>
                   <div class="loan-type">{{ formatType(item.loanType) }}</div>
-                  <div class="loan-time">借款期限: {{ item.termRangeStart }}月-{{ item.termRangeEnd }}月</div>
+                  <div class="loan-time">最低期限: {{ item.termRangeStart }}月-{{ item.termRangeEnd }}月</div>
                 </div>
                 <div class="item">
                   <div class="apply-btn__wrapper">
@@ -49,15 +49,15 @@
     </div>
 
     <!-- Tool -->
-    <div class="tool-wrapper">
-      <div class="tool-header">贷款小工具</div>
+    <!-- <div class="tool-wrapper">
+      <div class="tool-header">适用小工具</div>
       <div class="tool-inner">
         <div class="item">
           <div class="item-icon">
             <svg-icon icon-class="calculator"/>
           </div>
           <div class="item-content" @click="handleAlert">
-            <div class="title">网贷计算器</div>
+            <div class="title">计算器</div>
             <div class="subtitle">可靠的网贷借款平台</div>
           </div>
         </div>
@@ -71,7 +71,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Footer -->
     <div class="footer-wrapper">
@@ -80,7 +80,7 @@
       <div class="qrcode">
         <img src="/img/qrcode.jpg">
       </div>
-      <p>长按识别二维码关注微信公众号: 渤源资本</p>
+      <!-- <p>长按识别二维码关注微信公众号: 渤源资本</p> -->
     </div>
   </div>
 </template>

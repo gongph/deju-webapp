@@ -28,6 +28,7 @@
 
   export default {
     name: 'PayNoticePage',
+    /* eslint-disable */
     components: {
       [ActivityIndicator.name]: ActivityIndicator
     },

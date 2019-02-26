@@ -21,7 +21,7 @@
             </div>
           </template>
           <div class="grid-item">
-            贷款范围: {{ formatMoney(product.loanRangeStart )}}-{{ formatMoney(product.loanRangeEnd )}}
+            费用范围: {{ formatMoney(product.loanRangeStart )}}-{{ formatMoney(product.loanRangeEnd )}}
           </div>
           <div class="grid-item">
             期限范围: {{ product.termRangeStart }}-{{ product.termRangeEnd }}个月
@@ -133,7 +133,7 @@
           { name: '1.基本信息' },
           { name: '2.支付' },
           { name: '3.代理商审核' },
-          { name: '4.线下放款' }
+          { name: '4.线下服务' }
         ],
         amount: '', // 金额
         rate: 0, // 利率

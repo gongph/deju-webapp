@@ -4,19 +4,19 @@
       <div class="title">
         <svg-icon icon-class="flash"/>
       </div>
-      <div class="subtitle">快易贷</div>
+      <div class="subtitle">快咨询</div>
     </div>
     <div class="item">
       <div class="title">
         <svg-icon icon-class="tie"/>
       </div>
-      <div class="subtitle">精英贷</div>
+      <div class="subtitle">数据精英</div>
     </div>
     <div class="item">
       <div class="title">
         <svg-icon icon-class="wallet"/>
       </div>
-      <div class="subtitle">任性贷</div>
+      <div class="subtitle">任咨询</div>
     </div>
     <div class="item">
       <div class="title">
