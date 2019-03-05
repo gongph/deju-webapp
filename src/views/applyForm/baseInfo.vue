@@ -448,6 +448,7 @@
                 this.$nextTick(() => {
                   // 唤起支付页面
                   //document.forms[0].submit()
+                  document.location.href = resp.data.mweb_url;
                 })
               })
             }
