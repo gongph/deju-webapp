@@ -6,7 +6,7 @@
           <!-- <svg-icon icon-class="logo"/> -->
           <img src="../../assets/img/logo.png" class="img-logo">
         </div>
-        <div class="intro">借钱就找德聚金融</div>
+        <div class="intro">借钱就找渤源资本</div>
       </div>
     </div>
 
@@ -31,19 +31,49 @@
           <a href="tel: 400-100-1234" class="telphone">400-100-1234</a>
         </div>
       </div>
+      <div class="list-item">
+        <div class="label">运营微信号1</div>
+        <div class="text">
+          <a href="javascript:;" class="telphone" @click="handleClick(1, $event)">点击获取</a>
+        </div>
+      </div>
+      <div class="list-item">
+        <div class="label">运营微信号2</div>
+        <div class="text">
+          <a href="javascript:;" class="telphone" @click="handleClick(2, $event)">点击获取</a>
+        </div>
+      </div>
     </div>
+
+    <md-popup v-model="isPopupShow1">
+      <div class="md-example-popup md-example-popup-center">
+        <img src="../../assets/img/service1.png" alt="运营1">
+      </div>
+    </md-popup>
+    <md-popup v-model="isPopupShow2">
+      <div class="md-example-popup md-example-popup-center">
+        <img src="../../assets/img/service2.png" alt="运营2">
+      </div>
+    </md-popup>
+
   </div>
 
 </template>
 
 <script>
+  import { Popup } from 'mand-mobile'
   export default {
     data() {
       return {
-        //
+        isPopupShow1: false,
+        isPopupShow2: false,
+        service2: '../../assets/img/service2.png',
         abouts: [],
         loadiing:false
       }
+    },
+    components: {
+      [Popup.name]: Popup
     },
     created(){
       this.getList()
@@ -51,7 +81,7 @@
     methods:{
       getList(){
         this.$store.dispatch("GetAbouts").then(response=>{
-          if(response&&response.status==200){
+          if(response && response.status == 200){
             this.abouts = response.data;
           }
           setTimeout(()=>{
@@ -60,12 +90,29 @@
         }).catch(err=>{
           console.error(err);
         })
+      },
+      handleClick(val) {
+        // TODO: 目前微信号是写死的，可以后台用户自己上传
+        if (val === 1) {
+          this.isPopupShow1 = true
+        } else {
+          this.isPopupShow2 = true
+        }
       }
     }
   }
 </script>
 
 <style lang="scss" scoped>
+  .md-example-popup {
+    position: relative;
+    font-size: 24px;
+    background: #fff;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 50px;
+    border-radius: 4px;
+  }
   .about-wrapper {
     width: 100vw;
     height: 100vh;
