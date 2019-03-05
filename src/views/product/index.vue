@@ -26,10 +26,10 @@
               <div class="item-content__wrapper">
                 <div class="item">
                   <div class="limit">{{ formatMoney(item.loanRangeStart) }}-{{ formatMoney(item.loanRangeEnd) }}</div>
-                  <div class="limit-desc">贷款额度(元)</div>
+                  <div class="limit-desc">金额(元)</div>
                 </div>
                 <div class="item item-center">
-                  <div class="rate">参考月息: {{ item.referenceMonthInterest }}%</div>
+                  <div class="rate">参考利率: {{ item.referenceMonthInterest }}%</div>
                   <div class="loan-type">{{ formatType(item.loanType) }}</div>
                   <div class="loan-time">借款期限: {{ item.termRangeStart }}月-{{ item.termRangeEnd }}月</div>
                 </div>

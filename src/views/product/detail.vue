@@ -21,7 +21,7 @@
             </div>
           </template>
           <div class="grid-item">
-            贷款范围: {{ formatMoney(product.loanRangeStart )}}-{{ formatMoney(product.loanRangeEnd )}}
+            额度范围: {{ formatMoney(product.loanRangeStart )}}-{{ formatMoney(product.loanRangeEnd )}}
           </div>
           <div class="grid-item">
             期限范围: {{ product.termRangeStart }}-{{ product.termRangeEnd }}个月
