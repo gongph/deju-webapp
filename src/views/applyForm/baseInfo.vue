@@ -226,6 +226,7 @@
         step: 1,
         nextLoading: false,
         payLoading: false,
+        payWay: 'WEIXINPAY',
         baseform: {},
         imageList: {
           readerFront: [],
@@ -238,15 +239,15 @@
         payButtonText: '确定支付',
         cashierChannels: [
           {
-            icon: 'cashier-icon-2',
-            text: '支付宝支付',
-            value: 'ALIPAY'
-          },
-          {
             icon: 'cashier-icon-3',
             text: '微信支付',
-            value: 'WXPAY'
-          }
+            value: 'WEIXINPAY'
+          },
+          // {
+          //   icon: 'cashier-icon-2',
+          //   text: '支付宝支付',
+          //   value: 'ALIPAY'
+          // }
         ],
         actDialog: {
           open: false,
@@ -316,8 +317,16 @@
         Toast.loading('图片读取中...')
       },
       onReaderComplete(name, { dataUrl, blob, file }) {
+        const fileSize = file && file.size
+        if (fileSize > 5 * 1024 * 1024) {
+          Toast.info('图片不能大于 5M！')
+          return
+        }
         const imageList = []
-        imageProcessor({ dataUrl }).then(({dataUrl}) => {
+        imageProcessor({
+          dataUrl,
+          quality: 0.8
+        }).then(({dataUrl}) => {
           if (dataUrl) {
             imageList.push(dataUrl)
             imageList.push(file.type)
@@ -411,7 +420,7 @@
        */
       saveApplyInfo(payed) {
         const applyInfoForm = Object.assign({}, this.curApplyInfo, {
-          paymentMethod: 'ALIPAY',
+          paymentMethod: this.payWay,
           paymentStatus: 0,
           auditStatus: 'PENDINGREVIEW',
           authorizedInquiryFee: 50,
@@ -434,10 +443,11 @@
             } else {
               // 发起支付请求
               pay(response.data).then(resp => {
+                console.log(resp)
                 this.payForm = resp.data
                 this.$nextTick(() => {
                   // 唤起支付页面
-                  document.forms[0].submit()
+                  //document.forms[0].submit()
                 })
               })
             }
@@ -457,13 +467,18 @@
        * 选择支付方式触发
        */
       onCashierSelect(item) {
-        // console.log(`[Mand Mobile] Select ${JSON.stringify(item)}`)
+        //console.log(`[Mand Mobile] Select ${JSON.stringify(item)}`)
       },
       /**
        * 点击支付按钮触发
        */
       onCashierPay(item) {
+        if (!item) {
+          Toast.info('请选择支付方式！')
+          return
+        }
         this.payButtonText = '支付中...'
+        this.payWay = item && item.value
         this.doPay()
       },
       /**

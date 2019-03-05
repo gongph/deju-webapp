@@ -1,12 +1,14 @@
 import request from '@/utils/request'
 
 /**
- * Zhifubao pay
+ * 支付
  */
 
 export function pay(data) {
+  const alipay = '/api/alipay',
+         wxpay = '/api/wxpay'
   return request({
-    url: '/api/alipay',
+    url: data.paymentMethod === 'ALIPAY' ? alipay : wxpay,
     method: 'post',
     data
   })
