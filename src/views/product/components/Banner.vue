@@ -4,7 +4,10 @@
     <md-swiper ref="swiper" :has-dots="false">
       <md-swiper-item :key="$index" v-for="(item, $index) in banners">
         <a href="javascript:void(0)" class="banner-item">
-          <img :src="'data:' + item.urlContentType + ';base64,' + item.url" style="width: 95%">
+          <img 
+            :src="'data:' + item.urlContentType + ';base64,' + item.url"
+            style="width: 95%"
+            onerror="this.src='/img/banner-error.jpg'">
         </a>
       </md-swiper-item>
     </md-swiper>
