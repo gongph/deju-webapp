@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 /**
- * 支付
+ * 发起支付请求
  */
 
 export function pay(data) {
@@ -9,6 +9,17 @@ export function pay(data) {
          wxpay = '/api/wxpay'
   return request({
     url: data.paymentMethod === 'ALIPAY' ? alipay : wxpay,
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 支付
+ */
+export function invokeDopay(data) {
+  return request({
+    url: '/api/dopay',
     method: 'post',
     data
   })
