@@ -10,9 +10,9 @@
     </div>
     <div class="item">
       <div class="title">
-        <router-link to="/center">
+        <a target="_blank" href="https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU3NDgxNDA2Nw==#wechat_redirect">
           <svg-icon icon-class="lingdang"/>
-        </router-link>
+        </a>
       </div>
       <div class="subtitle">历史消息</div>
     </div>
