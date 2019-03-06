@@ -17,7 +17,7 @@
               <!-- title -->
               <div class="item-title__wrapper">
                 <div class="image">
-                  <img :src="'data:image/png;base64,' + item.icon" class="img" style="width: 80%;">
+                  <img :src="'data:image/png;base64,' + item.icon" class="img">
                 </div>
                 <div class="title">{{ item.title }}</div>
                 <div class="title-right">已申请人数 <span class="red">{{ item.numberOfApplicants }}</span> 人</div>
@@ -26,10 +26,10 @@
               <div class="item-content__wrapper">
                 <div class="item">
                   <div class="limit">{{ formatMoney(item.loanRangeStart) }}-{{ formatMoney(item.loanRangeEnd) }}</div>
-                  <div class="limit-desc">贷款额度(元)</div>
+                  <div class="limit-desc">金额(元)</div>
                 </div>
                 <div class="item item-center">
-                  <div class="rate">参考月息: {{ item.referenceMonthInterest }}%</div>
+                  <div class="rate">参考利率: {{ item.referenceMonthInterest }}%</div>
                   <div class="loan-type">{{ formatType(item.loanType) }}</div>
                   <div class="loan-time">借款期限: {{ item.termRangeStart }}月-{{ item.termRangeEnd }}月</div>
                 </div>
@@ -168,7 +168,13 @@
       .image {
         width: 80px;
         height: 80px;
-        background-size: cover;
+        text-align: center;
+        line-height: 90px;
+        vertical-align: middle;
+        .img {
+          width: 32px;
+          height: 32px;
+        }
       }
       .title {
         color: #333;

@@ -68,19 +68,19 @@ export const maritalStatus = [[
  */
 
 export const productRates = {
-  '快易贷': [
+  '灵用金': [
     { label: 3, value: 3, rate: 0.0158 },
     { label: 6, value: 6, rate: 0.0128 },
     { label: 12, value: 12, rate: 0.0098 },
     { label: 24, value: 24, rate: 0.0078 }
   ],
-  '精英贷': [
+  '信用金': [
     { label: 3, value: 3, rate: 0.0138 },
     { label: 6, value: 6, rate: 0.0118 },
     { label: 12, value: 12, rate: 0.0088 },
     { label: 24, value: 24, rate: 0.0068 }
   ],
-  '任性贷': [
+  '快闪金': [
     { label: 3, value: 3, rate: 0.0138 },
     { label: 6, value: 6, rate: 0.0118 },
     { label: 12, value: 12, rate: 0.0088 },
