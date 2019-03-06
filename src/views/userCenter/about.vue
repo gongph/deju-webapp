@@ -74,6 +74,7 @@
         loadiing:false
       }
     },
+    /* eslint-disable */
     components: {
       [Popup.name]: Popup
     },
