@@ -17,7 +17,7 @@
               <!-- title -->
               <div class="item-title__wrapper">
                 <div class="image">
-                  <img :src="'data:image/png;base64,' + item.icon" class="img" style="width: 80%;">
+                  <img :src="'data:image/png;base64,' + item.icon" class="img">
                 </div>
                 <div class="title">{{ item.title }}</div>
                 <div class="title-right">已申请人数 <span class="red">{{ item.numberOfApplicants }}</span> 人</div>
@@ -168,7 +168,13 @@
       .image {
         width: 80px;
         height: 80px;
-        background-size: cover;
+        text-align: center;
+        line-height: 90px;
+        vertical-align: middle;
+        .img {
+          width: 32px;
+          height: 32px;
+        }
       }
       .title {
         color: #333;
