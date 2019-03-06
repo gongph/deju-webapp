@@ -82,6 +82,11 @@ export default new Router({
       component: () => import('@/views/resultPage/payrtn.vue')
     },
     {
+      path: '/wx_redirect_page',
+      name: 'WxRedirectPage',
+      component: () => import('@/views/resultPage/wxRedirectPage.vue')
+    },
+    {
       path: '/neterror',
       name: 'NetErrorPage',
       component: () => import('@/views/resultPage/neterror.vue')
