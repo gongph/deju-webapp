@@ -66,8 +66,8 @@
       handleDopay() {
         // 先获取支付配置信息
         const code = getUrlParam('code')
-        console.log('invokeDopay code :' + code)
         invokeDopay(this.curApplyInfo, { code }).then(response => {
+          console.log('invokeDopay response', response)
           if (response && response.statusCode === '200') {
             // Response body 参数是什么？
             this.payParams = response.body

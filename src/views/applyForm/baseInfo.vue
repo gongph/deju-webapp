@@ -448,7 +448,7 @@
               pay(response.data).then(resp => {
                 // 微信支付
                 if (this.payWay === 'WEIXINPAY') {
-                  this.saveApplyInfoForm(applyInfoForm).then(() => {
+                  this.saveApplyInfoForm(response.data).then(() => {
                     // 重定向到公众号页面
                     document.location.href = resp.data
                   })
