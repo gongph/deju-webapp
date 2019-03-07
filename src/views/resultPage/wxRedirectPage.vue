@@ -67,7 +67,6 @@
         // 先获取支付配置信息
         const code = getUrlParam('code')
         invokeDopay(this.curApplyInfo, { code }).then(response => {
-          console.log('invokeDopay response', response)
           if (response && response.status === 200) {
             this.payParams = response.data
             this.onBridgeReady()
@@ -79,7 +78,8 @@
        * @return {[type]} [description]
        */
       onBridgeReady() {
-        wx.invoke('getBrandWCPayRequest', this.payParams, (res) => {
+        console.log('onBridgeReady...', 'invoke' in wx, 'WeixinJSBridge' in window, wx)
+        WeixinJSBridge.invoke('getBrandWCPayRequest', this.payParams, (res) => {
           console.log('getBrandWCPayRequest res: ', res)
           if(res.err_msg == "get_brand_wcpay_request:ok") {
             const url = "/payrtn"
