@@ -29,7 +29,7 @@
   import { mapGetters, mapActions } from 'vuex'
   import { Button, Field, FieldItem, InputItem, Toast } from 'mand-mobile'
   import { invokeDopay } from '@/api/pay'
-  import { deepClone } from "@/utils"
+  import { deepClone, getUrlParam } from "@/utils"
   export default {
     name: 'WXRedirectPage',
     data() {
@@ -65,7 +65,9 @@
     methods: {
       handleDopay() {
         // 先获取支付配置信息
-        invokeDopay(this.curApplyInfo).then(response => {
+        invokeDopay(this.curApplyInfo, {
+          code: getUrlParam('code')
+        }).then(response => {
           if (response && response.statusCode === '200') {
             // Response body 参数是什么？
             this.payParams = response.body

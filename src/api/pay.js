@@ -17,11 +17,12 @@ export function pay(data) {
 /**
  * 支付
  */
-export function invokeDopay(data) {
+export function invokeDopay(data, query) {
   return request({
     url: '/api/dopay',
     method: 'post',
-    data
+    data,
+    params: query
   })
 }
 
