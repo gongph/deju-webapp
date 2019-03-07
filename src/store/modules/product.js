@@ -70,7 +70,9 @@ const product = {
     saveApplyInfoForm: ({ commit }, data) => {
       return new Promise((response) => {
         commit('SAVE_APPLY_INFO_FORM', data)
-        response()
+        localforage.setItem('cur_apply_info_form', data).then(value => {
+          response()
+        })
       })
     },
     SavePersonalInfo: ({ commit }, data) => {

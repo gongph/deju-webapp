@@ -43,17 +43,19 @@
     },
     /* eslint-disable */
     components: {
-      ...mapGetters([
-        'applyInfo'
-      ]),
       [Button.name]: Button,
       [Field.name]: Field,
       [FieldItem.name]: FieldItem,
       [InputItem.name]: InputItem
     },
+    computed: {
+      ...mapGetters([
+        'applyInfoForm'
+      ])
+    },
     created() {
-      if (this.applyInfo) {
-        this.applyInfo.then(data => {
+      if (this.applyInfoForm) {
+        this.applyInfoForm.then(data => {
           if (data) {
             this.curApplyInfo = deepClone(data)
           }
