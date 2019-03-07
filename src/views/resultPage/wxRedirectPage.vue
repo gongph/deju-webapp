@@ -65,9 +65,9 @@
     methods: {
       handleDopay() {
         // 先获取支付配置信息
-        invokeDopay(this.curApplyInfo, {
-          code: getUrlParam('code')
-        }).then(response => {
+        const code = getUrlParam('code')
+        console.log('invokeDopay code :' + code)
+        invokeDopay(this.curApplyInfo, { code }).then(response => {
           if (response && response.statusCode === '200') {
             // Response body 参数是什么？
             this.payParams = response.body
