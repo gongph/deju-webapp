@@ -68,9 +68,8 @@
         const code = getUrlParam('code')
         invokeDopay(this.curApplyInfo, { code }).then(response => {
           console.log('invokeDopay response', response)
-          if (response && response.statusCode === '200') {
-            // Response body 参数是什么？
-            this.payParams = response.body
+          if (response && response.status === 200) {
+            this.payParams = response.data
             this.onBridgeReady()
           }
         })
@@ -81,6 +80,7 @@
        */
       onBridgeReady() {
         wx.invoke('getBrandWCPayRequest', this.payParams, (res) => {
+          console.log('getBrandWCPayRequest res: ', res)
           if(res.err_msg == "get_brand_wcpay_request:ok") {
             const url = "/payrtn"
             window.location.href = `${window.location.origin}/#/${url}`
