@@ -25,7 +25,6 @@
 </template>
 
 <script>
-  import wx from 'weixin-js-sdk'
   import { mapGetters, mapActions } from 'vuex'
   import { Button, Field, FieldItem, InputItem, Toast } from 'mand-mobile'
   import { invokeDopay } from '@/api/pay'
@@ -38,7 +37,8 @@
         cashierAmount: '50.00',
         curApplyInfo: null,
         // 保存微信配置的支付参数
-        payParams: null
+        payParams: null,
+        userWXVersion: 0
       }
     },
     /* eslint-disable */
@@ -54,6 +54,7 @@
       ])
     },
     created() {
+      // 获取申请信息
       if (this.applyInfoForm) {
         this.applyInfoForm.then(data => {
           if (data) {
@@ -64,34 +65,58 @@
     },
     methods: {
       handleDopay() {
-        // 先获取支付配置信息
-        const code = getUrlParam('code')
-        invokeDopay(this.curApplyInfo, { code }).then(response => {
-          if (response && response.status === 200) {
-            this.payParams = response.data
-            this.onBridgeReady()
+        // 判断是否在微信中交易
+        if (this.isWeixin()) {
+          // 检查微信版本，只有 v5.0+ 才支持支付
+          const wv = this.getWeixinVersion()
+          if (wv > '5.0') {
+            // 先获取支付配置信息
+            const code = getUrlParam('code')
+            invokeDopay(this.curApplyInfo, { code }).then(response => {
+              if (response && response.status === 200) {
+                this.payParams = response.data
+                if ('WeixinJSBridge' in window){
+                  this.onBridgeReady()
+                } else {
+                  Toast.info('请在微信内置浏览器中支付！')
+                }
+              }
+            })
+          } else {
+            Toast.info("请先升级你的微信到 v5.0 以上版本!")
           }
-        })
+        }
       },
       /**
        * 发起微信支付
        * @return {[type]} [description]
        */
       onBridgeReady() {
-        console.log('onBridgeReady...', 'invoke' in wx, 'WeixinJSBridge' in window, wx)
         WeixinJSBridge.invoke('getBrandWCPayRequest', this.payParams, (res) => {
-          console.log('getBrandWCPayRequest res: ', res)
-          if(res.err_msg == "get_brand_wcpay_request:ok") {
-            const url = "/payrtn"
-            window.location.href = `${window.location.origin}/#/${url}`
+          if (res.err_msg == "get_brand_wcpay_request:ok") {
+            alert(res.err_msg)
+            window.location.href = 'http://www.baidu.com'
+            //window.location.href = `${window.location.origin}/#/payrtn`
           }
-          else if(res.err_msg == "get_brand_wcpay_request:cancel") {
+          else if (res.err_msg == "get_brand_wcpay_request:cancel") {
             Toast.info('支付结束！')
           }
-          else if(res.err_msg == "get_brand_wcpay_request：fail") {  
+          else if (res.err_msg == "get_brand_wcpay_request：fail") {  
             Toast.info("支付失败!")
           }  
         })
+      },
+      getWeixinVersion() {
+        const match = navigator.userAgent.match(/MicroMessenger\\/([\\d\\.]+)/i)
+        return match[1]
+      },
+      isWeixin() {
+        const ua = navigator.userAgent.toLowerCase()
+        if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+          return true
+        } else {
+          return false
+        }
       }
     }
   }
