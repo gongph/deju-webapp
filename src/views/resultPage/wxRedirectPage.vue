@@ -25,7 +25,7 @@
 </template>
 
 <script>
-  import { mapGetters, mapActions } from 'vuex'
+  import { mapGetters } from 'vuex'
   import { Button, Field, FieldItem, InputItem, Toast } from 'mand-mobile'
   import { invokeDopay } from '@/api/pay'
   import { deepClone, getUrlParam } from "@/utils"
@@ -105,7 +105,7 @@
         })
       },
       getWeixinVersion() {
-        const match = navigator.userAgent.match(/MicroMessenger\\/([\\d\\.]+)/i)
+        const match = navigator.userAgent.match(/MicroMessenger\/([\d\.]+)/i)
         return match[1]
       },
       isWeixin() {
