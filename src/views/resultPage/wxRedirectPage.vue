@@ -94,7 +94,12 @@
       onBridgeReady() {
         WeixinJSBridge.invoke('getBrandWCPayRequest', this.payParams, (res) => {
           if (res.err_msg == "get_brand_wcpay_request:ok") {
-            window.location.href = window.location.origin + '/#/payrtn'
+            this.$router.push({
+              name: 'PayReturnPage',
+              params: {
+                auth: true
+              }
+            })
           }
           else if (res.err_msg == "get_brand_wcpay_request:cancel") {
             Toast.info('支付结束！')
