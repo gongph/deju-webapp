@@ -94,9 +94,7 @@
       onBridgeReady() {
         WeixinJSBridge.invoke('getBrandWCPayRequest', this.payParams, (res) => {
           if (res.err_msg == "get_brand_wcpay_request:ok") {
-            alert(res.err_msg)
-            window.location.href = 'http://www.baidu.com'
-            //window.location.href = `${window.location.origin}/#/payrtn`
+            window.location.href = window.location.origin + '/#/payrtn'
           }
           else if (res.err_msg == "get_brand_wcpay_request:cancel") {
             Toast.info('支付结束！')
