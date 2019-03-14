@@ -1,5 +1,6 @@
 <template>
   <div class="more-apply__info">
+    <back-to :backLink="srcRoute"/>
     <md-notice-bar>为了确保您能终审通过，请填写下列详细信息</md-notice-bar>
     <md-field title="个人信息" class="field-title">
       <select-item
@@ -254,7 +255,9 @@
             },
           ],
         },
-        personalData: null
+        personalData: null,
+        // 路由来源
+        srcRoute: ''
       }
     },
     computed: {
@@ -265,6 +268,11 @@
       userInfo() {
         return deepClone(this.personalInfo || {})
       }
+    },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        vm.srcRoute = from.path
+      })
     },
     created() {
       if (!this.$route.params.auth) {
