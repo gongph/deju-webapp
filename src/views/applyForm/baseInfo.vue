@@ -1,5 +1,6 @@
 <template>
   <div class="base-form">
+    <back-to :backLink="srcRoute"/>
     <template v-if="step === 1">
       <md-notice-bar>为了确保您能通过初步审核，请填写真实信息哦~</md-notice-bar>
       <md-field>
@@ -195,7 +196,7 @@
   import { saveApplyInfo } from '@/api/product'
   import { pay, checkPay } from '@/api/pay'
   import { savePersonInfo } from "@/api/product"
-  import { deepClone } from "@/utils";
+  import { deepClone } from "@/utils"
 
   // 手机号验证器
   Validator.extend("phone", {
@@ -273,7 +274,9 @@
         payForm: '',
         // 用户在产品详情页填写的申请信息
         curApplyInfo: null,
-        applyBaseInfo: null
+        applyBaseInfo: null,
+        // 路由来源
+        srcRoute: ''
       }
     },
     computed: {
@@ -286,6 +289,11 @@
       cashier() {
         return this.$refs.cashier
       },
+    },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        vm.srcRoute = from.path
+      })
     },
     created() {
       if (this.personalInfo) {

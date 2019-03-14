@@ -1,13 +1,6 @@
 <template>
   <div class="product-detail__wrapper" v-if="product">
-    <div class="nav-header">
-      <div
-        class="thumbnail"
-        :style="'background-image: url(data:image/png;base64,' + product.icon + ')'"
-      >
-      </div>
-      <div class="title">{{ product.title }}</div>
-    </div>
+    <back-to :icon="product.icon" :title="product.title"/>
     <div class="main-content">
       <div class="detail-inner">
         <div class="desc-grid">
@@ -263,6 +256,27 @@
     color: #f5f5f5;
     display: flex;
     align-items: center;
+
+    .is-left,
+    .is-right {
+      flex: .5;
+    }
+
+    .is-left {
+      color: #f5f5f5;
+      display: flex;
+      align-items: center;
+
+      .back-text {
+        font-size: 30px;
+      }
+    }
+
+    .is-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
 
     .thumbnail {
       width: 50px;
