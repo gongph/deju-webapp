@@ -94,7 +94,7 @@ export const productRates = {
  */
 
 export function formatMoney(money) {
-  if (!money) return ''
+  if (!money) return 0
   if (money >= 10000) return (money / 10000) + '万'
     return money
 }
