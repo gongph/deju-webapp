@@ -1,11 +1,21 @@
 <template>
   <div class="user-center__wrapper">
     <div class="header">
+      <!-- 头像 -->
       <div class="avator-wrapper">
         <div class="avator">
           <svg-icon icon-class="avator"/>
         </div>
         <div class="nickname">{{ name }}</div>
+      </div>
+      <!-- 返回首页按钮 -->
+      <div class="back-to-button">
+        <router-link to="/">
+          <md-button type="ghost-primary" style="margin-left:5px">
+            返回首页
+            <md-icon name="arrow-right"></md-icon>
+          </md-button>
+        </router-link>
       </div>
     </div>
 
@@ -23,7 +33,9 @@
 
     <!-- Logout -->
     <div class="footer">
-      <md-button type="ghost-primary" @click="actDialog.open = true">退出登录</md-button>
+      <md-button type="ghost-primary" @click="actDialog.open = true">
+        <svg-icon icon-class="user-actived"/> 退出登录
+      </md-button>
     </div>
 
     <md-dialog
@@ -106,6 +118,8 @@
     width: 100%;
     height: 200px;
     background-image: linear-gradient( 135deg, #fc9153 10%, #FCCF31 100%);
+    display: flex;
+    align-items: center;
   }
 
   .avator-wrapper {
@@ -114,6 +128,8 @@
     align-items: center;
     margin-left: 30px;
     overflow-x: hidden;
+    align-self: center;
+    flex: 1;
 
     .avator {
       width: 120px;
@@ -133,6 +149,20 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+    }
+  }
+
+  .back-to-button {
+    flex: .5;
+    .md-button.ghost-primary {
+      color: #f5f5f5;
+      font-size: 25px;
+    }
+    .md-button.ghost-primary::after {
+      border-color: #f5f5f5;
+    }
+    .md-button .md-button-inner {
+      margin-left: 5px;
     }
   }
 
