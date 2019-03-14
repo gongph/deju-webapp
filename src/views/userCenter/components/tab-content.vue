@@ -4,7 +4,7 @@
       <template v-if="data.length > 0">
         <pull-to
           :bottom-load-method="handleBottomLoad"
-          :is-top-bounce="pages <= 1 ? false : true"
+          :is-top-bounce="false"
           :is-bottom-bounce="pages <= 1 ? false : true"
           :bottom-config="bottomConfig"
         >
