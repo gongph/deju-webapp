@@ -1,5 +1,6 @@
 <template>
-  <div class="about-wrapper" >
+  <div class="about-wrapper">
+    <back-to backLink="/center" />
     <div class="header">
       <div class="logo-wrapper">
         <div class="logo">

@@ -1,5 +1,6 @@
 <template>
   <div class="reset-pwd__wrapper">
+    <back-to backLink="/center" />
     <md-field>
 
       <input-validate
