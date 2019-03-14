@@ -25,7 +25,7 @@ Validator.localize('zh_CN', zh_CN)
 Vue.config.productionTip = false
 
 if (process.env.NODE_ENV === 'development') {
-  //new VConsole()
+  new VConsole()
 }
 
 new Vue({
