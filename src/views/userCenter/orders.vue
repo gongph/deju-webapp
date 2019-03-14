@@ -19,7 +19,7 @@
           :loading="loading"
           :pages="pages"
           :bottomConfig="bottomConfig"
-          status-text="初审通过"
+          button-text="填写详细资料"
           route="more"
           @bottomLoadMethod="bottomLoadMethod"
         />

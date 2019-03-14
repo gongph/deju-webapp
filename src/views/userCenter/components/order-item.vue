@@ -24,13 +24,13 @@
       </div>
       <div class="item item-center">
         <div class="rate">客户姓名: {{ data.personalInformation.name }}</div>
-        <div class="loan-type">{{ data.product.title }}</div>
-        <div class="loan-time">金额: {{ data.amount }}(元)</div>
+        <div class="loan-time">申请额度: {{ formatMoney(data.amount) }}(元)</div>
+        <div class="loan-type">申请期限: {{ data.deadline ? data.deadline : 0 }} 个月</div>
       </div>
       <div class="item">
         <div class="apply-btn__wrapper">
           <template v-if="route">
-            <md-button type="ghost-primary" @click="handleClick(item)">{{ buttonText }}</md-button>
+            <md-button type="ghost-primary" @click="handleClick(data)">{{ buttonText }}</md-button>
           </template>
           <template v-else>{{statusText}}</template>
         </div>

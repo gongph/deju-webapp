@@ -16,6 +16,7 @@
             <order-item
               :data="item"
               :status-text="statusText"
+              :button-text="buttonText"
               :route="route"
             />
           </div>
@@ -61,6 +62,10 @@
       statusText: {
         type: String,
         default: '待审核'
+      },
+      buttonText: {
+        type: String,
+        default: ''
       },
       route: {
         type: String,
