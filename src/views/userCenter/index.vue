@@ -10,12 +10,12 @@
     </div>
 
     <div class="list-wrapper">
-      <div v-for="(item, $index) of navs" :key="$index" class="list-item">
+      <div v-for="(item, $index) of navs" :key="$index" class="list-item" @click="handleRoute(item.route)">
         <div class="icon-wrapper">
           <svg-icon :icon-class="item.icon"/>
         </div>
         <div class="label-wrapper">{{ item.name }}</div>
-        <div class="arrow-right__wrapper" @click="handleRoute(item.route)">
+        <div class="arrow-right__wrapper">
           <md-icon name="arrow-right" size="lg"></md-icon>
         </div>
       </div>
@@ -23,7 +23,7 @@
 
     <!-- Logout -->
     <div class="footer">
-      <md-button type="ghost-primary" @click="actDialog.open = true">退出</md-button>
+      <md-button type="ghost-primary" @click="actDialog.open = true">退出登录</md-button>
     </div>
 
     <md-dialog
@@ -141,9 +141,9 @@
     height: 400px;
     background: #fff;
     margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    // display: flex;
+    // flex-direction: column;
+    // justify-content: space-between;
   }
 
   .list-item {
