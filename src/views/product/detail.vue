@@ -55,6 +55,7 @@
                   class="form-input"
                   readonly="readonly"
                   placeholder="请选择期限"
+                  @focus="handleIconClick"
                 >
               </div>
               <div class="item-unit item-unit__icon">
@@ -65,7 +66,7 @@
                   @click="handleIconClick"
                 />
               </div>
-              <div class="item-list__wrapper" v-if="isActive">
+              <div class="item-list__wrapper" v-show="isActive">
                 <template v-for="(item, $index) in rates">
                   <div class="rate" @click="handleRateClick(item)" :key="$index">{{item.label + '个月'}}</div>
                 </template>
@@ -266,8 +267,8 @@
     .thumbnail {
       width: 50px;
       height: 50px;
-      background: #98aec3;
-      border-radius: 50%;
+      // background: #98aec3;
+      // border-radius: 50%;
       margin: 0 20px 0 20px;
       font-size: 35px;
       line-height: 1.5;
