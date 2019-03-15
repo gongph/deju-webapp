@@ -65,7 +65,7 @@
       },
       buttonText: {
         type: String,
-        default: ''
+        default: '重新填写资料'
       },
       route: {
         type: String,
