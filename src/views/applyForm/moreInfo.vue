@@ -418,7 +418,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { Picker, Field, FieldItem, InputItem, Button,ImageReader, Toast, NoticeBar, Dialog, ActivityIndicator } from 'mand-mobile'
+  import { Picker, Field, FieldItem, InputItem, Icon, Button,ImageReader, Toast, NoticeBar, Dialog, ActivityIndicator } from 'mand-mobile'
   import { district } from '@/utils/district'
   import { educates, maritalStatus, deepClone } from '@/utils'
   import { Validator } from "vee-validate"
@@ -441,6 +441,7 @@
       [Field.name]: Field,
       [FieldItem.name]: FieldItem,
       [InputItem.name]: InputItem,
+      [Icon.name]: Icon,
       [Button.name]: Button,
       [Toast.name]: Toast,
       [NoticeBar.name]: NoticeBar,
@@ -496,9 +497,9 @@
       })
     },
     created() {
-      if (!this.$route.params.auth) {
-        this.$router.push({ path: '/center' })
-      }
+      // if (!this.$route.params.auth) {
+      //   this.$router.push({ path: '/center' })
+      // }
     },
     methods: {
       onActCancel() {
