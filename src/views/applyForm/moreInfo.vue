@@ -502,9 +502,9 @@
       })
     },
     created() {
-      // if (!this.$route.params.auth) {
-      //   this.$router.push({ path: '/center' })
-      // }
+      if (!this.$route.params.auth) {
+        this.$router.push({ path: '/center' })
+      }
     },
     methods: {
       onActCancel() {
