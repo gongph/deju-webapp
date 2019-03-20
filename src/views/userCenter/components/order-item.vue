@@ -93,6 +93,7 @@ export default {
   },
   methods: {
     ...mapActions([
+      'SaveProduct',
       'SavePersonalInfo',
       'saveApplyInfoForm',
       'SaveApplyInfo'
@@ -111,6 +112,7 @@ export default {
         })
       } else {
         // 详情
+        this.SaveProduct(item.product)
         this.SavePersonalInfo(item.personalInformation).then(() => {
           this.$router.push({
             name: 'MoreInfoForm',

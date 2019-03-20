@@ -41,6 +41,10 @@ const product = {
         }
       })
     },
+    // 保存产品信息
+    SaveProduct: ({ commit }, product) => {
+      commit('SAVE_PRODUCT', product)
+    },
     SaveCurProduct: ({ commit }, product) => {
       return new Promise((resolve, reject) => {
         commit('SAVE_CUR_PRODUCT', product)
