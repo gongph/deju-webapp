@@ -489,9 +489,11 @@
     computed: {
       ...mapGetters([
         'personalInfo',
+        'product',
         'user'
       ]),
       userInfo() {
+        this.personalInfo.product = this.product
         console.log(this.personalInfo)
         return deepClone(this.personalInfo || {})
       }
