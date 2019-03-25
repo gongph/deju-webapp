@@ -36,6 +36,12 @@ div.md-notice-bar {
     color: #ff525d;
   }
 
+  .no-valid {
+    .md-input-item-title.fixed::before {
+      content: '';
+    }
+  }
+
   .step-two__field {
     .md-input-item-title.fixed::before {
       content: '';

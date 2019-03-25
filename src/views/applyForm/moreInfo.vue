@@ -64,16 +64,12 @@
     </md-field>
 
     <!-- 2 -->
-    <md-field title="工作信息" class="field-title">
+    <md-field title="工作信息" class="field-title no-valid">
       <input-validate
         v-model="userInfo.companyName"
         title="单位名称:"
         name="单位名称"
         placeholder="单位名称"
-        v-validate="'required'"
-        data-vv-value-path="innerValue"
-        data-vv-validate-on="blur"
-        :error="errors.first('单位名称')"
         clearable
       />
 
@@ -84,7 +80,6 @@
         :value.sync="userInfo.companyCity"
         :picker-data="pickerData"
         picker-title="单位所在城市"
-        v-validate="'required'"
       />
 
       <input-validate
@@ -92,10 +87,6 @@
         title="单位地址:"
         name="单位地址"
         placeholder="单位地址"
-        v-validate="'required'"
-        data-vv-value-path="innerValue"
-        data-vv-validate-on="blur"
-        :error="errors.first('单位地址')"
         clearable
       />
 
@@ -104,7 +95,7 @@
         title="单位电话:"
         name="单位电话"
         placeholder="单位电话"
-        v-validate="'required|numeric|min:7'"
+        v-validate="'numeric|min:7'"
         data-vv-value-path="innerValue"
         data-vv-validate-on="blur"
         :error="errors.first('单位电话')"
@@ -116,7 +107,7 @@
         title="年收入(元):"
         name="年收入"
         placeholder="年收入"
-        v-validate="'required|decimal:2'"
+        v-validate="'decimal:2'"
         data-vv-value-path="innerValue"
         data-vv-validate-on="blur"
         :error="errors.first('年收入')"
@@ -177,12 +168,12 @@
         />
       </md-field>
 
-      <md-field title="紧急联系人姓名1:" class="field-contact__item">
+      <md-field title="紧急联系人姓名1:" class="field-contact__item no-valid">
         <input-validate
                 v-model="userInfo.contactName3"
                 name="紧急联系人姓名（父/母）"
                 placeholder="紧急联系人姓名（父/母）"
-                v-validate="'required'"
+                v-validate="'phone'"
                 data-vv-value-path="innerValue"
                 data-vv-validate-on="blur"
                 :error="errors.first('紧急联系人姓名（父/母）')"
@@ -194,7 +185,7 @@
                 type="phone"
                 name="紧急联系人电话（父/母）"
                 placeholder="手机号"
-                v-validate="'required|phone'"
+                v-validate="'phone'"
                 data-vv-value-path="innerValue"
                 data-vv-validate-on="blur"
                 :error="errors.first('紧急联系人电话（父/母）')"
@@ -202,12 +193,12 @@
         />
       </md-field>
 
-      <md-field title="紧急联系人姓名2:" class="field-contact__item">
+      <md-field title="紧急联系人姓名2:" class="field-contact__item no-valid">
         <input-validate
                 v-model="userInfo.contactName4"
                 name="紧急联系人姓名（配偶）"
                 placeholder="紧急联系人姓名（配偶）"
-                v-validate="'required'"
+                v-validate="'phone'"
                 data-vv-value-path="innerValue"
                 data-vv-validate-on="blur"
                 :error="errors.first('紧急联系人姓名（配偶）')"
@@ -219,7 +210,7 @@
                 type="phone"
                 name="紧急联系人电话（配偶）"
                 placeholder="紧急联系人电话（配偶）"
-                v-validate="'required|phone'"
+                v-validate="'phone'"
                 data-vv-value-path="innerValue"
                 data-vv-validate-on="blur"
                 :error="errors.first('紧急联系人电话（配偶）')"
@@ -619,6 +610,12 @@
       padding-right: 5px;
       color: #ff525d;
     }
+
+    .field-contact__item.no-valid .md-field-title::before,
+    .field-title.no-valid .md-field-item-title::before {
+      content: '';
+    }
+
     .upload-preview__wrapper {
       position: relative;
       // left: 30px;
