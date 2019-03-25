@@ -504,7 +504,7 @@
       })
     },
     created() {
-      if (!this.$route.params.auth) {
+      if (!this.$route.params.auth || !this.product) {
         this.$router.push({ path: '/center' })
       }
     },
