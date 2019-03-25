@@ -494,7 +494,6 @@
       ]),
       userInfo() {
         this.personalInfo.product = this.product
-        console.log(this.personalInfo)
         return deepClone(this.personalInfo || {})
       }
     },
