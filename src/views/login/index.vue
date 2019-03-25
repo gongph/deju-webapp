@@ -40,7 +40,7 @@
       </div>
       <div class="footer" v-if="isHidden">
         <div class="fl">
-          <span class="spacing">借钱就找</span>, <span class="spacing">渤源资本</span>
+          <span class="spacing">做最专业的咨询服务平台</span>
         </div>
         <md-icon name="arrow-right" size="lg"></md-icon>
       </div>

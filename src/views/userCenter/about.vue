@@ -7,7 +7,7 @@
           <!-- <svg-icon icon-class="logo"/> -->
           <img src="../../assets/img/logo.png" class="img-logo">
         </div>
-        <div class="intro">借钱就找渤源资本</div>
+        <div class="intro">渤源资本专业的借款咨询服务平台</div>
       </div>
     </div>
 
