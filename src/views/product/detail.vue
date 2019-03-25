@@ -5,14 +5,15 @@
       <div class="detail-inner">
         <div class="desc-grid">
           <div class="grid-item">申请人数: {{ product.numberOfApplicants }}人</div>
-          <template v-if="earn">
+          <div class="grid-item">利率: {{ product.referenceMonthInterest}}%</div>
+          <!-- <template v-if="earn">
             <div class="grid-item">利息: {{ earn }}元</div>
           </template>
           <template v-else>
             <div class="grid-item">
               利率范围: {{ product.interestRateRangeStart }}%-{{ product.interestRateRangeEnd }}%
             </div>
-          </template>
+          </template> -->
           <div class="grid-item">
             额度范围: {{ formatMoney(product.loanRangeStart )}}-{{ formatMoney(product.loanRangeEnd )}}
           </div>
