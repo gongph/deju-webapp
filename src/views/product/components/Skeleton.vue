@@ -1,7 +1,7 @@
 <template>
   <div class="skeleton-wrapper">
     <!-- 产品列表骨架屏 -->
-    <div class="skeleton" v-for="n in 3">
+    <div class="skeleton" v-for="n in 3" :key="n">
       <div class="skeleton-bg"></div>
       <div class="skeleton-header">
         <div class="icon"></div>

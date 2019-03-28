@@ -1,16 +1,24 @@
 <template>
   <div class="banner-wrapper">
     <div class="bg"></div>
-    <md-swiper ref="swiper" :has-dots="false">
-      <md-swiper-item :key="$index" v-for="(item, $index) in banners">
-        <a href="javascript:void(0)" class="banner-item">
-          <img 
-            :src="'data:' + item.urlContentType + ';base64,' + item.url"
-            style="width: 95%"
-            onerror="this.src='/img/banner-error.jpg'">
-        </a>
-      </md-swiper-item>
-    </md-swiper>
+    <template v-if="loading">
+      <a href="javascript:void(0)" class="banner-item">
+        <img src="/img/banner-error.jpg"/>
+      </a>
+    </template>
+    <template v-else>
+      <md-swiper ref="swiper" :has-dots="false">
+        <md-swiper-item :key="$index" v-for="(item, $index) in banners">
+          <a href="javascript:void(0)" class="banner-item">
+            <img 
+              :src="'data:' + item.urlContentType + ';base64,' + item.url"
+              style="width: 95%"
+              onerror="this.src='/img/banner-error.jpg'"
+            >
+          </a>
+        </md-swiper-item>
+      </md-swiper>
+    </template>
   </div>
 </template>
 
@@ -26,19 +34,22 @@
     },
     data() {
       return {
-        banners: []
+        banners: [],
+        loading: true
       }
     },
     created(){
       this.getList()
-    },methods:{
-      getList(){
-        this.$store.dispatch("GetBanners").then(response=>{
-          if(response&&response.status==200){
-            this.banners = response.data;
+    },
+    methods: {
+      getList() {
+        this.$store.dispatch("GetBanners").then(response => {
+          if (response && response.status == 200) {
+            this.loading = false
+            this.banners = response.data
           }
         }).catch(err=>{
-          console.error(err);
+          console.error(err)
         })
       }
     }

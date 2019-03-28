@@ -94,7 +94,7 @@ export const productRates = {
  */
 
 export function formatMoney(money) {
-  if (!money) return ''
+  if (!money) return 0
   if (money >= 10000) return (money / 10000) + '万'
     return money
 }
@@ -115,4 +115,21 @@ export function deepClone(source) {
     }
   })
   return targetObj
+}
+
+  /**
+   * 获取 url 参数值
+   * @param  {String} name 参数名
+   * @return {String}      参数值
+   */
+export function getUrlParam(name) {
+  var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
+  var search = window.location.search;
+  if (search) {
+    var r = decodeURIComponent(search).substring(1).match(reg);
+    if (r) {
+      return unescape(r[2]);
+    }
+  }
+  return '';
 }

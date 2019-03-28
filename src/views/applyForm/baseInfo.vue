@@ -1,5 +1,6 @@
 <template>
   <div class="base-form">
+    <back-to :backLink="srcRoute"/>
     <template v-if="step === 1">
       <md-notice-bar>为了确保您能通过初步审核，请填写真实信息哦~</md-notice-bar>
       <md-field>
@@ -121,7 +122,9 @@
       </div>
     </template>
     <template v-if="step === 2">
-      <md-notice-bar>我方将对您的征信进行相关查询，支付查询费用50元</md-notice-bar>
+      <div class="notify-bar">
+        <strong>授权申明:</strong> 我方将对您的征信及大数据进行第三方平台查询，查询费用为50元，此费用为第三方平台收取，仅限查询客户征信及大数据信息。
+      </div>
       <md-field title="授权查询费用:" class="step-two__field">
         <md-input-item
           title="支付金额"
@@ -140,9 +143,9 @@
               :size="15"
               color="#fff"
               text-color="#fff"
-            >正在支付</md-activity-indicator>
+            >授权支付中...</md-activity-indicator>
           </template>
-          <template v-else>去支付</template>
+          <template v-else>授权查询</template>
         </md-button>
       </div>
 
@@ -163,11 +166,14 @@
         v-model="actDialog.open"
         :btns="actDialog.btns"
       >
-        支付成功后将进入初审环节，确定要提交吗？
+        授权支付成功后将进入初审环节，确认要继续操作吗？
       </md-dialog>
 
-      <!-- Pay form -->
-      <div class="pay-form" v-html="payForm"></div>
+      <!-- AliPay form -->
+      <template v-if="payWay == 'ALIPAY'">
+        <div class="pay-form" v-html="payForm"></div>
+      </template>
+
     </template>
   </div>
 </template>
@@ -192,7 +198,7 @@
   import { saveApplyInfo } from '@/api/product'
   import { pay, checkPay } from '@/api/pay'
   import { savePersonInfo } from "@/api/product"
-   import { deepClone } from "@/utils";
+  import { deepClone } from "@/utils"
 
   // 手机号验证器
   Validator.extend("phone", {
@@ -270,7 +276,9 @@
         payForm: '',
         // 用户在产品详情页填写的申请信息
         curApplyInfo: null,
-        applyBaseInfo: null
+        applyBaseInfo: null,
+        // 路由来源
+        srcRoute: ''
       }
     },
     computed: {
@@ -283,6 +291,11 @@
       cashier() {
         return this.$refs.cashier
       },
+    },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        vm.srcRoute = from.path
+      })
     },
     created() {
       if (this.personalInfo) {
@@ -443,13 +456,20 @@
             } else {
               // 发起支付请求
               pay(response.data).then(resp => {
-                console.log(resp)
-                this.payForm = resp.data
-                this.$nextTick(() => {
-                  // 唤起支付页面
-                  //document.forms[0].submit()
-                  document.location.href = resp.data.mweb_url;
-                })
+                // 微信支付
+                if (this.payWay === 'WEIXINPAY') {
+                  this.saveApplyInfoForm(response.data).then(() => {
+                    // 重定向到公众号页面
+                    document.location.href = resp.data
+                  })
+                }
+                // 支付宝支付 
+                else {
+                  this.payForm = resp.data
+                  this.$nextTick(() => {
+                    document.forms[0].submit()
+                  })
+                }
               })
             }
           } else {
@@ -493,10 +513,25 @@
 </script>
 
 <style lang="scss" scoped>
+  .notify-bar {
+    width: 100%;
+    min-height: 85px;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    background-color: #f5f5f5;
+    color: #fc9153;
+    font-size: 24px;
+    line-height: 1.5;
+    position: relative;
+    z-index: 10;
+    justify-content: center;
+  }
   .base-form {
     width: 100vw;
     height: 100vh;
     background-color: #f5f5f5;
+    // overflow-x: hidden;
   }
   .upload-preview__wrapper {
     position: relative;

@@ -5,7 +5,7 @@ import { getToken } from '@/utils/auth'
 // create an axios instance
 const service = axios.create({
   baseURL: 'http://deju-api.boyuanziben.cn',
-  timeout: 10000
+  timeout: 20000
 })
 
 // request interceptor

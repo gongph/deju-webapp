@@ -1,12 +1,13 @@
 <template>
-  <div class="about-wrapper" >
+  <div class="about-wrapper">
+    <back-to backLink="/center" />
     <div class="header">
       <div class="logo-wrapper">
         <div class="logo">
           <!-- <svg-icon icon-class="logo"/> -->
           <img src="../../assets/img/logo.png" class="img-logo">
         </div>
-        <div class="intro">借钱就找渤源资本</div>
+        <div class="intro">渤源资本专业的借款咨询服务平台</div>
       </div>
     </div>
 
@@ -27,12 +28,12 @@
           <a target="_blank" href="https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzU3NDgxNDA2Nw==#wechat_redirect" class="telphone">渤源资本</a>
         </div>
       </div>
-      <div class="list-item">
+      <!-- <div class="list-item">
         <div class="label">客服电话</div>
         <div class="text">
           <a href="tel: 18234208881" class="telphone">18234208881</a>
         </div>
-      </div>
+      </div> -->
       <div class="list-item">
         <div class="label">运营微信号1</div>
         <div class="text">
@@ -74,6 +75,7 @@
         loadiing:false
       }
     },
+    /* eslint-disable */
     components: {
       [Popup.name]: Popup
     },

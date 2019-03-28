@@ -6,6 +6,9 @@ const getters = {
   applyInfo: () => {
     return localforage.getItem('cur_apply_info')
   },
+  applyInfoForm: () => {
+    return localforage.getItem('cur_apply_info_form')
+  },
   personalInfo: state => state.product.personalInfo,
   avatar: state => state.user.avatar,
   name: state => state.user.name,

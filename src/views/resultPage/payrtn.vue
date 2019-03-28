@@ -28,6 +28,7 @@
 
   export default {
     name: 'PayNoticePage',
+    /* eslint-disable */
     components: {
       [ActivityIndicator.name]: ActivityIndicator
     },
@@ -35,6 +36,11 @@
       return {
         payStatus: 'waiting', // 'waiting', 'successed', 'failed'
         payTipText: '等待支付返回结果...'
+      }
+    },
+    created() {
+      if (!this.$route.params.auth) {
+        this.$router.push({ path: '/center' })
       }
     },
     mounted() {

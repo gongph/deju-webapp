@@ -41,6 +41,11 @@ const product = {
         }
       })
     },
+    // 保存产品信息
+    SaveProduct: ({ commit }, product) => {
+      commit('SAVE_PRODUCT', product)
+    },
+    // 保存当前产品，持久化操作
     SaveCurProduct: ({ commit }, product) => {
       return new Promise((resolve, reject) => {
         commit('SAVE_CUR_PRODUCT', product)
@@ -70,7 +75,9 @@ const product = {
     saveApplyInfoForm: ({ commit }, data) => {
       return new Promise((response) => {
         commit('SAVE_APPLY_INFO_FORM', data)
-        response()
+        localforage.setItem('cur_apply_info_form', data).then(value => {
+          response()
+        })
       })
     },
     SavePersonalInfo: ({ commit }, data) => {
