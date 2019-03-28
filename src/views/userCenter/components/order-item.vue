@@ -26,13 +26,20 @@
         <div class="rate">客户姓名: {{ data.personalInformation.name }}</div>
         <div class="loan-time">申请额度: {{ formatMoney(data.amount) }}(元)</div>
         <div class="loan-type">申请期限: {{ data.deadline ? data.deadline : 0 }} 个月</div>
+
       </div>
       <div class="item">
         <div class="apply-btn__wrapper">
-          <template v-if="route">
-            <md-button type="ghost-primary" @click="handleClick(data)">{{ buttonText }}</md-button>
+          <template v-if="data.auditStatus === 'FINALTRIALPASSED'">
+            <div class="loan-time">终审额度: {{ formatMoney(data.finalAmount) }}(元)</div>
+            <div class="loan-type">终审期限: {{ data.finalDeadline ? data.finalDeadline : 0 }} 个月</div>
           </template>
-          <template v-else>{{statusText}}</template>
+          <template v-else>
+              <template v-if="route">
+                <md-button type="ghost-primary" @click="handleClick(data)">{{ buttonText }}</md-button>
+              </template>
+              <template v-else>{{statusText}}</template>
+          </template>
         </div>
       </div>
     </div><!-- Content end -->
