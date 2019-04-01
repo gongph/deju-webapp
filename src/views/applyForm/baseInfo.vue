@@ -143,7 +143,7 @@
               :size="15"
               color="#fff"
               text-color="#fff"
-            >授权支付中...</md-activity-indicator>
+            >授权支付中</md-activity-indicator>
           </template>
           <template v-else>授权查询</template>
         </md-button>
@@ -232,6 +232,7 @@
         step: 1,
         nextLoading: false,
         payLoading: false,
+        paying: false, // 是否正在支付
         payWay: 'WEIXINPAY',
         baseform: {},
         imageList: {
@@ -416,9 +417,12 @@
       },
       handleCashier() {
         this.actDialog.open = true
+        // 防抖
+        this.payLoading = true
       },
       onActCancel() {
         this.actDialog.open = false
+        this.payLoading = false
       },
       onActConfirm() {
         this.actDialog.open = false
@@ -456,25 +460,34 @@
             } else {
               // 发起支付请求
               pay(response.data).then(resp => {
-                // 微信支付
-                if (this.payWay === 'WEIXINPAY') {
-                  this.saveApplyInfoForm(response.data).then(() => {
-                    // 重定向到公众号页面
-                    document.location.href = resp.data
-                  })
+
+                if (resp.status === 201 || resp.status === 200) {
+                  // 微信支付
+                  if (this.payWay === 'WEIXINPAY') {
+                    this.saveApplyInfoForm(response.data).then(() => {
+                      // 重定向到公众号页面
+                      document.location.href = resp.data
+                    })
+                  }
+                  // 支付宝支付 
+                  else {
+                    this.payForm = resp.data
+                    this.$nextTick(() => {
+                      document.forms[0].submit()
+                    })
+                  }
+
+                } else {
+                  this.paying = false
                 }
-                // 支付宝支付 
-                else {
-                  this.payForm = resp.data
-                  this.$nextTick(() => {
-                    document.forms[0].submit()
-                  })
-                }
+                
               })
             }
           } else {
+            this.paying = false
           }
         }).catch(err => {
+          this.paying = false
           console.error(err)
         })
       },
@@ -498,9 +511,19 @@
           Toast.info('请选择支付方式！')
           return
         }
+        
+        // !如果正在支付，禁止重复点击
+        if (this.paying) {
+          Toast.info('不要重复提交！')
+          return
+        }
+
         this.payButtonText = '支付中...'
         this.payWay = item && item.value
         this.doPay()
+
+        // 设置当前正在支付状态
+        this.paying = true
       },
       /**
        * 取消支付触发

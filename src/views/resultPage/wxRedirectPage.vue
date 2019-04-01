@@ -13,13 +13,13 @@
       <md-input-item
         title="支付金额"
         align="right"
-        type="money"
+        type="text"
         v-model="cashierAmount"
       />
       
     </md-field>
     <div class="footer-btn">
-      <md-button @click="handleDopay">立即支付</md-button>
+      <md-button @click="handleDopay" :disabled="paying ? true : false">{{ buttonText }}</md-button>
     </div>
   </div>
 </template>
@@ -34,11 +34,13 @@
     data() {
       return {
         cashierCompany: '渤源资本信息咨询服务有限公司',
-        cashierAmount: '50.00',
+        cashierAmount: '50.00元',
         curApplyInfo: null,
+        buttonText: '立即支付',
         // 保存微信配置的支付参数
         payParams: null,
-        userWXVersion: 0
+        userWXVersion: 0,
+        paying: false
       }
     },
     /* eslint-disable */
@@ -72,6 +74,8 @@
           if (wv > '5.0') {
             // 先获取支付配置信息
             const code = getUrlParam('code')
+            this.paying = true
+            this.buttonText = '支付中...'
             invokeDopay(this.curApplyInfo, { code }).then(response => {
               if (response && response.status === 200) {
                 this.payParams = response.data
@@ -80,7 +84,13 @@
                 } else {
                   Toast.info('请在微信内置浏览器中支付！')
                 }
+              } else {
+                this.paying = false
               }
+
+            }).catch(err => {
+              this.paying = false
+              console.error(err)
             })
           } else {
             Toast.info("请先升级你的微信到 v5.0 以上版本!")
@@ -102,9 +112,13 @@
             })
           }
           else if (res.err_msg == "get_brand_wcpay_request:cancel") {
+            this.paying = false
+            this.buttonText = '立即支付'
             Toast.info('支付结束！')
           }
           else if (res.err_msg == "get_brand_wcpay_request：fail") {  
+            this.paying = false
+            this.buttonText = '立即支付'
             Toast.info("支付失败!")
           }  
         })
