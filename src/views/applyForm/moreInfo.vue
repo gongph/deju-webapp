@@ -592,6 +592,8 @@
               otherPhotoType: this.imageList.readerQtcl[1]})
           }
 
+        }else {
+          userinfolet = this.userInfo
         }
         savePersonInfo(userinfolet, 'PUT').then(response => {
           if (response.status === 200) {
