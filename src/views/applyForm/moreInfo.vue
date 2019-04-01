@@ -287,7 +287,7 @@
               </li>
             </template>
             </template>
-            <template v-if="userInfo.product.id == 2 || userInfo.product==3">
+            <template v-if="userInfo.product.id == 2 || userInfo.product.id ==3">
             <!-- 房本 -->
             <template v-if="imageList['readerFb'].length > 0">
               <li class="image-reader-item"
@@ -555,28 +555,47 @@
         const fb = this.imageList.readerFb[0]
         const wgqfht = this.imageList.readerWgqfht[0]
         const qtcl = this.imageList.readerQtcl[0]
+        let userinfolet
 
         // 针对第二个商品进行处理
         if (this.userInfo.product ==2 || this.userInfo.product.id ==3){
-          this.userInfo = Object.assign({}, this.userInfo, {
-            workNamePhoto: gzzm.substring(gzzm.indexOf(',') + 1, gzzm.length),
-            workNamePhotoType: this.imageList.readerGzzm[1],
-            businessLicensePhoto: yyzz.substring(yyzz.indexOf(',') + 1, yyzz.length),
-            businessLicensePhotoType: this.imageList.readerYyzz[1],
+          // 工作证明
+          if(gzzm){
+            userinfolet = Object.assign({}, this.userInfo, {
+              workNamePhoto: gzzm.substring(gzzm.indexOf(',') + 1, gzzm.length),
+              workNamePhotoType: this.imageList.readerGzzm[1]
+            })
+          }
 
-          })
+          // 营业执照
+          if (yyzz){
+            userinfolet = Object.assign({}, userinfolet, {
+            businessLicensePhoto: yyzz.substring(yyzz.indexOf(',') + 1, yyzz.length),
+                    businessLicensePhotoType: this.imageList.readerYyzz[1]})
+          }
+        //房本
+        if (fb){
+          userinfolet = Object.assign({}, userinfolet, {
+            businessLicensePhoto: yyzz.substring(yyzz.indexOf(',') + 1, yyzz.length),
+            businessLicensePhotoType: this.imageList.readerYyzz[1]})
         }
-        if (this.userInfo.product.id ==3){
-          this.userInfo = Object.assign({},this.userInfo,{
-            proofOfRealEstate: fb.substring(fb.indexOf(',') + 1, fb.length),
-            proofOfRealEstateType: this.imageList.readerFb[1],
+        //网购签房合同
+        if(wgqfht){
+          userinfolet = Object.assign({},userinfolet,{
             purchaseAHouseNetworkContract: wgqfht.substring(wgqfht.indexOf(',') + 1, wgqfht.length),
-            purchaseAHouseNetworkContractType: this.imageList.readerWgqfht[1],
-            otherPhoto: qtcl.substring(qtcl.indexOf(',') + 1, qtcl.length),
-            otherPhotoType: this.imageList.readerQtcl[1]
-          })
+            purchaseAHouseNetworkContractType: this.imageList.readerWgqfht[1]})
         }
-        savePersonInfo(this.userInfo, 'PUT').then(response => {
+          //其他材料
+          if (qtcl){
+            userinfolet = Object.assign({},userinfolet,{
+              otherPhoto: qtcl.substring(qtcl.indexOf(',') + 1, qtcl.length),
+              otherPhotoType: this.imageList.readerQtcl[1]})
+          }
+
+        }else {
+          userinfolet = this.userInfo
+        }
+        savePersonInfo(userinfolet, 'PUT').then(response => {
           if (response.status === 200) {
             this.$router.push({ name: 'NoticePage', params: { auth: true } })
           } else {
