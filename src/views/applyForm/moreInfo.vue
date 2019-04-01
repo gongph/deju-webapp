@@ -287,7 +287,7 @@
               </li>
             </template>
             </template>
-            <template v-if="userInfo.product==3">
+            <template v-if="userInfo.product.id == 2 || userInfo.product==3">
             <!-- 房本 -->
             <template v-if="imageList['readerFb'].length > 0">
               <li class="image-reader-item"
