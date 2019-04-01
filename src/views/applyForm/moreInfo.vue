@@ -568,28 +568,30 @@
           }
 
           // 营业执照
-          if (yyzz){
+         else if (yyzz){
             userinfolet = Object.assign({}, userinfolet, {
             businessLicensePhoto: yyzz.substring(yyzz.indexOf(',') + 1, yyzz.length),
                     businessLicensePhotoType: this.imageList.readerYyzz[1]})
           }
         //房本
-        if (fb){
+       else if (fb){
           userinfolet = Object.assign({}, userinfolet, {
             businessLicensePhoto: yyzz.substring(yyzz.indexOf(',') + 1, yyzz.length),
             businessLicensePhotoType: this.imageList.readerYyzz[1]})
         }
         //网购签房合同
-        if(wgqfht){
+       else if(wgqfht){
           userinfolet = Object.assign({},userinfolet,{
             purchaseAHouseNetworkContract: wgqfht.substring(wgqfht.indexOf(',') + 1, wgqfht.length),
             purchaseAHouseNetworkContractType: this.imageList.readerWgqfht[1]})
         }
           //其他材料
-          if (qtcl){
+         else if (qtcl){
             userinfolet = Object.assign({},userinfolet,{
               otherPhoto: qtcl.substring(qtcl.indexOf(',') + 1, qtcl.length),
               otherPhotoType: this.imageList.readerQtcl[1]})
+          }else {
+            userinfolet = this.userInfo
           }
 
         }else {
