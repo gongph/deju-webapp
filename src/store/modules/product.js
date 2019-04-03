@@ -64,9 +64,11 @@ const product = {
     /* eslint-disable */
     SaveApplyInfo: ({ commit }, data) => {
       return new Promise((response) => {
-        localforage.setItem('cur_apply_info', data).then(value => {
-          response(value)
-        })
+        commit('SAVE_APPLY_INFO', data)
+        response()
+        // localforage.setItem('cur_apply_info', data).then(value => {
+        //   response(value)
+        // })
       })
     },
     /**

@@ -276,7 +276,7 @@
         },
         payForm: '',
         // 用户在产品详情页填写的申请信息
-        curApplyInfo: null,
+        // curApplyInfo: null,
         applyBaseInfo: null,
         // 路由来源
         srcRoute: ''
@@ -315,13 +315,7 @@
         this.imageList.readerBack.push(`data:${backType};base64,${back}`)
         this.imageList.readerBack.push(backType)
       }
-      if (this.applyInfo) {
-        this.applyInfo.then(data => {
-          if (data) {
-            this.curApplyInfo = deepClone(data)
-          }
-        })
-      }
+
     },
     methods: {
       ...mapActions([
@@ -436,7 +430,7 @@
        * @param  {Boolean} payed 是否7天内支付过了
        */
       saveApplyInfo(payed) {
-        const applyInfoForm = Object.assign({}, this.curApplyInfo, {
+        const applyInfoForm = Object.assign({}, this.applyInfo, {
           paymentMethod: this.payWay,
           paymentStatus: 0,
           auditStatus: 'PENDINGREVIEW',

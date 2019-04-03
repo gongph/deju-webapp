@@ -3,9 +3,10 @@ import localforage from 'localforage'
 const getters = {
   token: state => state.user.token,
   product: state => state.product.product,
-  applyInfo: () => {
-    return localforage.getItem('cur_apply_info')
-  },
+  applyInfo: state => state.product.applyInfo,
+  // applyInfo: () => {
+  //   return localforage.getItem('cur_apply_info')
+  // },
   applyInfoForm: () => {
     return localforage.getItem('cur_apply_info_form')
   },

@@ -156,17 +156,6 @@
       } else {
         this.getProductById(pid)
       }
-      if (this.applyInfo) {
-        this.applyInfo.then(data => {
-          if (data) {
-            this.amount = data.amount
-            this.deadline = data.deadline
-            this.rate = this.findRateByLabel(data.deadline)
-            this.term = data.deadline
-            this.deadlineLabel = `${data.deadline}个月`
-          }
-        })
-      }
     },
     watch: {
       amount: 'computedEarn',
@@ -189,6 +178,19 @@
           Toast.info('申请金额和期限不能为空！')
           return
         }
+
+        // 如果超出最低额度和最高额度
+        if (this.amount < this.product.loanRangeStart) {
+          Toast.info('申请金额不能小于最低额度！')
+          return
+        }
+
+        if (this.amount > this.product.loanRangeEnd) {
+          Toast.info('申请金额不能大于最高额度！')
+          return
+        }
+
+        // Save to vuex
         this.$store.dispatch('SaveApplyInfo', {
           amount: this.amount,
           deadline: this.term
