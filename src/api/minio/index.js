@@ -4,9 +4,9 @@ import request from '@/utils/request'
  * 获取展示大图部分内容
  */
 
-export function getBanners() {
+export function getMinioToken() {
     return request({
-        url: '/api/v3/banners',
+        url: '/api/minio/token',
         method: 'get'
     })
 }

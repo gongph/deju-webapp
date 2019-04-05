@@ -16,7 +16,7 @@
         type="text"
         v-model="cashierAmount"
       />
-      
+
     </md-field>
     <div class="footer-btn">
       <md-button @click="handleDopay" :disabled="paying ? true : false">{{ buttonText }}</md-button>
@@ -27,8 +27,9 @@
 <script>
   import { mapGetters } from 'vuex'
   import { Button, Field, FieldItem, InputItem, Toast } from 'mand-mobile'
-  import { invokeDopay } from '@/api/pay'
+  import { invokeDopay,openid } from '@/api/pay'
   import { deepClone, getUrlParam } from "@/utils"
+  import localforage from 'localforage'
   export default {
     name: 'WXRedirectPage',
     data() {
@@ -72,26 +73,46 @@
           // 检查微信版本，只有 v5.0+ 才支持支付
           const wv = this.getWeixinVersion()
           if (wv > '5.0') {
+            let snsopenid
             // 先获取支付配置信息
             const code = getUrlParam('code')
-            this.paying = true
-            this.buttonText = '支付中...'
-            invokeDopay(this.curApplyInfo, { code }).then(response => {
-              if (response && response.status === 200) {
-                this.payParams = response.data
-                if ('WeixinJSBridge' in window){
-                  this.onBridgeReady()
-                } else {
-                  Toast.info('请在微信内置浏览器中支付！')
-                }
-              } else {
-                this.paying = false
+            console.log("code",code)
+            localforage.getItem("openid").then(value => {
+              snsopenid =value
+              console.log("snsopen get Item",snsopenid)
+              if(!snsopenid){
+                openid({code:code}).then(response=>{
+                  if (response && response.status ===200){
+                    snsopenid = response.data.openid
+                    console.log("after:",response.data)
+                    localforage.setItem("openid",snsopenid)
+                    console.log("snsopen set Item",snsopenid)
+                  }
+                })
               }
+            }).then(bb=>{
 
-            }).catch(err => {
-              this.paying = false
-              console.error(err)
+              this.paying = true
+              this.buttonText = '支付中...'
+              console.log("snsopen pay befor",snsopenid)
+              invokeDopay(this.curApplyInfo, {openid:snsopenid}).then(response => {
+                if (response && response.status === 200) {
+                  this.payParams = response.data
+                  if ('WeixinJSBridge' in window){
+                    this.onBridgeReady()
+                  } else {
+                    Toast.info('请在微信内置浏览器中支付！')
+                  }
+                } else {
+                  this.paying = false
+                }
+
+              }).catch(err => {
+                this.paying = false
+                console.error(err)
+              })
             })
+
           } else {
             Toast.info("请先升级你的微信到 v5.0 以上版本!")
           }
@@ -116,11 +137,11 @@
             this.buttonText = '立即支付'
             Toast.info('支付结束！')
           }
-          else if (res.err_msg == "get_brand_wcpay_request：fail") {  
+          else if (res.err_msg == "get_brand_wcpay_request：fail") {
             this.paying = false
             this.buttonText = '立即支付'
             Toast.info("支付失败!")
-          }  
+          }
         })
       },
       getWeixinVersion() {

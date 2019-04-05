@@ -463,7 +463,7 @@
                       document.location.href = resp.data
                     })
                   }
-                  // 支付宝支付 
+                  // 支付宝支付
                   else {
                     this.payForm = resp.data
                     this.$nextTick(() => {
@@ -474,7 +474,7 @@
                 } else {
                   this.paying = false
                 }
-                
+
               })
             }
           } else {
@@ -505,7 +505,7 @@
           Toast.info('请选择支付方式！')
           return
         }
-        
+
         // !如果正在支付，禁止重复点击
         if (this.paying) {
           Toast.info('不要重复提交！')
