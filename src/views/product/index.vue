@@ -17,7 +17,7 @@
               <!-- title -->
               <div class="item-title__wrapper">
                 <div class="image">
-                  <img :src="'data:image/png;base64,' + item.icon" class="img">
+                  <img :src="'http://th.minio.boyuanziben.cn' + item.iconUrl" class="img">
                 </div>
                 <div class="title">{{ item.title }}</div>
                 <div class="title-right">已申请人数 <span class="red">{{ item.numberOfApplicants }}</span> 人</div>

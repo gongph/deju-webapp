@@ -6,7 +6,7 @@ import request from '@/utils/request'
 
 export function getList() {
   return request({
-    url: '/api/products',
+    url: '/api/v3/products',
     method: 'get'
   })
 }
@@ -16,7 +16,7 @@ export function getList() {
  */
 export function getProductById(id) {
   return request({
-    url: `/api/products/${id}`,
+    url: `/api/v3/products/${id}`,
     method: 'get'
   })
 }
@@ -27,7 +27,7 @@ export function getProductById(id) {
 
 export function saveApplyInfo(data) {
   return request({
-    url: '/api/application-infos',
+    url: '/api/v3/application-infos',
     method: 'post',
     data
   })
@@ -38,7 +38,7 @@ export function saveApplyInfo(data) {
  */
 export function getApplyInfoById(id) {
   return request({
-    url: `/api/application-infos/${id}`,
+    url: `/api/v3/application-infos/${id}`,
     method: 'get'
   })
 }
@@ -49,7 +49,7 @@ export function getApplyInfoById(id) {
 
 export function savePersonInfo(data, method = 'POST') {
   return request({
-    url: '/api/personal-informations',
+    url: '/api/v3/personal-informations',
     method,
     data
   })
@@ -61,7 +61,7 @@ export function savePersonInfo(data, method = 'POST') {
 
 export function getPersonalInfoById(id) {
   return request({
-    url: `/api/personal-informations/${id}`,
+    url: `/api/v3/personal-informations/${id}`,
     method: 'get'
-  }) 
+  })
 }

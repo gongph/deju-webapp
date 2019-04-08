@@ -10,8 +10,8 @@
       <md-swiper ref="swiper" :has-dots="false">
         <md-swiper-item :key="$index" v-for="(item, $index) in banners">
           <a href="javascript:void(0)" class="banner-item">
-            <img 
-              :src="'data:' + item.urlContentType + ';base64,' + item.url"
+            <img
+              :src="'http://th.minio.boyuanziben.cn' + item.contentUrl"
               style="width: 95%"
               onerror="this.src='/img/banner-error.jpg'"
             >
@@ -61,7 +61,7 @@
     width: 100%;
     height: 300px;
     position: relative;
-    
+
     .bg {
       background: #5a5a5a;
       width: 100%;
@@ -79,7 +79,7 @@
       font-size: 28px;
       color: #fff;
       display: block;
-    
+
       position: relative;
 
       img {

@@ -6,7 +6,7 @@ import request from '@/utils/request'
 
 export function getOrders() {
   return request({
-    url: '/api/application-current-infos',
+    url: '/api/v3/application-current-infos',
     method: 'get'
   })
 }
@@ -17,7 +17,7 @@ export function getOrders() {
 
 export function getCurOrders(query) {
   return request({
-    url: '/api/v2/application-current-infos',
+    url: '/api/v3/v2/application-current-infos',
     method: 'get',
     params: query
   })

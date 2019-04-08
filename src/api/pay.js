@@ -27,6 +27,17 @@ export function invokeDopay(data, query) {
 }
 
 /**
+ * 支付
+ */
+export function openid(query) {
+  return request({
+    url: '/api/openid',
+    method: 'get',
+    params: query
+  })
+}
+
+/**
  * 检查支付情况，同一个用户支付一次后7天内免支付
  */
 export function checkPay(query) {
