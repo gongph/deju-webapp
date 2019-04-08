@@ -43,10 +43,10 @@
           <div class="upload-preview__box">
             <ul class="image-reader-list">
               <!-- 正面照 -->
-              <template v-if="imageList['readerFront'].length > 0">
+              <template v-if="imageList['readerFront'].length >= 3">
                 <li class="image-reader-item"
                 :style="{
-                  'backgroundImage': `url(${imageList['readerFront'][0]})`,
+                  'backgroundImage': `url(${imageList['readerFront'][2]})`,
                   'backgroundPosition': 'center center',
                   'backgroundRepeat': 'no-repeat',
                   'backgroundSize': 'cover'
@@ -55,7 +55,7 @@
                     class="image-reader-item-del"
                     name="circle-cross"
                     color="#666"
-                    @click.native="onDeleteImage('readerFront', 0)">
+                    @click.native="onDeleteImage('readerFront', 2)">
                   </md-icon>
                 </li>
               </template>
@@ -73,10 +73,10 @@
                 </li>
               </template>
               <!-- 反面照 -->
-              <template v-if="imageList['readerBack'].length > 0">
+              <template v-if="imageList['readerBack'].length >= 3">
                 <li class="image-reader-item"
                   :style="{
-                    'backgroundImage': `url(${imageList['readerBack'][0]})`,
+                    'backgroundImage': `url(${imageList['readerBack'][2]})`,
                     'backgroundPosition': 'center center',
                     'backgroundRepeat': 'no-repeat',
                     'backgroundSize': 'cover'
@@ -85,7 +85,7 @@
                     class="image-reader-item-del"
                     name="circle-cross"
                     color="#666"
-                    @click.native="onDeleteImage('readerBack', 0)">
+                    @click.native="onDeleteImage('readerBack', 2)">
                   </md-icon>
                 </li>
               </template>
@@ -199,6 +199,7 @@
   import { pay, checkPay } from '@/api/pay'
   import { savePersonInfo } from "@/api/product"
   import { deepClone } from "@/utils"
+  import { uploader, previewImage, removeRemoteImage } from '@/utils/file-uploader.js'
 
   // 手机号验证器
   Validator.extend("phone", {
@@ -301,19 +302,21 @@
     created() {
       if (this.personalInfo) {
         const personalInfo = this.personalInfo
-        const front = personalInfo.idCardFrontPhoto
+        const front = personalInfo.idCardFrontPhotoUrl
         const frontType = personalInfo.idCardFrontPhotoContentType
 
-        const back = personalInfo.idCardBackPhoto
+        const back = personalInfo.idCardBackPhotoUrl
         const backType = personalInfo.idCardBackPhotoContentType
 
         this.ruleForm = deepClone(personalInfo)
+
         // 身份证正面照
-        this.imageList.readerFront.push(`data:${frontType};base64,${front}`)
-        this.imageList.readerFront.push(frontType)
+        this.imageList.readerFront[1] = frontType || undefined
+        this.imageList.readerFront[2] = front ? previewImage(front) : undefined
+        
         // 身份证反面照
-        this.imageList.readerBack.push(`data:${backType};base64,${back}`)
-        this.imageList.readerBack.push(backType)
+        this.imageList.readerBack[1] = backType || undefined
+        this.imageList.readerBack[2] = back ? previewImage(back) : undefined
       }
 
     },
@@ -325,31 +328,49 @@
         Toast.loading('图片读取中...')
       },
       onReaderComplete(name, { dataUrl, blob, file }) {
+        Toast.loading('上传中...')
+
         const fileSize = file && file.size
         if (fileSize > 5 * 1024 * 1024) {
           Toast.info('图片不能大于 5M！')
           return
         }
+
+        // 保存照片
         const imageList = []
-        imageProcessor({
-          dataUrl,
-          quality: 0.8
-        }).then(({dataUrl}) => {
-          if (dataUrl) {
-            imageList.push(dataUrl)
-            imageList.push(file.type)
-          }
+
+        // 上传照片到 Minio 服务器
+        uploader(file).then(response => {
+          Toast.hide()
+          const { bucketName, fileName } = response
+          const fileUrl = `${bucketName}/${fileName}`
+          imageList.push(fileUrl)
+          imageList.push(file.type)
+          imageList.push(previewImage(fileUrl))
+          this.$set(this.imageList, name, imageList)
         })
-        this.$set(this.imageList, name, imageList)
-        Toast.hide()
+        .catch(err => {
+          Toast.hide()
+          console.error(err)
+        })
+        
       },
       onReaderError(name, {msg}) {
         Toast.failed(msg)
       },
       onDeleteImage(name, index) {
-        const imageList = []
-        imageList.splice(index, 1)
-        this.$set(this.imageList, name, imageList)
+        if (this.imageList[name].length > 0) {
+          // 删除远程图片
+          const imgUrl = this.imageList[name][0]
+          const fileName = imgUrl.split('/')[1]
+          removeRemoteImage(fileName).then(() => {
+            console.log(`Remove remote image '${fileName}' successed!`)
+          })
+          .catch(err => {
+            console.error(err)
+          })
+          this.$set(this.imageList, name, [])
+        }
       },
       handleNext() {
         this.$validator.validateAll().then((valid) => {
@@ -368,9 +389,9 @@
 
             // 用户基本信息
             const applyBaseInfo = this.applyBaseInfo = Object.assign({}, this.ruleForm, {
-              idCardFrontPhoto: pf.substring(pf.indexOf(',') + 1, pf.length),
+              idCardFrontPhotoUrl: pf.substring(pf.indexOf(',') + 1, pf.length),
               idCardFrontPhotoContentType: this.imageList.readerFront[1],
-              idCardBackPhoto: pb.substring(pb.indexOf(',') + 1, pf.length),
+              idCardBackPhotoUrl: pb.substring(pb.indexOf(',') + 1, pf.length),
               idCardBackPhotoContentType: this.imageList.readerBack[1],
               user: this.user
             })
