@@ -226,11 +226,11 @@
         <div class="upload-preview__box">
           <ul class="image-reader-list">
             <!-- 工作证明 -->
-            <template v-if="userInfo.product.id == 2 || userInfo.product.id ==3">
-            <template v-if="imageList['readerGzzm'].length > 0">
+            <template v-if="userInfo.product.id == 2 || userInfo.product.id == 3">
+            <template v-if="imageList['readerGzzm'].length >= 3">
               <li class="image-reader-item"
                   :style="{
-                  'backgroundImage': `url(${imageList['readerGzzm'][0]})`,
+                  'backgroundImage': `url(${imageList['readerGzzm'][2]})`,
                   'backgroundPosition': 'center center',
                   'backgroundRepeat': 'no-repeat',
                   'backgroundSize': 'cover'
@@ -239,7 +239,7 @@
                         class="image-reader-item-del"
                         name="circle-cross"
                         color="#666"
-                        @click.native="onDeleteImage('readerGzzm', 0)">
+                        @click.native="onDeleteImage('readerGzzm', 2)">
                 </md-icon>
               </li>
             </template>
@@ -257,10 +257,10 @@
               </li>
             </template>
             <!-- 营业执照 -->
-            <template v-if="imageList['readerYyzz'].length > 0">
+            <template v-if="imageList['readerYyzz'].length >= 3">
               <li class="image-reader-item"
                   :style="{
-                    'backgroundImage': `url(${imageList['readerYyzz'][0]})`,
+                    'backgroundImage': `url(${imageList['readerYyzz'][2]})`,
                     'backgroundPosition': 'center center',
                     'backgroundRepeat': 'no-repeat',
                     'backgroundSize': 'cover'
@@ -269,7 +269,7 @@
                         class="image-reader-item-del"
                         name="circle-cross"
                         color="#666"
-                        @click.native="onDeleteImage('readerYyzz', 0)">
+                        @click.native="onDeleteImage('readerYyzz', 2)">
                 </md-icon>
               </li>
             </template>
@@ -287,12 +287,12 @@
               </li>
             </template>
             </template>
-            <template v-if="userInfo.product.id == 2 || userInfo.product.id ==3">
+            <template v-if="userInfo.product.id == 2 || userInfo.product.id == 3">
             <!-- 房本 -->
-            <template v-if="imageList['readerFb'].length > 0">
+            <template v-if="imageList['readerFb'].length >= 3">
               <li class="image-reader-item"
                   :style="{
-                    'backgroundImage': `url(${imageList['readerFb'][0]})`,
+                    'backgroundImage': `url(${imageList['readerFb'][2]})`,
                     'backgroundPosition': 'center center',
                     'backgroundRepeat': 'no-repeat',
                     'backgroundSize': 'cover'
@@ -301,7 +301,7 @@
                         class="image-reader-item-del"
                         name="circle-cross"
                         color="#666"
-                        @click.native="onDeleteImage('readerFb', 0)">
+                        @click.native="onDeleteImage('readerFb', 2)">
                 </md-icon>
               </li>
             </template>
@@ -319,10 +319,10 @@
               </li>
             </template>
             <!-- 购房网签合同 -->
-            <template v-if="imageList['readerWgqfht'].length > 0">
+            <template v-if="imageList['readerWgqfht'].length >= 3">
               <li class="image-reader-item"
                   :style="{
-                    'backgroundImage': `url(${imageList['readerWgqfht'][0]})`,
+                    'backgroundImage': `url(${imageList['readerWgqfht'][2]})`,
                     'backgroundPosition': 'center center',
                     'backgroundRepeat': 'no-repeat',
                     'backgroundSize': 'cover'
@@ -331,7 +331,7 @@
                         class="image-reader-item-del"
                         name="circle-cross"
                         color="#666"
-                        @click.native="onDeleteImage('readerWgqfht', 0)">
+                        @click.native="onDeleteImage('readerWgqfht', 2)">
                 </md-icon>
               </li>
             </template>
@@ -349,10 +349,10 @@
               </li>
             </template>
             <!-- 其他材料 -->
-            <template v-if="imageList['readerQtcl'].length > 0">
+            <template v-if="imageList['readerQtcl'].length >= 3">
               <li class="image-reader-item"
                   :style="{
-                    'backgroundImage': `url(${imageList['readerQtcl'][0]})`,
+                    'backgroundImage': `url(${imageList['readerQtcl'][2]})`,
                     'backgroundPosition': 'center center',
                     'backgroundRepeat': 'no-repeat',
                     'backgroundSize': 'cover'
@@ -361,7 +361,7 @@
                         class="image-reader-item-del"
                         name="circle-cross"
                         color="#666"
-                        @click.native="onDeleteImage('readerQtcl', 0)">
+                        @click.native="onDeleteImage('readerQtcl', 2)">
                 </md-icon>
               </li>
             </template>
@@ -421,6 +421,7 @@
   import InputValidate from "@/components/InputValidate/index.vue"
   import SelectItem from '@/components/SelectItem/index.vue'
   import imageProcessor from 'mand-mobile/components/image-reader/image-processor'
+  import { uploader, previewImage, removeRemoteImage } from '@/utils/file-uploader.js'
 
   // 手机号验证器
   Validator.extend("phone", {
@@ -518,38 +519,56 @@
           }
         })
       },
-    onReaderSelect() {
-      Toast.loading('图片读取中...')
-    },
-    onReaderComplete(name, { dataUrl, blob, file }) {
-      const fileSize = file && file.size
-      if (fileSize > 5 * 1024 * 1024) {
-        Toast.info('图片不能大于 5M！')
-        return
-      }
-      const imageList = []
-      imageProcessor({
-        dataUrl,
-        quality: 0.8
-      }).then(({dataUrl}) => {
-        if (dataUrl) {
-          imageList.push(dataUrl)
-          imageList.push(file.type)
+      onReaderSelect() {
+        Toast.loading('图片读取中...')
+      },
+      onReaderComplete(name, { dataUrl, blob, file }) {
+        Toast.loading('上传中...')
+
+        const fileSize = file && file.size
+        if (fileSize > 5 * 1024 * 1024) {
+          Toast.info('图片不能大于 5M！')
+          return
         }
-      })
-      this.$set(this.imageList, name, imageList)
-      Toast.hide()
-    },
-    onReaderError(name, {msg}) {
-      Toast.failed(msg)
-    },
-    onDeleteImage(name, index) {
-      const imageList = []
-      imageList.splice(index, 1)
-      this.$set(this.imageList, name, imageList)
-    },
+
+        // 保存照片
+        const imageList = []
+
+        // 上传照片到 Minio 服务器
+        uploader(file).then(response => {
+          Toast.hide()
+          const { bucketName, fileName } = response
+          const fileUrl = `${bucketName}/${fileName}`
+          imageList.push(fileUrl)
+          imageList.push(file.type)
+          imageList.push(previewImage(fileUrl))
+          this.$set(this.imageList, name, imageList)
+        })
+        .catch(err => {
+          Toast.hide()
+          console.error(err)
+        })
+
+      },
+      onReaderError(name, {msg}) {
+        Toast.failed(msg)
+      },
+      onDeleteImage(name, index) {
+        if (this.imageList[name].length > 0) {
+          // 删除远程图片
+          const imgUrl = this.imageList[name][0]
+          const fileName = imgUrl.split('/')[1]
+          removeRemoteImage(fileName).then(() => {
+            console.log(`Remove remote image '${fileName}' successed!`)
+          })
+          .catch(err => {
+            console.error(err)
+          })
+          this.$set(this.imageList, name, [])
+        }
+      },
       submitForm() {
-         // 添加照片处理
+        // 添加照片处理
         const gzzm = this.imageList.readerGzzm[0]
         const yyzz = this.imageList.readerYyzz[0]
         const fb = this.imageList.readerFb[0]
@@ -558,43 +577,42 @@
         let userinfolet
 
         // 针对第二个商品进行处理
-        if (this.userInfo.product ==2 || this.userInfo.product.id ==3){
+        if (this.userInfo.product ==2 || this.userInfo.product.id ==3) {
           // 工作证明
-          if(gzzm){
+          if (gzzm) {
             userinfolet = Object.assign({}, this.userInfo, {
-              workNamePhoto: gzzm.substring(gzzm.indexOf(',') + 1, gzzm.length),
+              workNamePhotoUrl: gzzm.substring(gzzm.indexOf(',') + 1, gzzm.length),
               workNamePhotoType: this.imageList.readerGzzm[1]
             })
           }
-
           // 营业执照
-         else if (yyzz){
+          else if (yyzz) {
             userinfolet = Object.assign({}, userinfolet, {
-            businessLicensePhoto: yyzz.substring(yyzz.indexOf(',') + 1, yyzz.length),
-                    businessLicensePhotoType: this.imageList.readerYyzz[1]})
+              businessLicensePhotoUrl: yyzz.substring(yyzz.indexOf(',') + 1, yyzz.length),
+              businessLicensePhotoType: this.imageList.readerYyzz[1]})
           }
-        //房本
-       else if (fb){
-          userinfolet = Object.assign({}, userinfolet, {
-            businessLicensePhoto: yyzz.substring(yyzz.indexOf(',') + 1, yyzz.length),
-            businessLicensePhotoType: this.imageList.readerYyzz[1]})
-        }
-        //网购签房合同
-       else if(wgqfht){
-          userinfolet = Object.assign({},userinfolet,{
-            purchaseAHouseNetworkContract: wgqfht.substring(wgqfht.indexOf(',') + 1, wgqfht.length),
-            purchaseAHouseNetworkContractType: this.imageList.readerWgqfht[1]})
-        }
-          //其他材料
-         else if (qtcl){
+          //房本
+          else if (fb){
+            userinfolet = Object.assign({}, userinfolet, {
+              businessLicensePhotoUrl: yyzz.substring(yyzz.indexOf(',') + 1, yyzz.length),
+              businessLicensePhotoType: this.imageList.readerYyzz[1]})
+          }
+          //网购签房合同
+          else if(wgqfht){
             userinfolet = Object.assign({},userinfolet,{
-              otherPhoto: qtcl.substring(qtcl.indexOf(',') + 1, qtcl.length),
+              purchaseAHouseNetworkContractUrl: wgqfht.substring(wgqfht.indexOf(',') + 1, wgqfht.length),
+              purchaseAHouseNetworkContractType: this.imageList.readerWgqfht[1]})
+          }
+          //其他材料
+          else if (qtcl){
+            userinfolet = Object.assign({},userinfolet,{
+              otherPhotoUrl: qtcl.substring(qtcl.indexOf(',') + 1, qtcl.length),
               otherPhotoType: this.imageList.readerQtcl[1]})
-          }else {
+          } else {
             userinfolet = this.userInfo
           }
 
-        }else {
+        } else {
           userinfolet = this.userInfo
         }
         savePersonInfo(userinfolet, 'PUT').then(response => {
