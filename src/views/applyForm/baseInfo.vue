@@ -455,7 +455,7 @@
           paymentStatus: 0,
           auditStatus: 'PENDINGREVIEW',
           authorizedInquiryFee: 50,
-          orderStatus: '',
+          orderStatus: 'pending',
           product: this.product,
           personalInformation: this.personalInfo,
           user: this.user
