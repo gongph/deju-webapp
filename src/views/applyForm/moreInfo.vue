@@ -567,52 +567,54 @@
       },
       submitForm() {
         // 添加照片处理
-        const gzzm = this.imageList.readerGzzm[0]
-        const yyzz = this.imageList.readerYyzz[0]
-        const fb = this.imageList.readerFb[0]
-        const wgqfht = this.imageList.readerWgqfht[0]
-        const qtcl = this.imageList.readerQtcl[0]
-        let userinfolet
+        const imageList = this.imageList
+        let userinfolet = null
 
         // 针对第二个商品进行处理
-        if (this.userInfo.product ==2 || this.userInfo.product.id ==3) {
+        if (this.userInfo.product == 2 || this.userInfo.product.id == 3) {
           // 工作证明
           if (gzzm) {
             userinfolet = Object.assign({}, this.userInfo, {
-              workNamePhotoUrl: gzzm.substring(gzzm.indexOf(',') + 1, gzzm.length),
-              workNamePhotoType: this.imageList.readerGzzm[1]
+              workNamePhotoUrl: imageList.readerGzzm[0],
+              workNamePhotoType: imageList.readerGzzm[1]
             })
           }
           // 营业执照
           else if (yyzz) {
             userinfolet = Object.assign({}, userinfolet, {
-              businessLicensePhotoUrl: yyzz.substring(yyzz.indexOf(',') + 1, yyzz.length),
-              businessLicensePhotoType: this.imageList.readerYyzz[1]})
+              businessLicensePhotoUrl: imageList.readerYyzz[0],
+              businessLicensePhotoType: imageList.readerYyzz[1]
+            })
           }
           //房本
-          else if (fb){
+          else if (fb) {
             userinfolet = Object.assign({}, userinfolet, {
-              businessLicensePhotoUrl: yyzz.substring(yyzz.indexOf(',') + 1, yyzz.length),
-              businessLicensePhotoType: this.imageList.readerYyzz[1]})
+              businessLicensePhotoUrl: imageList.readerFb[0],
+              businessLicensePhotoType: imageList.readerFb[1]
+            })
           }
           //网购签房合同
-          else if(wgqfht){
-            userinfolet = Object.assign({},userinfolet,{
-              purchaseAHouseNetworkContractUrl: wgqfht.substring(wgqfht.indexOf(',') + 1, wgqfht.length),
-              purchaseAHouseNetworkContractType: this.imageList.readerWgqfht[1]})
+          else if (wgqfht) {
+            userinfolet = Object.assign({}, userinfolet, {
+              purchaseAHouseNetworkContractUrl: imageList.readerWgqfht[0],
+              purchaseAHouseNetworkContractType: imageList.readerWgqfht[1]
+            })
           }
           //其他材料
-          else if (qtcl){
-            userinfolet = Object.assign({},userinfolet,{
-              otherPhotoUrl: qtcl.substring(qtcl.indexOf(',') + 1, qtcl.length),
-              otherPhotoType: this.imageList.readerQtcl[1]})
-          } else {
+          else if (qtcl) {
+            userinfolet = Object.assign({}, userinfolet, {
+              otherPhotoUrl: imageList.readerQtcl[0],
+              otherPhotoType: imageList.readerQtcl[1]
+            })
+          } 
+          else {
             userinfolet = this.userInfo
           }
 
         } else {
           userinfolet = this.userInfo
         }
+
         savePersonInfo(userinfolet, 'PUT').then(response => {
           if (response.status === 200) {
             this.$router.push({ name: 'NoticePage', params: { auth: true } })

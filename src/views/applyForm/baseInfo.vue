@@ -384,15 +384,14 @@
 
             this.nextLoading = true
 
-            const pf = this.imageList.readerFront[0]
-            const pb = this.imageList.readerBack[0]
+            const imageList = this.imageList
 
             // 用户基本信息
             const applyBaseInfo = this.applyBaseInfo = Object.assign({}, this.ruleForm, {
-              idCardFrontPhotoUrl: pf.substring(pf.indexOf(',') + 1, pf.length),
-              idCardFrontPhotoContentType: this.imageList.readerFront[1],
-              idCardBackPhotoUrl: pb.substring(pb.indexOf(',') + 1, pf.length),
-              idCardBackPhotoContentType: this.imageList.readerBack[1],
+              idCardFrontPhotoUrl         : imageList.readerFront[0],
+              idCardFrontPhotoContentType : imageList.readerFront[1],
+              idCardBackPhotoUrl          : imageList.readerBack[0],
+              idCardBackPhotoContentType  : imageList.readerBack[1],
               user: this.user
             })
 
