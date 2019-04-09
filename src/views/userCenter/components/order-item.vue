@@ -87,7 +87,7 @@ export default {
     },
     statusText: {
       type: String,
-      default: '待审核'
+      default: '审核中'
     },
     route: {
       type: String,
