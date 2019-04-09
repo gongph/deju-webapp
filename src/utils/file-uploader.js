@@ -6,7 +6,7 @@
 const Minio = require('minio')
 const fileReaderStream = require('filereader-stream')
 import { getUuid } from './index.js'
-import config from './config.js'
+// import config from './config.js'
 import { getMinioToken } from '@/api/minio'
 
 // Init config
@@ -17,6 +17,7 @@ const bucketName = 'boyuanziben'
 // } else {
   getMinioToken().then(response => {
     if (response && response.data) {
+      /* eslint-disable */ 
       const { region, port, useSSL, ...conf } = response.data
       minioClient = new Minio.Client(
         Object.assign({ useSSL: useSSL === 'true' ? true : false }, conf)

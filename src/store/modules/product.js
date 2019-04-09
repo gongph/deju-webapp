@@ -59,6 +59,9 @@ const product = {
     
     /**
      * 保存用户在产品详情页填写的信息
+     * @example
+     *   - 申请金额
+     *   - 申请期限
      */
     
     /* eslint-disable */
@@ -66,21 +69,24 @@ const product = {
       return new Promise((response) => {
         commit('SAVE_APPLY_INFO', data)
         response()
-        // localforage.setItem('cur_apply_info', data).then(value => {
-        //   response(value)
-        // })
+      })
+    },
+    /**
+     * 保存申请表单信息到 localforage
+     * 一般用于支付取值
+     */
+    SaveApplyInfoFormToLocalforage: ({ commit }, data) => {
+      return new Promise((response) => {
+        localforage.setItem('ApplyInfoFormData', data).then(value => {
+          response()
+        })
       })
     },
     /**
      * 保存申请表单信息
      */
-    saveApplyInfoForm: ({ commit }, data) => {
-      return new Promise((response) => {
-        commit('SAVE_APPLY_INFO_FORM', data)
-        localforage.setItem('cur_apply_info_form', data).then(value => {
-          response()
-        })
-      })
+    SaveApplyInfoForm: ({ commit }, data) => {
+      commit('SAVE_APPLY_INFO_FORM', data)
     },
     SavePersonalInfo: ({ commit }, data) => {
       return new Promise((response) => {

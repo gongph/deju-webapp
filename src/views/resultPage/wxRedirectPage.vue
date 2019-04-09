@@ -53,13 +53,13 @@
     },
     computed: {
       ...mapGetters([
-        'applyInfoForm'
+        'ApplyInfoFormData'
       ])
     },
     created() {
       // 获取申请信息
-      if (this.applyInfoForm) {
-        this.applyInfoForm.then(data => {
+      if (this.ApplyInfoFormData) {
+        this.ApplyInfoFormData.then(data => {
           if (data) {
             this.curApplyInfo = deepClone(data)
           }
@@ -76,17 +76,16 @@
             let snsopenid
             // 先获取支付配置信息
             const code = getUrlParam('code')
-            console.log("code",code)
             localforage.getItem("openid").then(value => {
-              snsopenid =value
-              console.log("snsopen get Item",snsopenid)
+              snsopenid = value
+              // console.log("snsopen get Item",snsopenid)
               if(!snsopenid){
                 openid({code:code}).then(response=>{
-                  if (response && response.status ===200){
+                  if (response && response.status === 200){
                     snsopenid = response.data.openid
-                    console.log("after:",response.data)
-                    localforage.setItem("openid",snsopenid)
-                    console.log("snsopen set Item",snsopenid)
+                    // console.log("after:",response.data)
+                    localforage.setItem("openid", snsopenid)
+                    // console.log("snsopen set Item",snsopenid)
                   }
                 })
               }
@@ -94,7 +93,7 @@
 
               this.paying = true
               this.buttonText = '支付中...'
-              console.log("snsopen pay befor",snsopenid)
+              // console.log("snsopen pay befor",snsopenid)
               invokeDopay(this.curApplyInfo, {openid:snsopenid}).then(response => {
                 if (response && response.status === 200) {
                   this.payParams = response.data

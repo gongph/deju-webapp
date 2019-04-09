@@ -415,10 +415,10 @@
   import { district } from '@/utils/district'
   import { educates, maritalStatus, deepClone } from '@/utils'
   import { Validator } from "vee-validate"
-  import { savePersonInfo } from '@/api/product'
+  import { savePersonInfo, saveApplyInfo } from '@/api/product'
   import InputValidate from "@/components/InputValidate/index.vue"
   import SelectItem from '@/components/SelectItem/index.vue'
-  import imageProcessor from 'mand-mobile/components/image-reader/image-processor'
+  // import imageProcessor from 'mand-mobile/components/image-reader/image-processor'
   import { uploader, previewImage, removeRemoteImage } from '@/utils/file-uploader.js'
 
   // 手机号验证器
@@ -478,6 +478,7 @@
     },
     computed: {
       ...mapGetters([
+        'applyInfoForm',
         'personalInfo',
         'product',
         'user'
@@ -494,7 +495,9 @@
     },
     created() {
       if (!this.$route.params.auth || !this.product) {
-        this.$router.push({ path: '/center' })
+        this.$router.push({
+          path: this.srcRoute ? this.srcRoute : '/center'
+        })
       }
     },
     methods: {
@@ -510,8 +513,6 @@
         this.$validator.validateAll().then((valid) => {
           if (valid) {
             this.actDialog.open = true
-              // 如果
-
           } else {
             return false
           }
@@ -615,13 +616,28 @@
           userinfolet = this.userInfo
         }
 
-        savePersonInfo(userinfolet, 'PUT').then(response => {
-          if (response.status === 200) {
-            this.$router.push({ name: 'NoticePage', params: { auth: true } })
+        // 执行保存操作，两步同时进行互不影响
+        // 更新申请表中的 orderStatus 为 pending 状态
+        const applyInfoFormClone = deepClone(this.applyInfoForm)
+        applyInfoFormClone.orderStatus = 'pending'
+        // 更新个人信息表。如果有一个失败则失败，否则都成功
+        Promise.all([
+          saveApplyInfo(applyInfoFormClone, 'PUT'),
+          savePersonInfo(userinfolet, 'PUT')
+        ])
+        .then(response => {
+          if (response && response.status === 200) {
+            this.$router.push({
+              name: 'NoticePage',
+              params: {
+                auth: true
+              }
+            })
           } else {
             this.buttonLoading = false
           }
-        }).catch(err => {
+        })
+        .catch(err => {
           this.buttonLoading = false
           console.error(err)
         })

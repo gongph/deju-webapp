@@ -192,7 +192,7 @@
     ActivityIndicator
   } from 'mand-mobile'
   import { mapGetters, mapActions } from 'vuex'
-  import imageProcessor from 'mand-mobile/components/image-reader/image-processor'
+  // import imageProcessor from 'mand-mobile/components/image-reader/image-processor'
   import InputValidate from "@/components/InputValidate/index.vue"
   import { Validator } from "vee-validate"
   import { saveApplyInfo } from '@/api/product'
@@ -322,7 +322,7 @@
     },
     methods: {
       ...mapActions([
-        'saveApplyInfoForm'
+        'SaveApplyInfoFormToLocalforage'
       ]),
       onReaderSelect() {
         Toast.loading('图片读取中...')
@@ -478,7 +478,7 @@
                 if (resp.status === 201 || resp.status === 200) {
                   // 微信支付
                   if (this.payWay === 'WEIXINPAY') {
-                    this.saveApplyInfoForm(response.data).then(() => {
+                    this.SaveApplyInfoFormToLocalforage(response.data).then(() => {
                       // 重定向到公众号页面
                       document.location.href = resp.data
                     })

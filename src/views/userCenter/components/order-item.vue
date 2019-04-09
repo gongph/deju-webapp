@@ -35,10 +35,18 @@
             <div class="loan-type">终审期限: {{ data.finalDeadline ? data.finalDeadline : 0 }} 个月</div>
           </template>
           <template v-else>
-              <template v-if="route">
+            <!-- 有路由的则会跳转到对应页面 -->
+            <template v-if="route">
+              <!-- 如果该工单正在审核中，则不允许再次修改 -->
+              <!-- 并且按钮上显示 '审核中' -->
+              <template v-if="data.orderStatus !== 'pending'">
                 <md-button type="ghost-primary" @click="handleClick(data)">{{ buttonText }}</md-button>
               </template>
-              <template v-else>{{statusText}}</template>
+              <template v-else>
+                <md-button type="ghost-primary" disabled>审核中</md-button>
+              </template>
+            </template>
+            <template v-else>{{statusText}}</template>
           </template>
         </div>
       </div>
@@ -102,8 +110,8 @@ export default {
     ...mapActions([
       'SaveProduct',
       'SavePersonalInfo',
-      'saveApplyInfoForm',
-      'SaveApplyInfo'
+      'SaveApplyInfo',
+      'SaveApplyInfoForm'
     ]),
     handleClick(item) {
       if (this.route === 'base') {
@@ -119,6 +127,7 @@ export default {
         })
       } else {
         // 详情
+        this.SaveApplyInfoForm(item)
         this.SaveProduct(item.product)
         this.SavePersonalInfo(item.personalInformation).then(() => {
           this.$router.push({

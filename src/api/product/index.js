@@ -25,10 +25,10 @@ export function getProductById(id) {
  * 提交基本审核资料
  */
 
-export function saveApplyInfo(data) {
+export function saveApplyInfo(data, method = "post") {
   return request({
     url: '/api/v3/application-infos',
-    method: 'post',
+    method,
     data
   })
 }
