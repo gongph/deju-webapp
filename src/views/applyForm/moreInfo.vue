@@ -568,13 +568,13 @@
       submitForm() {
         // 添加照片处理
         const imageList = this.imageList
-        let userinfolet = null
+        let userinfolet = this.userInfo
 
         // 针对第二个商品进行处理
         if (this.userInfo.product == 2 || this.userInfo.product.id == 3) {
           // 工作证明
           if (gzzm) {
-            userinfolet = Object.assign({}, this.userInfo, {
+            userinfolet = Object.assign({}, userinfolet, {
               workNamePhotoUrl: imageList.readerGzzm[0],
               workNamePhotoType: imageList.readerGzzm[1]
             })
@@ -589,8 +589,8 @@
           //房本
           else if (fb) {
             userinfolet = Object.assign({}, userinfolet, {
-              businessLicensePhotoUrl: imageList.readerFb[0],
-              businessLicensePhotoType: imageList.readerFb[1]
+              proofOfRealEstateUrl: imageList.readerFb[0],
+              proofOfRealEstateType: imageList.readerFb[1]
             })
           }
           //网购签房合同
