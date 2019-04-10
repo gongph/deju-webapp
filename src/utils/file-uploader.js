@@ -6,7 +6,7 @@
 const Minio = require('minio')
 const fileReaderStream = require('filereader-stream')
 import { getUuid } from './index.js'
-// import config from './config.js'
+import config from './config.js'
 import { getMinioToken } from '@/api/minio'
 
 // Init config
@@ -86,7 +86,7 @@ export function previewImage(url, thumbnailSize) {
  * 获取图片完整路径
  */
 export function getFullPath(url) {
-  return `http://th.minio.boyuanziben.cn/${url}`
+  return `${config.baseImgUrl}/${url}`
 }
 
 /**

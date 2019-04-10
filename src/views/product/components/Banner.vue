@@ -11,7 +11,7 @@
         <md-swiper-item :key="$index" v-for="(item, $index) in banners">
           <a href="javascript:void(0)" class="banner-item">
             <img
-              :src="'http://th.minio.boyuanziben.cn' + item.contentUrl"
+              :src="baseImgUrl + item.contentUrl"
               style="width: 95%"
               onerror="this.src='/img/banner-error.jpg'"
             >
@@ -24,6 +24,7 @@
 
 <script>
   import { Swiper, SwiperItem } from 'mand-mobile'
+  import config from '@/utils/config.js'
 
   export default {
     name: 'Banner',
@@ -35,7 +36,8 @@
     data() {
       return {
         banners: [],
-        loading: true
+        loading: true,
+        baseImgUrl: config.baseImgUrl
       }
     },
     created(){

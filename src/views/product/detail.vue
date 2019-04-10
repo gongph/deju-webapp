@@ -1,6 +1,6 @@
 <template>
   <div class="product-detail__wrapper" v-if="product">
-    <back-to :icon="product.icon" :title="product.title"/>
+    <back-to :icon="product.iconUrl" :title="product.title"/>
     <div class="main-content">
       <div class="detail-inner">
         <div class="desc-grid">

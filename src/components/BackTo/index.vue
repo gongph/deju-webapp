@@ -9,7 +9,7 @@
     <div class="is-center">
       <div
         class="thumbnail"
-        :style="icon ? 'background-image: url(data:image/png;base64,' + icon + ')':''"
+        :style="icon ? 'background-image: url(' + iconUrl + ')':''"
       >
       </div>
       <div class="title">{{ title }}</div>
@@ -20,8 +20,11 @@
 
 <script>
   import { Button, Icon } from 'mand-mobile'
+  import config from '@/utils/config.js'
+
   export default {
     name: 'Header',
+    /* eslint-disable */ 
     components: {
       [Button.name]: Button,
       [Icon.name]: Icon
@@ -42,6 +45,16 @@
       title: {
         type: String,
         default: ''
+      }
+    },
+    data () {
+      return {
+        baseImgUrl: config.baseImgUrl
+      }
+    },
+    computed: {
+      iconUrl() {
+        return this.baseImgUrl + this.icon
       }
     }
   }

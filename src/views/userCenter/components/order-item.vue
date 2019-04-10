@@ -4,7 +4,7 @@
     <div class="item-title__wrapper">
       <div class="image">
         <div class="image-box">
-          <img :src="'data:image/png;base64,' + data.product.icon" style="width: 80%;">
+          <img :src="baseImgUrl + data.product.iconUrl" style="width: 80%;">
         </div>
       </div>
       <div class="title">{{data.product.title}}</div>
@@ -66,6 +66,7 @@
 import { mapActions } from 'vuex'
 import { Button, Dialog } from 'mand-mobile'
 import { formatMoney } from '@/utils'
+import config from '@/utils/config.js'
 
 export default {
   name: 'OrderItem',
@@ -85,7 +86,8 @@ export default {
             handler: this.onBasicConfirm,
           }
         ]
-      }
+      },
+      baseImgUrl: config.baseImgUrl
     }
   },
   props: {
