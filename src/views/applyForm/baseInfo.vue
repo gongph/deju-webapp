@@ -301,32 +301,34 @@
       })
     },
     created() {
-      if (this.personalInfo) {
-        const personalInfo = this.personalInfo
-        const front = personalInfo.idCardFrontPhotoUrl
-        const frontType = personalInfo.idCardFrontPhotoContentType
-
-        const back = personalInfo.idCardBackPhotoUrl
-        const backType = personalInfo.idCardBackPhotoContentType
-
-        this.ruleForm = deepClone(personalInfo)
-
-        // 身份证正面照
-        this.imageList.readerFront[0] = front
-        this.imageList.readerFront[1] = frontType || undefined
-        this.imageList.readerFront[2] = front ? previewImage(front) : undefined
-        
-        // 身份证反面照
-        this.imageList.readerBack[0] = back
-        this.imageList.readerBack[1] = backType || undefined
-        this.imageList.readerBack[2] = back ? previewImage(back) : undefined
-      }
-
+      this.echoImg() // 回显照片
     },
     methods: {
       ...mapActions([
         'SaveApplyInfoFormToLocalforage'
       ]),
+      echoImg() {
+        if (this.personalInfo) {
+          const personalInfo = this.personalInfo
+          const front = personalInfo.idCardFrontPhotoUrl
+          const frontType = personalInfo.idCardFrontPhotoContentType
+
+          const back = personalInfo.idCardBackPhotoUrl
+          const backType = personalInfo.idCardBackPhotoContentType
+
+          this.ruleForm = deepClone(personalInfo)
+
+          // 身份证正面照
+          this.imageList.readerFront[0] = front
+          this.imageList.readerFront[1] = frontType || undefined
+          this.imageList.readerFront[2] = front ? previewImage(front) : undefined
+          
+          // 身份证反面照
+          this.imageList.readerBack[0] = back
+          this.imageList.readerBack[1] = backType || undefined
+          this.imageList.readerBack[2] = back ? previewImage(back) : undefined
+        }
+      },
       onReaderSelect() {
         Toast.loading('图片读取中...')
       },

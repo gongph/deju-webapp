@@ -499,8 +499,55 @@
           path: this.srcRoute ? this.srcRoute : '/center'
         })
       }
+      // 回显图片
+      this.echoImg()
     },
     methods: {
+      echoImg() {
+        if (this.personalInfo) {
+          const personalInfo = this.personalInfo
+
+          // 营业执照
+          const yyzz = personalInfo.businessLicensePhotoUrl
+          const yyzzType = personalInfo.businessLicensePhotoContentType
+
+          this.imageList.readerYyzz[0] = yyzz
+          this.imageList.readerYyzz[1] = yyzzType || undefined
+          this.imageList.readerYyzz[2] = yyzz ? previewImage(yyzz) : undefined
+
+          // 房产证明
+          const fczm = personalInfo.proofOfRealEstateUrl
+          const fczmType = personalInfo.proofOfRealEstateContentType
+
+          this.imageList.readerFb[0] = fczm
+          this.imageList.readerFb[1] = fczmType || undefined
+          this.imageList.readerFb[2] = fczm ? previewImage(fczm) : undefined
+          
+          // 购房网签合同
+          const gfht = personalInfo.purchaseAHouseNetworkContractUrl
+          const gfhtType = personalInfo.purchaseAHouseNetworkContractContentType
+
+          this.imageList.readerWgqfht[0] = gfht
+          this.imageList.readerWgqfht[1] = gfhtType || undefined
+          this.imageList.readerWgqfht[2] = gfht ? previewImage(gfht) : undefined
+
+          // 工作证明
+          const gzzm = personalInfo.workNamePhotoUrl
+          const gzzmType = personalInfo.workNamePhotoContentType
+
+          this.imageList.readerGzzm[0] = gzzm
+          this.imageList.readerGzzm[1] = gzzmType || undefined
+          this.imageList.readerGzzm[2] = gzzm ? previewImage(gzzm) : undefined
+
+          // 其他
+          const qt = personalInfo.otherPhotoUrl
+          const qtType = personalInfo.otherPhotoContentType
+
+          this.imageList.readerQtcl[0] = qt
+          this.imageList.readerQtcl[1] = qtType || undefined
+          this.imageList.readerQtcl[2] = qt ? previewImage(qt) : undefined
+        }
+      },
       onActCancel() {
         this.actDialog.open = false
       },
@@ -568,52 +615,47 @@
       },
       submitForm() {
         // 添加照片处理
-        const imageList = this.imageList
+        let imageList = this.imageList
         let userinfolet = this.userInfo
 
         // 针对第二个商品进行处理
         if (this.userInfo.product == 2 || this.userInfo.product.id == 3) {
           // 工作证明
-          if (gzzm) {
+          if (imageList.readerGzzm.length > 0) {
             userinfolet = Object.assign({}, userinfolet, {
               workNamePhotoUrl: imageList.readerGzzm[0],
               workNamePhotoType: imageList.readerGzzm[1]
             })
           }
           // 营业执照
-          else if (yyzz) {
+          else if (imageList.readerYyzz.length > 0) {
             userinfolet = Object.assign({}, userinfolet, {
               businessLicensePhotoUrl: imageList.readerYyzz[0],
               businessLicensePhotoType: imageList.readerYyzz[1]
             })
           }
           //房本
-          else if (fb) {
+          else if (imageList.readerFb.length > 0) {
             userinfolet = Object.assign({}, userinfolet, {
               proofOfRealEstateUrl: imageList.readerFb[0],
               proofOfRealEstateType: imageList.readerFb[1]
             })
           }
           //网购签房合同
-          else if (wgqfht) {
+          else if (imageList.readerWgqfht.length > 0) {
             userinfolet = Object.assign({}, userinfolet, {
               purchaseAHouseNetworkContractUrl: imageList.readerWgqfht[0],
               purchaseAHouseNetworkContractType: imageList.readerWgqfht[1]
             })
           }
           //其他材料
-          else if (qtcl) {
+          else if (imageList.readerQtcl.length > 0) {
             userinfolet = Object.assign({}, userinfolet, {
               otherPhotoUrl: imageList.readerQtcl[0],
               otherPhotoType: imageList.readerQtcl[1]
             })
           } 
-          else {
-            userinfolet = this.userInfo
-          }
 
-        } else {
-          userinfolet = this.userInfo
         }
 
         // 执行保存操作，两步同时进行互不影响
