@@ -537,7 +537,7 @@
         uploader(file).then(response => {
           Toast.hide()
           const { bucketName, fileName } = response
-          const fileUrl = `${bucketName}/${fileName}`
+          const fileUrl = `/${bucketName}/${fileName}`
           imageList.push(fileUrl)
           imageList.push(file.type)
           imageList.push(previewImage(fileUrl))

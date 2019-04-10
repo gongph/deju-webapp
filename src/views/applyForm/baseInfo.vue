@@ -107,7 +107,7 @@
         </div>
       </md-field>
       <div class="footer-btn">
-        <md-button @click="handleNext" :disabled="nextLoading ? true: false">
+        <md-button @click="handleNext" :disabled="(nextLoading || uploading)? true: false">
           <template v-if="nextLoading">
             <md-activity-indicator
               class="md-activity-indicator-css"
@@ -280,7 +280,8 @@
         // curApplyInfo: null,
         applyBaseInfo: null,
         // 路由来源
-        srcRoute: ''
+        srcRoute: '',
+        uploading: false
       }
     },
     computed: {
@@ -329,6 +330,7 @@
       },
       onReaderComplete(name, { dataUrl, blob, file }) {
         Toast.loading('上传中...')
+        this.uploading = true
 
         const fileSize = file && file.size
         if (fileSize > 5 * 1024 * 1024) {
@@ -342,8 +344,9 @@
         // 上传照片到 Minio 服务器
         uploader(file).then(response => {
           Toast.hide()
+          this.uploading = false
           const { bucketName, fileName } = response
-          const fileUrl = `${bucketName}/${fileName}`
+          const fileUrl = `/${bucketName}/${fileName}`
           imageList.push(fileUrl)
           imageList.push(file.type)
           imageList.push(previewImage(fileUrl))
@@ -351,6 +354,8 @@
         })
         .catch(err => {
           Toast.hide()
+          this.uploading = false
+          Toast.info('图片上传失败！')
           console.error(err)
         })
         
@@ -376,8 +381,8 @@
         this.$validator.validateAll().then((valid) => {
           if (valid) {
             // 照片验证
-            if (this.imageList.readerFront.length < 2 &&
-              this.imageList.readerBack.length < 2) {
+            if (this.imageList.readerFront.length <= 0 ||
+                this.imageList.readerBack.length <= 0) {
               Toast.info('请上传身份证正反面照片！')
               return
             }
