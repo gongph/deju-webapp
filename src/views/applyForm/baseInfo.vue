@@ -371,7 +371,7 @@
         if (this.imageList[name].length > 0) {
           // 删除远程图片
           const imgUrl = this.imageList[name][0]
-          const fileName = imgUrl.split('/')[1]
+          const fileName = imgUrl.split('/')[2]
           removeRemoteImage(fileName).then(() => {
             console.log(`Remove remote image '${fileName}' successed!`)
           })
