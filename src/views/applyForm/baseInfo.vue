@@ -371,13 +371,15 @@
         if (this.imageList[name].length > 0) {
           // 删除远程图片
           const imgUrl = this.imageList[name][0]
-          const fileName = imgUrl.split('/')[2]
-          removeRemoteImage(fileName).then(() => {
-            console.log(`Remove remote image '${fileName}' successed!`)
-          })
-          .catch(err => {
-            console.error(err)
-          })
+          if (imgUrl) {
+            const fileName = imgUrl.split('/')[2]
+            removeRemoteImage(fileName).then(() => {
+              console.log(`Remove remote image '${fileName}' successed!`)
+            })
+            .catch(err => {
+              console.error(err)
+            })
+          }
           this.$set(this.imageList, name, [])
         }
       },
