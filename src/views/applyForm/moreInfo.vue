@@ -603,13 +603,17 @@
         if (this.imageList[name].length > 0) {
           // 删除远程图片
           const imgUrl = this.imageList[name][0]
-          const fileName = imgUrl.split('/')[2]
-          removeRemoteImage(fileName).then(() => {
-            console.log(`Remove remote image '${fileName}' successed!`)
-          })
-          .catch(err => {
-            console.error(err)
-          })
+          if (imgUrl && imgUrl.length>1){
+          let split = imgUrl.split('/');
+            const fileName = split[1]
+            removeRemoteImage(fileName).then(() => {
+              console.log(`Remove remote image '${fileName}' successed!`)
+            })
+                    .catch(err => {
+                      console.error(err)
+                    })
+          }
+
           this.$set(this.imageList, name, [])
         }
       },
@@ -619,40 +623,40 @@
         let userinfolet = this.userInfo
 
         // 针对第二个商品进行处理
-        if (this.userInfo.product == 2 || this.userInfo.product.id == 3) {
+        if (this.userInfo.product.id == 2 || this.userInfo.product.id == 3) {
           // 工作证明
           if (imageList.readerGzzm.length > 0) {
             userinfolet = Object.assign({}, userinfolet, {
               workNamePhotoUrl: imageList.readerGzzm[0],
-              workNamePhotoType: imageList.readerGzzm[1]
+              workNamePhotoContentType: imageList.readerGzzm[1]
             })
           }
           // 营业执照
-          else if (imageList.readerYyzz.length > 0) {
+          if (imageList.readerYyzz.length > 0) {
             userinfolet = Object.assign({}, userinfolet, {
               businessLicensePhotoUrl: imageList.readerYyzz[0],
-              businessLicensePhotoType: imageList.readerYyzz[1]
+              businessLicensePhotoContentType: imageList.readerYyzz[1]
             })
           }
           //房本
-          else if (imageList.readerFb.length > 0) {
+          if (imageList.readerFb.length > 0) {
             userinfolet = Object.assign({}, userinfolet, {
               proofOfRealEstateUrl: imageList.readerFb[0],
-              proofOfRealEstateType: imageList.readerFb[1]
+              proofOfRealEstateContentType: imageList.readerFb[1]
             })
           }
           //网购签房合同
-          else if (imageList.readerWgqfht.length > 0) {
+          if (imageList.readerWgqfht.length > 0) {
             userinfolet = Object.assign({}, userinfolet, {
               purchaseAHouseNetworkContractUrl: imageList.readerWgqfht[0],
-              purchaseAHouseNetworkContractType: imageList.readerWgqfht[1]
+              purchaseAHouseNetworkContractContentType: imageList.readerWgqfht[1]
             })
           }
           //其他材料
-          else if (imageList.readerQtcl.length > 0) {
+          if (imageList.readerQtcl.length > 0) {
             userinfolet = Object.assign({}, userinfolet, {
               otherPhotoUrl: imageList.readerQtcl[0],
-              otherPhotoType: imageList.readerQtcl[1]
+              otherPhotoContentType: imageList.readerQtcl[1]
             })
           } 
 
@@ -668,7 +672,7 @@
           savePersonInfo(userinfolet, 'PUT')
         ])
         .then(response => {
-          if (response && response.status === 200) {
+          if (response && response[0].status === 200) {
             this.$router.push({
               name: 'NoticePage',
               params: {
